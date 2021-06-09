@@ -1,0 +1,124 @@
+#include "totvs.ch"
+#include "Apwebex.ch"
+
+//-----------------------------------------------------------------------------
+/*/ {Protheus.doc} Advpl ASP
+Montagem das questões para pagina da pesquisa de satisfação
+
+@author Wagner Mobile Costa
+@version P12
+@since 20/04/2015
+/*/
+//-----------------------------------------------------------------------------
+User function TCTTH030()
+
+Local cHtml := ""
+
+Private aPesq	:= {}
+Private cRep	:= ""
+Private cCurso	:= ""
+PRIVATE CODPESQ	:= ""
+PRIVATE CODTURM	:= ""
+PRIVATE PERIODO	:= ""
+PRIVATE CODALU	:= ""
+PRIVATE aTipo	:= {}
+Private aDadosC	:= {}
+
+WEB EXTENDED INIT cHtml
+RpcClearEnv()
+If HTTPPOST->turma == Nil
+	cRep := "Não foi passada a turma e filial para execução !"
+	aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4,HTTPPOST->aDadosC5,HTTPPOST->aDadosC6,HTTPPOST->aDadosC7,;
+					HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10,STOD(''),STOD(''),''})
+Else
+	MontaHTML()
+EndIf
+
+cHtml := H_TCTTH030()
+WEB EXTENDED END
+
+return(cHtml)
+
+//-----------------------------------------------------------------------------
+/*/ {Protheus.doc} Advpl ASP
+Prepara as definições para o HTML
+
+@author Wagner Mobile Costa
+@version P12
+@since 23/04/2015
+/*/
+//-----------------------------------------------------------------------------
+Static function MontaHTML()
+
+Local aResp	 := {}
+Local cTurma := cChave := ""
+Local _cEmp_ := GetPvProfString(GetEnvServer(),"EMP_CTT","00",GetAdv97())
+Local _cFil_ := ""
+
+// HTTPPOST->turma -> PDLQRY->PD7_TURMA + "/" + PDLQRY->PDF_PERIO + "/" + PDLQRY->PD7_FILIAL
+
+cChave := HTTPPOST->turma
+cTurma := Left(cChave, At("/", cChave) - 1)
+
+cChave  := Subs(cChave,  At("/", HTTPPOST->turma) + 1, Len(cChave))
+PERIODO := Left(cChave, At("/", cChave) - 1)
+
+cChave := Subs(cChave,  At("/", cChave) + 1, Len(cChave))
+_cFil_ := cChave
+ 
+RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD5", "PDG" },,,,)
+
+CODALU	:= HTTPPOST->aDadosC8
+aTipo   := RetSx3Box( Posicione("SX3", 2, "PD5_FINALI", "X3CBox()" ),,, 1 )
+
+PD2->(DbSetOrder(1))
+PDF->(DbSetOrder(1))
+IF PDF->(DBSEEK(_cFil_+cTurma + PERIODO)) .And. PD3->(DBSEEK(_cFil_+cTurma))
+	aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4,HTTPPOST->aDadosC5,HTTPPOST->aDadosC6,HTTPPOST->aDadosC7,;
+					HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10, PDF->PDF_DTINI, PDF->PDF_DTFIM, PD3->PD3_PERIOD, _cFil_, PERIODO })
+	HTTPSESSION->aDadosC := aDadosC
+	
+	PD2->(DbSeek(xFilial() + PDF->PDF_PROF))
+	cCurso	:= 	"Turma " + cTurma + "/" + PERIODO + " - " + ALLTRIM(PD3->PD3_NOME)+" / "+ALLTRIM(PD2->PD2_NOME) + " - " +;
+				DTOC(PDF->PDF_DTINI) + " a " + DTOC(PDF->PDF_DTFIM) + " - Carga Horária: " + AllTrim(Str(PDF->PDF_QTDHOR)) + " hs"   
+	
+	PD5->(dbsetorder(1))	// PERGUNTAS PESQUISA SATISFAÇÃO
+	PDG->(DBSETORDER(1))	// EQUIVALENCIAS
+	IF PD5->(Dbseek(xFilial("PD5")+PD3->PD3_PESQ))
+		while PD5->(!EOF()) .AND. xFilial("PD5")+PD3->PD3_PESQ == PD5->(PD5_FILIAL+PD5_PESQ)
+			IF PD5->PD5_MSBLQL == '2'	//-- Não bloqueado
+				IF ! Empty(PD5->PD5_PONTUA)
+					IF PDG->(DBSEEK(xFilial()+PD5->PD5_PONTUA))
+						AADD(aResp,{ "--", "--", 0})
+						while PDG->(!EOF()) .AND. PDG->(PDG_FILIAL + PDG_PONTUA) == PD5->(PD5_FILIAL + PD5_PONTUA) 
+							AADD(aResp,{ PDG->PDG_EQUIV, PDG->PDG_CONCEI, PDG->PDG_NOTAPO})
+							PDG->(DBSKIP())
+						END
+						ASORT(aResp,2,,{|X,Y| X[1]>Y[1]})
+						cRep := ""
+					ELSE
+						cRep := "Não possui um grupo de resposta para essa pergunta"
+					ENDIF
+				ENDIF
+				AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO, PD5->PD5_ASSUNTO, PD5->PD5_PERGUN, PD5->PD5_MEMO, ;
+							aResp, cRep, alltrim(PD5->PD5_PONTUA), cTurma, aTipo[val(PD5->PD5_FINALI)][3]})
+				aResp 	:= {}
+				cRep 	:= ""
+				CODPESQ	:= PD5->PD5_PESQ
+ 			  	CODTURM	:= cTurma
+			ENDIF
+			PD5->(DBSKIP())
+		END
+	ELSE
+		cRep := "Não existe o cadastro de pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cTurma + "]"
+	ENDIF
+else
+	cRep := "A Turma/periodo [" + cTurma + "/" + PERIODO + "] não foram encontradas"
+	aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4,HTTPPOST->aDadosC5,HTTPPOST->aDadosC6,HTTPPOST->aDadosC7,;
+					HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10,STOD(''),STOD(''),''})
+	HTTPSESSION->aDadosC := aDadosC
+ENDIF
+
+Asort(aPesq,,,{|z,x| z[1]+z[3]+z[2]< x[1]+x[3]+x[2] })
+
+Return

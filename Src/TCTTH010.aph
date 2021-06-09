@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!doctype html public "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+
+<script language="JavaScript">
+function cancelar(){
+	document.login.action = "u_TCTTH010.apw";
+	document.login.submit()
+}
+function ok(){
+var ok = true;
+
+missinginfo = '';
+
+ if ( document.login.cCPF.value == '' ) {
+     ok = false;
+     missinginfo = '\n     -  CPF';
+ }
+if ( ok ){
+	document.forms[0].action = "u_TCTTH020.apw";
+  document.forms[0].submit()
+}
+else{
+     missinginfo ='_____________________________\n' +
+     " Não preenchido corretamente:\n" +
+     missinginfo + '\n_____________________________' +
+     '\n Tente novamente!';
+     alert(missinginfo)
+}
+}
+function SomenteNumero(e){
+    var tecla=(window.event)?event.keyCode:e.which;   
+    if((tecla>47 && tecla<58)) return true;
+    else{
+    	if (tecla==8 || tecla==0) return true;
+	else  return false;
+    }
+}
+</script>
+
+    <head>
+        <title>Pesquisa Satisfação - Pagina Inicial - CTT</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<html>
+    <head>
+        <title>PORTAL</title>
+        <link href="./ctt.css" type="text/css" rel="stylesheet">
+			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		</head>
+
+    <body class="background">
+		<form name="login" action='' method="post"">
+			<div class="centralContainer" >
+
+			<div class="centralContainer containerLogin">
+				<div class="subcontainer">
+					<div class="imgTotvs"></div>
+				</div>
+
+				<label class="containerLogin greeting">Seja bem-vindo,</label>
+
+				<br />
+
+				<label class="containerLogin greetingId">Identifique-se abaixo com seu CPF (sem os pontos) para realização da pesquisa</label>
+
+				<div class="containerLogin userlogin">
+                   <label class="textlogin" id="spLogin" style=display:'' >CPF</label>
+		           <input id="txtNome" name="cCPF" class="inputlogin" type="text" maxlength="11" onkeypress="return SomenteNumero(event)"/>
+  				   <div tabindex="0" class="containerLogin buttonlogin">
+                   <input name="Button" unselectable="on" type="submit" class="btnlogin" value="Acessar Portal" onClick="javascript:ok()">
+	             </div>
+
+				<label class="containerLogin messageId"><%= cMensagem %></label>
+			</div>
+		</form>
+  </body>
+</html>
+</html>

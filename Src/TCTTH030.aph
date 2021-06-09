@@ -1,0 +1,158 @@
+<%
+#include "Protheus.ch"
+#INCLUDE 'APWEBEX.CH' 
+Local cFinalid	:= ""
+Local nVolta	:= 0
+Local nFor		:= 0
+Local nFor2		:= 0
+Local nQuantos  := 0
+%>
+<html>
+  <head>
+    <title>Pesquisa Satisfação - Questões - CTT</title>
+  </head>
+  <script language="JavaScript">
+	function Voltar(){
+		document.questoes.action = "u_TCTTH020.apw"; 
+		document.questoes.submit() 
+	} 
+		
+	function Salvar(){
+                  <% nQuantos := 0%>	
+	  			  <% For nFor := 1 to len(aPesq) %>
+  			         <% if aPesq[nFor][5] =='1' %>
+					       <% if Empty(aPesq[nFor][9])%>
+     					         var <%= 'cDoc' + aPesq[nfor][2]%> = document.getElementById("<%= 'RADIO'+aPesq[nfor][2]+'FINALID'+aPesq[nfor][3]+'DEPTO'+aPesq[nfor][4]+'PONTUAC'+aPesq[nfor][10] %>").value;
+     					         <% nQuantos++%>
+     		               <% endif%>
+     		         <% endif %>      			 
+	     		  <% Next nFor %>
+	if  (
+	       <% For nFor := 1 to len(aPesq) %>
+	          <% if aPesq[nFor][5] =='1' %>
+	             <% if Empty(aPesq[nFor][9])%>
+     	                <%= 'cDoc' + aPesq[nfor][2]%> == "--" 
+     	                <%= IF(--nQuantos > 0, " || ", "")%>
+	             <% end if%>
+	          <% endif %>
+	       <% Next nFor %>
+	      
+	    ) { alert('Erro! Ha avaliacao(oes) nao preenchida(s). Verifique !!'); }
+ 	else  { document.questoes.submit(); }
+ 	                 } 
+	</script>
+  <div style=" text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+	<table width="100%" border="0" cellpadding="1" cellspacing="1" style="border-width: 0px; background-color: transparent;">
+	   <tr valign="top">
+	   	   <td >
+		   	  <span style=" font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style:oblique; font-weight:bold;  color: #000000; background-color: transparent; text-decoration: none;">
+			  		CPF / Nome:
+			  </span>
+		   </TD>
+		   <td >
+		   	  <span style=" font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style: normal; font-weight: normal; color: #000000; background-color: transparent; text-decoration: none;">
+			  		<%= aDadosC[1][1]%> &nbsp;/&nbsp;<%= aDadosC[1][2] %> 
+				  </span>
+		   </TD>
+	   </TR>
+	   <tr valign="top">
+	       <td >
+		   	  <span style=" font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style:oblique; font-weight:bold;  color: #000000; background-color: transparent; text-decoration: none;">
+			  		Email:</span>
+		   </TD>
+		   <td >
+		   	  <span style=" font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style: normal; font-weight: normal; color: #000000; background-color: transparent; text-decoration: none;">
+			  		<%= aDadosC[1][3] %> 
+			</span>
+		   </TD>
+	   </TR>
+	   <tr valign="top">
+		   <td >
+		   	  <span style=" font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style:oblique; font-weight:bold;  color: #000000; background-color: transparent; text-decoration: none;">
+			  		Empresa:</span>
+		   </TD>
+		   <td >
+		   	  <span style=" font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style: normal; font-weight: normal; color: #000000; background-color: transparent; text-decoration: none;">
+			  		<%= aDadosC[1][4] %> &nbsp;-&nbsp;<%= aDadosC[1][5] %> 
+			 </span>
+	       </td>
+	   </TR>
+	   <tr valign="top">
+		   <td >
+		   	  <span style=" font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style:oblique; font-weight:bold;  color: #000000; background-color: transparent; text-decoration: none;">
+			  		Turma/Periodo - Curso/Professor:</span>
+		   </TD>
+		   <td >
+		   	  <span style=" font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style: normal; font-weight: normal; color: #000000; background-color: transparent; text-decoration: none;">
+			  		<%= cCurso %>  
+			 </span>
+	       </td>
+	   </TR>
+	</table> 
+  		<% if len(aPesq)>0 %>
+   		<form name="questoes" id="questoes" method="post" action="u_TCTTH040.apw">
+	  <input type="hidden" name="aDadosC1" value="<%= aDadosC[1][1] %>">
+	  <input type="hidden" name="aDadosC2" value="<%= aDadosC[1][2] %>">
+	  <input type="hidden" name="aDadosC3" value="<%= aDadosC[1][3] %>">
+	  <input type="hidden" name="aDadosC4" value="<%= aDadosC[1][4] %>">
+	  <input type="hidden" name="aDadosC5" value="<%= aDadosC[1][5] %>">
+	  <input type="hidden" name="aDadosC6" value="<%= aDadosC[1][6] %>">
+	  <input type="hidden" name="aDadosC7" value="<%= aDadosC[1][7] %>">
+	  <input type="hidden" name="aDadosC8" value="<%= aDadosC[1][8] %>">
+	  <input type="hidden" name="aDadosC9" value="<%= aDadosC[1][9] %>">
+	  <input type="hidden" name="aDadosC10" value="<%= aDadosC[1][10] %>">
+	  <input type="hidden" name="aDadosC11" value="<%= aDadosC[1][11] %>">
+	  <input type="hidden" name="aDadosC12" value="<%= aDadosC[1][12] %>">
+	  <input type="hidden" name="aDadosC13" value="<%= aDadosC[1][13] %>">
+	  <input type="hidden" name="aDadosC14" value="<%= aDadosC[1][14] %>">
+   		<div id="objetos">
+ 			  <% For nFor := 1 to len(aPesq) %>
+ 			  	 <% if !(aPesq[nFor][3] $ cFinalid) %>
+ 				 	<% cFinalid += aPesq[nFor][3]+',' %>
+ 			  	 	<hr align="center" width="100%" size="2" color="#1D197B" />
+ 			  	 	<b> 
+					Pergunta <%= strzero(val(aPesq[nFor][3]),2)+'  '+ aPesq[nFor][12] %>
+					</b>
+					<% nVolta := 0 %>
+					<BR>
+ 				 <% Endif %>
+ 				 <% nVolta += 1 %>
+				 <% //<!-- Perguntas--> %> 
+				 <% if !Empty(aPesq[nFor][6])%>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= aPesq[nFor][3]+'.'+strzero(nVolta,2) %>
+					<%= aPesq[nFor][6] %>
+ 				 <% Endif %>
+ 				 <% //<!-- Respostas--> %>
+				 <% if aPesq[nFor][5] =='1' %>
+					 <% if !Empty(aPesq[nFor][9])%>
+	 				 	<%= aPesq[nFor][9] %>
+					 <% else %>
+					 	
+					 	<select id="<%= 'RADIO'+aPesq[nfor][2]+'FINALID'+aPesq[nfor][3]+'DEPTO'+aPesq[nfor][4]+'PONTUAC'+aPesq[nfor][10] %>" name="<%= 'RADIO'+aPesq[nfor][2]+'FINALID'+aPesq[nfor][3]+'DEPTO'+aPesq[nfor][4]+'PONTUAC'+aPesq[nfor][10]  %>"  align="bottom">
+						<% For nFor2 := 1 to len(aPesq[nFor][8]) %>
+					 		  <option value='<%= aPesq[nfor][8][nFor2][1] %>'><%= AllTrim(aPesq[nfor][8][nFor2][2]) %></option>							
+						<% Next nFor2 %>
+						</select>
+	 				 <% Endif %>
+	 			 <% Else %>
+	 			 <br>
+	 			 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea id="<%= 'AREA'+aPesq[nfor][2]+'FINALID'+aPesq[nfor][3]+'DEPTO'+aPesq[nfor][4]+'PONTUAC'+aPesq[nfor][10] %>" name="<%= 'AREA'+aPesq[nfor][2]+'FINALID'+aPesq[nfor][3]+'DEPTO'+aPesq[nfor][4]+'PONTUAC'+aPesq[nfor][10] %>" rows="5" cols="70"><%= aPesq[nFor][7] %></textarea>
+	 			 <% Endif %>
+	 			 <br>
+ 			  <% Next nFor %>
+   			  <hr align="center" width="100%" size="2" color="#1D197B" />
+ 			  <input type="hidden" name="cCPF" value="<%= aDadosC[1][1] %>">
+ 			  <input type="hidden" name="CODPESQ" value="<%= CODPESQ %>">
+ 			  <input type="hidden" name="CODTURM" value="<%= CODTURM %>">
+ 			  <input type="hidden" name="PERIODO" value="<%= PERIODO %>">
+ 			  <input type="hidden" name="CODALU" value="<%= CODALU %>">
+ 			  <input type="hidden" name="cCurso" value="<%= cCurso %>">
+ 			  </div>
+ 			  <input type="button" value="Salvar" onClick=javascript:Salvar()>
+		<% else %>
+		   <%= cRep %>
+		<% Endif %>	  
+ 			  <input type="button" value="Voltar" onClick=javascript:Voltar()>
+ 		</form>
+  </body>
+</html>

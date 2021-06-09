@@ -1,0 +1,28 @@
+#include "TOTVS.ch"
+#INCLUDE 'APWEBEX.CH'
+
+//-----------------------------------------------------------------------------
+/*/ {Protheus.doc} Advpl ASP
+Fonte para chamada da pagina principal da pagina de pesquisa de satisfação
+
+@author Wagner Mobile Costa
+@version P12
+@since 20/04/2015
+/*/
+//-----------------------------------------------------------------------------
+User function TCTTH010()
+Local cHtml		   := ""
+Private cMensagem  := HttpPost->cMensagem
+
+WEB EXTENDED INIT cHtml
+//retirado pois estava muito lento
+
+// Chamar a pagina
+if mod(val(strtran(time(),':','')),2) = 0
+	HttpSend(ExecInPage("TCTTH010"))
+else
+	cHtml := h_TCTTH010()
+endif
+//RpcClearEnv() //Limpa o ambiente, liberando a licença e fechando as conexões
+WEB EXTENDED END
+Return(cHtml)
