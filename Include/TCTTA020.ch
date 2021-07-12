@@ -1,0 +1,36 @@
+#IFDEF SPANISH
+   #define STR0001 "PDL"
+   #define STR0002 "Cadastro de Alunos"
+   #define STR0003 "PD7-Aluno em uso na alocação da turma ["
+   #define STR0004 "]"
+   #define STR0005 "PD4-Aluno em uso na pesquisa de satisfação da turma ["
+   #define STR0006 "Pesquisar"
+   #define STR0007 "Visualizar"
+   #define STR0008 "Incluir"
+   #define STR0009 "Alterar"
+   #define STR0010 "Excluir"
+#ELSE
+   #IFDEF ENGLISH
+      #define STR0001 "PDL"
+      #define STR0002 "Cadastro de Alunos"
+      #define STR0003 "PD7-Aluno em uso na alocação da turma ["
+      #define STR0004 "]"
+      #define STR0005 "PD4-Aluno em uso na pesquisa de satisfação da turma ["
+      #define STR0006 "Pesquisar"
+      #define STR0007 "Visualizar"
+      #define STR0008 "Incluir"
+      #define STR0009 "Alterar"
+      #define STR0010 "Excluir"
+   #ELSE
+      #define STR0001 "PDL"
+      #define STR0002 "Cadastro de Alunos"
+      #define STR0003 "PD7-Aluno em uso na alocação da turma ["
+      #define STR0004 "]"
+      #define STR0005 "PD4-Aluno em uso na pesquisa de satisfação da turma ["
+      #define STR0006 "Pesquisar"
+      #define STR0007 "Visualizar"
+      #define STR0008 "Incluir"
+      #define STR0009 "Alterar"
+      #define STR0010 "Excluir"
+   #ENDIF
+#ENDIF

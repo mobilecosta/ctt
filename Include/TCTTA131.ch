@@ -1,0 +1,36 @@
+#IFDEF SPANISH
+   #define STR0001 "Imprimir certificado do aluno ["
+   #define STR0002 "Impressao"
+   #define STR0003 "Impressão de Certificados"
+   #define STR0004 "&Imprime"
+   #define STR0005 "Sai&r"
+   #define STR0006 " horas"
+   #define STR0007 " da , de , em , do , dos"
+   #define STR0008 "Imprimir certificado"
+   #define STR0009 "&Setup"
+   #define STR0010 "Pre&view"
+#ELSE
+   #IFDEF ENGLISH
+      #define STR0001 "Imprimir certificado do aluno ["
+      #define STR0002 "Impressao"
+      #define STR0003 "Impressão de Certificados"
+      #define STR0004 "&Imprime"
+      #define STR0005 "Sai&r"
+      #define STR0006 " horas"
+      #define STR0007 " da , de , em , do , dos"
+      #define STR0008 "Imprimir certificado"
+      #define STR0009 "&Setup"
+      #define STR0010 "Pre&view"
+   #ELSE
+      #define STR0001 "Imprimir certificado do aluno ["
+      #define STR0002 "Impressao"
+      #define STR0003 "Impressão de Certificados"
+      #define STR0004 "&Imprime"
+      #define STR0005 "Sai&r"
+      #define STR0006 " horas"
+      #define STR0007 " da , de , em , do , dos"
+      #define STR0008 "Imprimir certificado"
+      #define STR0009 "&Setup"
+      #define STR0010 "Pre&view"
+   #ENDIF
+#ENDIF
