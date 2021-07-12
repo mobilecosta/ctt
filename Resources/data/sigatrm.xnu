@@ -1,0 +1,483 @@
+<ApMenu>
+	<DocumentProperties>
+		<Module></Module>
+		<Version>10.1</Version>
+	</DocumentProperties>
+	<Menu Status="Enable">
+		<Title lang="pt">&Atualizações</Title>
+		<Title lang="es">&Actualizaciones</Title>
+		<Title lang="en">&Updates</Title>
+		<Menu Status="Enable">
+			<Title lang="pt">Cadastros</Title>
+			<Title lang="es">Cadastros</Title>
+			<Title lang="en">Cadastros</Title>
+			<Menu Status="Enable">
+				<Title lang="pt">CRM</Title>
+				<Title lang="es">CRM</Title>
+				<Title lang="en">CRM</Title>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Fórmulas</Title>
+					<Title lang="es">Formulas</Title>
+					<Title lang="en">Formulas</Title>
+					<Function>CFGX019</Function>
+					<Type>1</Type>
+					<Tables>SM2</Tables>
+					<Tables>SM4</Tables>
+					<Tables>SU0</Tables>
+					<Tables>SU5</Tables>
+					<Tables>SU7</Tables>
+					<Tables>SUS</Tables>
+					<Tables>SUV</Tables>
+					<Access>xxxxxxxxxx</Access>
+					<Module>69</Module>
+					<Owner>0</Owner>
+					<ItemID>0000010188</ItemID>
+					<KeyWord>
+						<KeyWord lang="pt">Customização</KeyWord>
+						<KeyWord lang="es">Personalizacion</KeyWord>
+						<KeyWord lang="en">Customization</KeyWord>
+					</KeyWord>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Vendedores</Title>
+					<Title lang="es">Vendedores</Title>
+					<Title lang="en">Sales Represent.</Title>
+					<Function>MATA040</Function>
+					<Type>1</Type>
+					<Tables>SA3</Tables>
+					<Tables>SC5</Tables>
+					<Tables>SE3</Tables>
+					<Tables>SF5</Tables>
+					<Tables>SJ1</Tables>
+					<Access>xxxxxxxxxx</Access>
+					<Module>06</Module>
+					<Owner>5</Owner>
+					<ItemID>0000001090</ItemID>
+					<KeyWord>
+						<KeyWord lang="pt">Provedores,pessoas,canal,canais</KeyWord>
+						<KeyWord lang="es">Proveedores,personas,canal,canales</KeyWord>
+						<KeyWord lang="en">Providers,people,channel,channels</KeyWord>
+					</KeyWord>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Clientes</Title>
+					<Title lang="es">Clientes</Title>
+					<Title lang="en">Clientes</Title>
+					<Function>MATA030</Function>
+					<Type>01</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+			</Menu>
+			<Menu Status="Enable">
+				<Title lang="pt">Entrega</Title>
+				<Title lang="es">Entrega</Title>
+				<Title lang="en">Entrega</Title>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Cursos</Title>
+					<Title lang="es">Cursos</Title>
+					<Title lang="en">Cursos</Title>
+					<Function>TCTTA010</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Professores</Title>
+					<Title lang="es">Professores</Title>
+					<Title lang="en">Professores</Title>
+					<Function>TCTTA030</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Salas</Title>
+					<Title lang="es">Salas</Title>
+					<Title lang="en">Salas</Title>
+					<Function>TCTTA040</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+			</Menu>
+			<Menu Status="Enable">
+				<Title lang="pt">Secretaria</Title>
+				<Title lang="es">Secretaria</Title>
+				<Title lang="en">Secretaria</Title>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Alunos</Title>
+					<Title lang="es">Alunos</Title>
+					<Title lang="en">Alunos</Title>
+					<Function>TCTTA020</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Equivalencias</Title>
+					<Title lang="es">Equivalencias</Title>
+					<Title lang="en">Equivalencias</Title>
+					<Function>TCTTA070</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Perguntas Pesquisas</Title>
+					<Title lang="es">Perguntas Pesquisas</Title>
+					<Title lang="en">Perguntas Pesquisas</Title>
+					<Function>TCTTA060</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Template EMail</Title>
+					<Title lang="es">Template EMail</Title>
+					<Title lang="en">Template EMail</Title>
+					<Function>TCTTA090</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Assunto EMail - Pesquisas</Title>
+					<Title lang="es">Assunto EMail - Pesquisas</Title>
+					<Title lang="en">Assunto EMail - Pesquisas</Title>
+					<Function>TCTTA080</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+			</Menu>
+                 </Menu>
+		 <Menu Status="Enable">
+			<Title lang="pt">Movimentos</Title>
+			<Title lang="es">Movimentos</Title>
+			<Title lang="en">Movimentos</Title>
+			<Menu Status="Enable">
+				<Title lang="pt">Comercial</Title>
+				<Title lang="es">Comercial</Title>
+				<Title lang="en">Comercial</Title>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Propostas</Title>
+					<Title lang="es">Propostas</Title>
+					<Title lang="en">Propostas</Title>
+					<Function>TCTTA220</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+			</Menu>
+			<Menu Status="Enable">
+				<Title lang="pt">Entrega</Title>
+				<Title lang="es">Entrega</Title>
+				<Title lang="en">Entrega</Title>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Turmas</Title>
+					<Title lang="es">Alocação</Title>
+					<Title lang="en">Alocação</Title>
+					<Function>TCTTA050</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Respostas Pesquisas</Title>
+					<Title lang="es">Respostas Pesquisas</Title>
+					<Title lang="en">Respostas Pesquisas</Title>
+					<Function>TCTTA240</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+			</Menu>
+			<Menu Status="Enable">
+				<Title lang="pt">Secretaria</Title>
+				<Title lang="es">Secretaria</Title>
+				<Title lang="en">Secretaria</Title>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Alocação</Title>
+					<Title lang="es">Alocação</Title>
+					<Title lang="en">Alocação</Title>
+					<Function>TCTTA130</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+				<MenuItem Status="Enable">
+					<Title lang="pt">Aprovação Alteração Alocação</Title>
+					<Title lang="es">Alocação</Title>
+					<Title lang="en">Alocação</Title>
+					<Function>TCTTA140</Function>
+					<Type>03</Type>
+					<Access>xxxxxxxxxx</Access>
+					<Module>26</Module>
+					<Owner>0</Owner>
+				</MenuItem>
+			</Menu>
+              </Menu>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Consultas</Title>
+		<Title lang="es">&Consultas</Title>
+		<Title lang="en">&Searches</Title>
+		<Menu Status="Enable">
+			<Title lang="pt">Cadastros</Title>
+			<Title lang="es">Archivos</Title>
+			<Title lang="en">File</Title>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Genericos</Title>
+				<Title lang="es">Genericos</Title>
+				<Title lang="en">Generic</Title>
+				<Function>EDAPP</Function>
+				<Type>01</Type>
+				<Tables>SZ0</Tables>
+				<Tables>SZ1</Tables>
+				<Tables>SZ2</Tables>
+				<Tables>SZ3</Tables>
+				<Tables>SZ4</Tables>
+				<Tables>SZ5</Tables>
+				<Tables>SZ8</Tables>
+				<Tables>SZA</Tables>
+				<Tables>SZB</Tables>
+				<Tables>SZC</Tables>
+				<Tables>SZD</Tables>
+				<Tables>SZE</Tables>
+				<Tables>SZF</Tables>
+				<Tables>SZG</Tables>
+				<Tables>SZH</Tables>
+				<Tables>SZI</Tables>
+				<Tables>SZJ</Tables>
+				<Tables>SZL</Tables>
+				<Tables>SZM</Tables>
+				<Tables>SZN</Tables>
+				<Tables>SZO</Tables>
+				<Tables>SZP</Tables>
+				<Tables>SZQ</Tables>
+				<Tables>SZR</Tables>
+				<Tables>SZS</Tables>
+				<Tables>SZT</Tables>
+				<Tables>SZU</Tables>
+				<Tables>SZV</Tables>
+				<Tables>SZX</Tables>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+			</MenuItem>
+		</Menu>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">Relatórios</Title>
+		<Title lang="es">Relatórios</Title>
+		<Title lang="en">Relatórios</Title>
+		<Menu Status="Enable">
+			<Title lang="pt">Comercial</Title>
+			<Title lang="es">Comercial</Title>
+			<Title lang="en">Comercial</Title>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Captação de Clientes</Title>
+				<Title lang="es">Captação de Clientes</Title>
+				<Title lang="en">Captação de Clientes</Title>
+				<Function>TCTTR020</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001123</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Cursos Faturados</Title>
+				<Title lang="es">Cursos Faturados</Title>
+				<Title lang="en">Cursos Faturados</Title>
+				<Function>TCTTR040</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001130</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Ranking Faturados</Title>
+				<Title lang="es">Ranking Faturados</Title>
+				<Title lang="en">Ranking Faturados</Title>
+				<Function>TCTTR110</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001131</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+         	</Menu>
+		<Menu Status="Enable">
+			<Title lang="pt">Entrega</Title>
+			<Title lang="es">Entrega</Title>
+			<Title lang="en">Entrega</Title>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Planilha Calendário de Cursos</Title>
+				<Title lang="es">Planilha Calendário de Cursos</Title>
+				<Title lang="en">Planilha Calendário de Cursos</Title>
+				<Function>TCTTR180</Function>
+				<Type>03</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+			</MenuItem>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Instrutores com grade de capacitação</Title>
+				<Title lang="es">Instrutores com grade de capacitação</Title>
+				<Title lang="en">Instrutores com grade de capacitação</Title>
+				<Function>TCTTR010</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001124</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+	        	<MenuItem Status="Enable">
+				<Title lang="pt">Salas</Title>
+				<Title lang="es">Salas</Title>
+				<Title lang="en">Salas</Title>
+				<Function>TCTTR150</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001125</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+	                <MenuItem Status="Enable">
+				<Title lang="pt">Turmas</Title>
+				<Title lang="es">Turmas</Title>
+				<Title lang="en">Cadastro Turmas</Title>
+				<Function>TCTTR130</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001128</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Turmas e Agendamentos</Title>
+				<Title lang="es">Turmas e Agendamentos</Title>
+				<Title lang="en">Turmas e Agendamentos</Title>
+				<Function>TCTTR070</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001126</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Programação agendamento de Salas</Title>
+				<Title lang="es">Programação agendamento de Salas</Title>
+				<Title lang="en">Programação agendamento de Salas</Title>
+				<Function>TCTTR080</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001127</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+			<MenuItem Status="Enable">
+				<Title lang="pt">Calculo do Prêmio</Title>
+				<Title lang="es">Calculo do Prêmio</Title>
+				<Title lang="en">Calculo do Prêmio</Title>
+				<Function>TCTTR030</Function>
+				<Type>03</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+    			</MenuItem>
+          		<MenuItem Status="Enable">
+	        		<Title lang="pt">Planilha Respostas da Pesquisa</Title>
+	          		<Title lang="es">Planilha Respostas da Pesquisa</Title>
+		        	<Title lang="en">Planilha Respostas da Pesquisa</Title>
+           			<Function>TCTTR100</Function>
+              			<Type>03</Type>
+	         		<Access>xxxxxxxxxx</Access>
+		         	<Module>26</Module>
+            			<Owner>0</Owner>
+               		</MenuItem>
+         	</Menu>
+		<Menu Status="Enable">
+			<Title lang="pt">Secretaria</Title>
+			<Title lang="es">Secretaria</Title>
+			<Title lang="en">Secretaria</Title>
+	        	<MenuItem Status="Enable">
+				<Title lang="pt">Turmas X Alocacao</Title>
+				<Title lang="es">Turmas X Alocacao</Title>
+				<Title lang="en">Turmas X Alocacao</Title>
+				<Function>TCTTR060</Function>
+				<Type>3</Type>
+				<Access>xxxxxxxxxx</Access>
+				<Module>26</Module>
+				<Owner>0</Owner>
+				<ItemID>0000001129</ItemID>
+				<KeyWord>
+					<KeyWord lang="pt"></KeyWord>
+					<KeyWord lang="es"></KeyWord>
+					<KeyWord lang="en"></KeyWord>
+				</KeyWord>
+			</MenuItem>
+         	</Menu>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Miscelanea</Title>
+		<Title lang="es">&Miscelanea</Title>
+		<Title lang="en">&Miscellaneous</Title>
+	</Menu>
+</ApMenu>
