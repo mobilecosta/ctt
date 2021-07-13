@@ -103,7 +103,7 @@ Local cLine := ''
 
 	// Verifica se o arquivo existe
 	If ! File(cFile)
-		MsgAlert('Erro', 'Arquivo de configuração de Token ( '+cFilie+' ) não encontrado.')
+		MsgAlert('Erro', 'Arquivo de configuração de Token ( '+cFile+' ) não encontrado.')
 		Return cLine
 	Endif
 
