@@ -336,7 +336,7 @@ Static Function PosValid(oModel)
 	EndIf
 
 	If Len(aError) == 0
-		// Integração COM VLabs
+	/*	// Integração COM VLabs
 		If oModel:GetOperation() == MODEL_OPERATION_DELETE
 			cRetVLab := u_WsTurma(MODEL_OPERATION_DELETE,oModel)
 			if valtype(cRetVLab) == 'C'
@@ -364,7 +364,7 @@ Static Function PosValid(oModel)
 					msgAlert(cRetVLab)
 				endif
 			endif
-		EndIf
+		EndIf */
 	EndIf        
 	
 	//Cancela a alocação dos alunos quando a turma for cancelada PD3_STATUS = 'C'
