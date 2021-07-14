@@ -1,0 +1,16 @@
+<div class="po-wrapper">
+  <po-toolbar
+    p-title="{{ appname }}"
+    [p-profile]="profile"
+    [p-profile-actions]="profileActions"
+  ></po-toolbar>
+
+  <po-menu [p-menus]="menus" p-collapsed="true" p-logo="{{ logo }}"></po-menu>
+  <po-container>
+    <router-outlet></router-outlet>
+  </po-container>
+
+  <!-- <po-page-default [p-title]="title" [p-breadcrumb]="breadCrumbe">
+    <router-outlet></router-outlet>
+  </po-page-default> -->
+</div>

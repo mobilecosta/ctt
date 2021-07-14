@@ -1,0 +1,69 @@
+<div class="flex-container">
+  <po-container class="po-md-6 po-lg-4">
+    <div class="po-row po-md-12 po-mb-4" id="logo">
+      <img src="assets/images/logo-login.png" alt="logotipo" />
+    </div>
+    <div class="po-row po-md-12">
+      <span class="po-font-subtitle po-text-color-01 po-md-12 po-text-center"
+        >Acesso</span
+      >
+    </div>
+    <form [formGroup]="loginForm">
+      <div class="po-row">
+        <po-input
+          p-auto-focus="true"
+          #cnpjCpf
+          class="po-md-12"
+          formControlName="cnpjcpf"
+          p-placeholder="CNPJ/CPF"
+          p-icon="po-icon-warehouse"
+          p-error-pattern="Informe somente números. CNPJ: 99999999999999 ou CPF: 99999999999"
+          p-min-length="11"
+          p-max-length="14"
+        >
+        </po-input>
+      </div>
+      <div class="po-row">
+        <po-email
+          class="po-md-12"
+          formControlName="email"
+          p-placeholder="Email"
+          p-icon="po-icon-mail"
+          p-clean="true"
+        >
+        </po-email>
+      </div>
+      <div class="po-row">
+        <po-password
+          class="po-md-12"
+          formControlName="pass"
+          p-placeholder="Senha"
+          p-icon="po-icon-lock"
+          p-clean="true"
+        >
+        </po-password>
+      </div>
+      <div class="po-row">
+        <po-divider class="po-md-12"></po-divider>
+      </div>
+      <div class="po-row">
+        <po-button
+          class="po-md-12"
+          [p-disabled]="loginForm?.invalid"
+          p-label="Entrar"
+          p-type="primary"
+          (p-click)="login()"
+        >
+        </po-button>
+      </div>
+      <div class="po-row po-pt-3">
+        <div class="po-md-12 po-text-center">
+          <a class="po-info-link" [routerLink]="['/dash']"
+            >Esqueceu sua senha?</a
+          >
+        </div>
+      </div>
+    </form>
+    <app-footer></app-footer>
+  </po-container>
+</div>

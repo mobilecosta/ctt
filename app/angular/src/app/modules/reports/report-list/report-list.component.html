@@ -1,0 +1,26 @@
+<po-page-list
+  [p-title]="title"
+  [p-filter]="filter"
+  [p-actions]="pageActions"
+  [p-breadcrumb]="breadCrumbe"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-table
+        [p-columns]="columns"
+        [p-items]="items"
+        p-sort="true"
+        p-striped="true"
+        [p-loading]="loading"
+        [p-loading-show-more]="loading"
+        [p-show-more-disabled]="!hasNext"
+        (p-show-more)="showMore()"
+      ></po-table>
+    </div>
+  </div>
+</po-page-list>
+
+<po-modal
+  #advancedFilter
+  p-title="Busca avançada">
+</po-modal>
