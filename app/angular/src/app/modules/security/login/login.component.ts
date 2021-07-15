@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      cnpjcpf: [
+      cpf: [
         '',
         [
           Validators.required,
@@ -35,9 +35,7 @@ export class LoginComponent implements OnInit {
           Validators.maxLength(14),
         ],
       ],
-      email: ['', [Validators.email, Validators.required]],
-      pass: ['', [Validators.required, Validators.minLength(3)]],
-    });
+   });
 
     this.navigateTo = this.activatedRoute.snapshot.params['to'] || '/';
   }
