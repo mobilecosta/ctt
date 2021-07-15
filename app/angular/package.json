@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1000.3",
-    "@angular/cli": "~10.0.3",
+    "@angular/cli": "^10.2.3",
     "@angular/compiler-cli": "~10.0.4",
     "@po-ui/ng-tslint": "^3.0.0",
     "@types/crypto-js": "^3.1.47",
