@@ -3,6 +3,8 @@ import { NgForm } from '@angular/forms';
 
 import { ListComponentService } from './list-component.service';
 import { PoComboOption, PoComboOptionGroup, PoNotificationService, PoSelectOption } from '@po-ui/ng-components';
+import { Subscription } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-list',
@@ -12,12 +14,20 @@ import { PoComboOption, PoComboOptionGroup, PoNotificationService, PoSelectOptio
 })
 export class ListComponent implements OnInit {
 
+  private readonly API ='http://localhost:3000/curso';
+  private chamada!: Subscription;
+  private headers!: HttpHeaders;
+  httpClient: any;
 
 
-  constructor(private  service: ListComponentService){}
+  constructor(httpClient: HttpClient){}
 
   ngOnInit(): void {
-    this.service.list().subscribe(console.log);
+    this.chamada = this.httpClient.get(this.API, { headers: this.headers })
+    .subscribe((response: any) => {
+      alert('Retornei');
+    });
+
 
   }
   rowActions = {
