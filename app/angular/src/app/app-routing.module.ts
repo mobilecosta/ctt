@@ -5,6 +5,7 @@ import { AuthenticatedGuard } from '@app/security/guards/authenticated.guard';
 import { LoginComponent } from '@app/security/login/login.component';
 import { HomeComponent } from './layout/home/home.component';
 import { AccountComponent } from './layout/account/account.component';
+import { ListComponent } from './list/list.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
       { path: '', redirectTo: '/login', pathMatch: 'full' },
       { path: 'login', component: LoginComponent },
       { path: 'login/:to', component: LoginComponent },
+    {path:'list', component: ListComponent},
     ],
   },
 ];

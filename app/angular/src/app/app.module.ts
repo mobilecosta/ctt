@@ -12,7 +12,8 @@ import { HomeComponent } from './layout/home/home.component';
 import { AccountComponent } from './layout/account/account.component';
 import { TokenProviderInterceptor } from '@app/security/interceptors/token-provider.interceptor';
 import { SharedModule } from '@shared/shared.module';
-
+import { ListComponent } from './list/list.component';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,11 +22,13 @@ import { SharedModule } from '@shared/shared.module';
     LoginComponent,
     HomeComponent,
     AccountComponent,
-  ],
+      ListComponent
+   ],
   imports: [
     BrowserModule,
     SharedModule,
     AppRoutingModule,
+    HttpClientModule
   ],
   providers: [
     {

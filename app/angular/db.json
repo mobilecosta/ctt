@@ -1,0 +1,14 @@
+{
+  "curso": [
+    {
+      "id": 1,
+      "Datas":"16-07-2021",
+      "Curso":"Configurador",
+      "Turma":1,
+      "Sala":"A",
+      "Professor":"JOão"
+
+    }
+  ]
+}
+

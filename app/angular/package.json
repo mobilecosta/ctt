@@ -32,8 +32,9 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1000.3",
-    "@angular/cli": "^10.0.8",
+    "@angular/cli": "^10.2.3",
     "@angular/compiler-cli": "~10.0.4",
+    "@nativescript/schematics": "^11.2.0",
     "@po-ui/ng-tslint": "^3.0.0",
     "@types/crypto-js": "^3.1.47",
     "@types/jasmine": "~3.5.12",
