@@ -31,8 +31,8 @@ export class LoginComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.pattern('^[0-9]{11,14}$'),
-          Validators.maxLength(14),
+          Validators.pattern('^[0-9]{11}$'),
+          Validators.maxLength(11),
         ],
       ],
    });
