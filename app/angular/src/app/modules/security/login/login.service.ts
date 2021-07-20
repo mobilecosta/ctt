@@ -14,7 +14,8 @@ import { LoginToken } from './login-token';
   providedIn: 'root',
 })
 export class LoginService {
-  private endpoint = `${environment.api}auth`;
+  private endpoint = `${environment.api}`;
+  //private url = 'http://localhost:4200/';
   private lastUrl: string;
   private token?: LoginToken;
 
@@ -29,19 +30,18 @@ export class LoginService {
   }
 
   public login(
-    cnpjCpf: string,
-    email: string,
-    pass: string
+    Cpf: string
   ): Observable<AccessToken> {
-    const password: string = CryptoJS.MD5(pass).toString();
     return this.http
       .post<AccessToken>(
-        `${this.endpoint}`,
+        `${this.
+            endpoint}`,
+            //this.url
         new HttpParams()
-          .set('cnpjcpf', cnpjCpf)
-          .set('email', email)
-          .set('password', password)
-          .toString(),
+          .set('cpf', Cpf)
+          .toString,
+
+
         {
           headers: new HttpHeaders().set(
             'Content-Type',

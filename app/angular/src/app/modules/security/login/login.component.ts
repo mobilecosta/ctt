@@ -2,11 +2,12 @@ import { AccessToken } from './access-token';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { PoNotificationService } from '@po-ui/ng-components';
 
 import { LoginService } from './login.service';
 import { FormUser } from './form-user';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,13 +17,21 @@ import { FormUser } from './form-user';
 export class LoginComponent implements OnInit {
   loginForm?: FormGroup;
   navigateTo?: string;
+  httpClient: any;
+   private url: 'http://localhost:3000/curso' | undefined;
+
+  private chamada!: Subscription;
+    private headers!: HttpHeaders;
 
   constructor(
     private fb: FormBuilder,
     private service: LoginService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private notify: PoNotificationService
+    private notify: PoNotificationService,
+
+
+
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +44,12 @@ export class LoginComponent implements OnInit {
           Validators.maxLength(11),
         ],
       ],
-   });
+   })
+
+
+   ;
+
+
 
     this.navigateTo = this.activatedRoute.snapshot.params['to'] || '/';
   }
@@ -43,17 +57,28 @@ export class LoginComponent implements OnInit {
     const formUser = this.loginForm?.getRawValue() as FormUser;
 
     this.service
-      .login(formUser.cnpjcpf, formUser.email, formUser.pass)
+      .login(formUser.cpf)
       .subscribe(
         () => this.loginForm?.reset(),
         (error: HttpErrorResponse) => {
-          this.notify.error({
-            duration: 2000,
-            message: 'Dados Inválidos',
-            actionLabel: 'X',
-          });
+
         },
         () => this.router.navigate([this.navigateTo])
       );
   }
-}
+
+  onClick(){
+    this.headers = new HttpHeaders();
+
+    this.chamada = this.httpClient.get(this.url + '10480616000160', { headers: this.headers })
+      .subscribe((response: any) => {
+        alert('CNPJ Cadastrado xx');
+      });
+
+   }
+
+
+
+
+  }
+
