@@ -2,81 +2,91 @@
 #INCLUDE "RESTFUL.CH"
 
 /*/
-ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
-±±ºPrograma  ³ TCTTS001   º Autor ³ Jose Mendes        º Data ³  16/07/2021   º±±
-±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
-±±ºDescricao ³ WebService Rest ()					  º±±
-±±º          ³															  º±±
-±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
-±±ºUso       ³ AP6 IDE                                                    º±±
-±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
-±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+ÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœÃœ
+Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±
+Â±Â±Ã‰ÃÃÃÃÃÃÃÃÃÃÃ‘ÃÃÃÃÃÃÃÃÃÃÃ‹ÃÃÃÃÃÃÃÃ‘ÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃ‹ÃÃÃÃÃÃÃ‘ÃÃÃÃÃÃÃÃÃÃÃÃÃÂ»Â±Â±
+Â±Â±ÂºPrograma  Â³ TCTTS001   Âº Autor Â³ Jose Mendes        Âº Data Â³  16/07/2021   ÂºÂ±Â±
+Â±Â±ÃŒÃÃÃÃÃÃÃÃÃÃÃ˜ÃÃÃÃÃÃÃÃÃÃÃŠÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃŠÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÂ¹Â±Â±
+Â±Â±ÂºDescricao Â³ WebService Rest ()					  ÂºÂ±Â±
+Â±Â±Âº          Â³															  ÂºÂ±Â±
+Â±Â±ÃŒÃÃÃÃÃÃÃÃÃÃÃ˜ÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÂ¹Â±Â±
+Â±Â±ÂºUso       Â³ AP6 IDE                                                    ÂºÂ±Â±
+Â±Â±ÃˆÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÃÂ¼Â±Â±
+Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±Â±
+ÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸÃŸ
 /*/
 
 User Function TCTTS001()	
 Return
 
 //------------------------------------
-// Definição da estrutura do webservice ..
+// DefiniÃ§Ã£o da estrutura do webservice ..
 // @type class
 //------------------------------------
-WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do cadastro de alunos por Cpf"
+WSRESTFUL CTT DESCRIPTION "ServiÃ§o REST para retornar informacoes do cadastro de alunos por Cpf"
 
 WSDATA CPF As String //String que vamos receber via URL
  
-WSMETHOD GET DESCRIPTION "Retorna os dados dos alunos na URL" WSSYNTAX "/CPF || /CPF/{CPF}" 	//Disponibilizamos um método do tipo GET
+WSMETHOD GET DESCRIPTION "Retorna os dados dos alunos na URL" WSSYNTAX "/CPF || /CPF/{CPF}" 	//Disponibilizamos um mÃ©todo do tipo GET
 WSMETHOD POST DESCRIPTION "envia dados post" WSSYNTAX "/atualiza"
 END WSRESTFUL
 //------------------------------------
-// Processa as informações e retorna o json
+// Processa as informaÃ§Ãµes e retorna o json
 // @type class
-// @param oSelf, object, Objeto contendo dados da requisição efetuada pelo cliente, tais como:
-//    - Parâmetros querystring (parâmetros informado via URL)
-//    - Objeto JSON caso o requisição seja efetuada via Request Post
-//    - Header da requisição
+// @param oSelf, object, Objeto contendo dados da requisiÃ§Ã£o efetuada pelo cliente, tais como:
+//    - ParÃ¢metros querystring (parÃ¢metros informado via URL)
+//    - Objeto JSON caso o requisiÃ§Ã£o seja efetuada via Request Post
+//    - Header da requisiÃ§Ã£o
 //// @type Method
 //------------------------------------
 WSMETHOD GET WSRECEIVE CPF WSSERVICE CTT
 
 Local cJSon		:= "{"
-// define o tipo de retorno do método
+// define o tipo de retorno do mÃ©todo
 ::SetContentType("application/json")
 
 //verificar se existe parametro no ctt\cpf
 If Len(::aURLParms) > 0
 	cCPF := Alltrim(::aURLParms[1])
 
-If Select("TMPFS2M") > 0
-			TMPFS2M->(dbCloseArea())
-Endif                                     
-	
-		cQry1 := "Select PDL.PDL_CPF,PDL.PDL_NOME "
-		cQry1 += "From " + RetSqlName("PDL") + " PDL (NoLock) "
-		cQry1 += "Where PDL.D_E_L_E_T_<>'*' "
-		cQry1 += "And PDL_FILIAL = '" + xFilial("PDL") 	+ "' "
-		cQry1 += "And PDL.PDL_CPF = '" + cCPF	+ "' "
-			 
-		cQry1 := ChangeQuery(cQry1)
-		dbUseArea(.T.,"TOPCONN",TcGenQry(,,cQry1),"TMPFS2M",.T.,.F.)
-	
-		dbSelectArea("TMPFS2M")
-		dbGoTop()
-		
-		if (TMPFS2M->(Eof()))
-			// NÃO ACHOU CNPJ
-			cJSon += '"resultado":"0"}'
-			TMPFS2M->(dbCloseArea())
-		Else
+// FAZ TESTE FAKE 
+	IF cCPF = "0000000000001"
 			cJSon += '"resultado":"1"'
+	Else
+		cJSon += '"resultado":"0"'
+Endif	
+
+//If Select("TMPFS2M") > 0
+			//TMPFS2M->(dbCloseArea())
+//Endif                                     
+	
+	//	cQry1 := "Select PDL.PDL_CPF,PDL.PDL_NOME "
+	//	cQry1 += "From " + RetSqlName("PDL") + " PDL (NoLock) "
+	//	cQry1 += "Where PDL.D_E_L_E_T_<>'*' "
+	//	cQry1 += "And PDL_FILIAL = '" + xFilial("PDL") 	+ "' "
+	//	cQry1 += "And PDL.PDL_CPF = '" + cCPF	+ "' "
+			 
+	//	cQry1 := ChangeQuery(cQry1)
+	//	dbUseArea(.T.,"TOPCONN",TcGenQry(,,cQry1),"TMPFS2M",.T.,.F.)
+	
+	//	dbSelectArea("TMPFS2M")
+	//	dbGoTop()
+		
+	//	if (TMPFS2M->(Eof()))
+			// NÃƒO ACHOU CNPJ
+		//	cJSon += '"resultado":"0"}'
+		///	TMPFS2M->(dbCloseArea())
+	//	Else
+		//	cJSon += '"resultado":"1"'
 			//cJSon += '"cpf":' 	  + '"'   + Alltrim(TMPFS2M->PDL_CPF) 	+ '"'
 			//cJSon += '"":' + '"' + Alltrim(TMPFS2M->PDL_NOME)  + '"'
-			cJSon += "}"
-			TMPFS2M->(dbCloseArea())		
-		Endif
+		//	cJSon += "}"
+		///	TMPFS2M->(dbCloseArea())		
+	//	Endif
 	
+
+
+
 ::SetResponse(cJSon)
 
 Else
@@ -102,14 +112,14 @@ Local oDataBase   := JsonObject():New()
 Local cErroAuto   := ''
 Local cErrBody    := ''
 
-//Definindo o conteÃºdo como JSON, e pegando o content e dando um parse para ver se a estrutura estÃ¡ ok
+//Definindo o conteÃƒÂºdo como JSON, e pegando o content e dando um parse para ver se a estrutura estÃƒÂ¡ ok
     Self:SetContentType("application/json")
  
    If FWJsonDeserialize(cJson,@oParseJson)
 		nCpf  := AllTrim(oParseJson:Cpf)
 		nEnd  := AllTrim(oParseJson:Endereco)
 		
-		//exemplo para atualizar dados ALTERA ENDEREÇO
+		//exemplo para atualizar dados ALTERA ENDEREÃ‡O
 			DbSelectArea('PDL')
 			PDL->(DbSetOrder(3)) 
 			If PDL->(DbSEek(xFilial('PDL')+nCpf))
@@ -119,13 +129,13 @@ Local cErrBody    := ''
 				cJsonRet    := '{"Cadastro do aluno atualizado com sucesso " ' + PDL->PDL_NOME + '}'
 				Self:SetResponse(cJsonRet)
 			ELSE
-		     	cJsonRet    := '{"NÃ£o achou o cadastro do aluno com o cpf " ' + nCpf + '}'
+		     	cJsonRet    := '{"NÃƒÂ£o achou o cadastro do aluno com o cpf " ' + nCpf + '}'
 				Self:SetResponse(cJsonRet)
 			Endif
 
 		ELSE
-				Conout(Dtoc(Date()) + " " + Time() + " - Erro na importação verifique " )
-				SetRestFault(500,'Erro na importação verifique ')
+				Conout(Dtoc(Date()) + " " + Time() + " - Erro na importaÃ§Ã£o verifique " )
+				SetRestFault(500,'Erro na importaÃ§Ã£o verifique ')
 				lRet    := .F.
 		EndIf
 	 
