@@ -19,28 +19,23 @@
 User Function TCTTS001()	
 Return
 
-//------------------------------------
-// Definição da estrutura do webservice ..
-// @type class
-//------------------------------------
-WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do cadastro de alunos por Cpf"
+WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Ctt"
 
 WSDATA CPF As String //String que vamos receber via URL
+WSDATA codpesq As String
+WSDATA count      AS INTEGER
+WSDATA startIndex AS INTEGER
  
-WSMETHOD GET DESCRIPTION "Retorna os dados dos alunos na URL" WSSYNTAX "/CPF || /CPF/{CPF}" 	//Disponibilizamos um método do tipo GET
-WSMETHOD POST DESCRIPTION "envia dados post" WSSYNTAX "/atualiza"
+WSMETHOD GET DESCRIPTION "Valida Login por Cpf" WSSYNTAX "/CPF || /CPF/{CPF}" 	//Disponibilizamos um método do tipo GET
+//WSMETHOD GET DESCRIPTION "Retorna perguntas a serem Pesquisadas" WSSYNTAX "/pesquisa/{codpesq}" 
+WSMETHOD POST DESCRIPTION "Envia Post da Pesquisa " WSSYNTAX "/envia"
 END WSRESTFUL
+
 //------------------------------------
-// Processa as informações e retorna o json
-// @type class
-// @param oSelf, object, Objeto contendo dados da requisição efetuada pelo cliente, tais como:
-//    - Parâmetros querystring (parâmetros informado via URL)
-//    - Objeto JSON caso o requisição seja efetuada via Request Post
-//    - Header da requisição
-//// @type Method
+// GET - "Valida Login por Cpf
 //------------------------------------
 WSMETHOD GET WSRECEIVE CPF WSSERVICE CTT
-
+Local i
 Local cJSon		:= "{"
 // define o tipo de retorno do método
 ::SetContentType("application/json")
@@ -51,7 +46,26 @@ If Len(::aURLParms) > 0
 
 // FAZ TESTE FAKE 
 	IF cCPF = "0000000000001"
-			cJSon += '"resultado":"1"'
+			//cJSon += '"resultado":"1"'
+		//	cJSon += '"PDL_CPF":"0000000000001"'
+			//cJSon += '"PDL_NOME":"Aluno Silva Santos"'
+		//	cJSon += '"PDL_EMAIL":"naotem@naotem.com.br"'
+
+		//faço um for para 3 registro fake se caso login retornar mais de uma pesquisa
+		// ::count pode colocar quantidade de registro para teste
+		DEFAULT ::startIndex := 1, ::count := 1
+	   	
+	  	::SetResponse('[')
+	  	For i := ::startIndex To ::count + 1
+	  		If i > ::startIndex
+	      		::SetResponse(',')
+	    	EndIf
+	    	::SetResponse('{"Resultado":"1","PDL_CPF":"0000000000001","cEmp":"00.0000.254/00001-35","cFil":"TOTVS SA","PDL_ALUNO":"Aluno Silva Santos","PDL_EMAIL":"naotem@naotem.com.br","PD7_TURMA":"00003","PD7_PESQOK":"0","PD2_NOME":"CURSO","PD2_NOME":"PROFESSOR","PDF_DTINI":"21/06/2021","PDF_DTFIM":"21/07/2021","PD7_TURMA":"TURMA","PD3_SALA":"SALA" }')
+	  	Next
+	  	
+	  	::SetResponse(']')
+
+
 	Else
 		cJSon += '"resultado":"0"'
 Endif	
@@ -85,18 +99,18 @@ Endif
 	//	Endif
 	
 
-
-
-::SetResponse(cJSon)
+//::SetResponse(cJSon)
 
 Else
 		        cJSon += '"resultado":"0"}'
 				Self:SetResponse(cJSon)
 	
 EndIf
-
 Return .T.
 
+//------------------------------------
+// post - "Envia Post da Pesquisa
+//------------------------------------
 WSMETHOD POST WSSERVICE CTT
 Local lPost := .T.
 local nNome := ""
@@ -119,19 +133,23 @@ Local cErrBody    := ''
 		nCpf  := AllTrim(oParseJson:Cpf)
 		nEnd  := AllTrim(oParseJson:Endereco)
 		
+		// retorna dados que foi feito o post 
+	cJsonRet    := '{"Post Realizado com sucesso " ' + nCpf + ' " " ' + nEnd + ' }'
+	Self:SetResponse(cJsonRet)
+
 		//exemplo para atualizar dados ALTERA ENDEREÇO
-			DbSelectArea('PDL')
-			PDL->(DbSetOrder(3)) 
-			If PDL->(DbSEek(xFilial('PDL')+nCpf))
-				RecLock('PDL', .F.)
-					PDL->PDL_END := nEnd 
-				PDL->(MsUnLock())
-				cJsonRet    := '{"Cadastro do aluno atualizado com sucesso " ' + PDL->PDL_NOME + '}'
-				Self:SetResponse(cJsonRet)
-			ELSE
-		     	cJsonRet    := '{"NÃ£o achou o cadastro do aluno com o cpf " ' + nCpf + '}'
-				Self:SetResponse(cJsonRet)
-			Endif
+			//DbSelectArea('PDL')
+		//	PDL->(DbSetOrder(3)) 
+		//	If PDL->(DbSEek(xFilial('PDL')+nCpf))
+		//		RecLock('PDL', .F.)
+		//			PDL->PDL_END := nEnd 
+		//		PDL->(MsUnLock())
+		//		cJsonRet    := '{"Cadastro do aluno atualizado com sucesso " ' + PDL->PDL_NOME + '}'
+		//		Self:SetResponse(cJsonRet)
+	//		ELSE
+		//     	cJsonRet    := '{"NÃ£o achou o cadastro do aluno com o cpf " ' + nCpf + '}'
+		//		Self:SetResponse(cJsonRet)
+		//	Endif
 
 		ELSE
 				Conout(Dtoc(Date()) + " " + Time() + " - Erro na importação verifique " )
