@@ -19,30 +19,54 @@
 User Function TCTTS001()	
 Return
 
-WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Ctt"
+WSRESTFUL CTT DESCRIPTION 'API de integração do CTT'
 
-WSDATA CPF As String //String que vamos receber via URL
-WSDATA codpesq As String
-WSDATA count      AS INTEGER
-WSDATA startIndex AS INTEGER
- 
-WSMETHOD GET DESCRIPTION "Valida Login por Cpf" WSSYNTAX "/CPF || /CPF/{CPF}" 	//Disponibilizamos um método do tipo GET
-//WSMETHOD GET DESCRIPTION "Retorna perguntas a serem Pesquisadas" WSSYNTAX "/pesquisa/{codpesq}" 
-WSMETHOD POST DESCRIPTION "Envia Post da Pesquisa " WSSYNTAX "/envia"
-END WSRESTFUL
+	WSDATA cpf         AS STRING	OPTIONAL
+	WSDATA codpergunta AS STRING	OPTIONAL // falta monta campo com pesquisa para retornar pergutnas
+	WSDATA id	        AS STRING	OPTIONAL
+    WSDATA fields     AS STRING	OPTIONAL
+  	WSDATA count      AS INTEGER
+	WSDATA startIndex AS INTEGER
+
+
+  WSMETHOD GET Login ;
+    DESCRIPTION 'Valida login por cpf CTT' ;
+    WSSYNTAX '/api/login/{cpf}/?{fields}' ;
+    PATH '/api/login/{cpf}' ;
+    TTALK 'v1' ;
+    PRODUCES APPLICATION_JSON
+
+	WSMETHOD GET montagem ;
+    DESCRIPTION 'Montagem lista de pesquisa de Satisfação' ;
+    WSSYNTAX '/api/montagem/{codpergunta}/?{fields}' ; // falta monta campo com pesquisa para retornar pergutnas
+    PATH '/api/montagem/{codpergunta}'	;
+    TTALK 'v1' ;
+    PRODUCES APPLICATION_JSON
+
+  WSMETHOD POST grava ;
+    DESCRIPTION 'Grava Dados pesquisa de Satisfação' ;
+    WSSYNTAX '/api/grava/{body}' ;
+    PATH '/api/grava/{body}' ;
+    TTALK 'v1' ;
+    PRODUCES APPLICATION_JSON
+
+ENDWSRESTFUL
 
 //------------------------------------
 // GET - "Valida Login por Cpf
 //------------------------------------
-WSMETHOD GET WSRECEIVE CPF WSSERVICE CTT
+WSMETHOD GET Login  PATHPARAM cpf WSRECEIVE fields WSSERVICE CTT
+//SMETHOD GET ItemClientes PATHPARAM  id WSRECEIVE fields WSSERVICE Contas
+Local lRet			  := .T.
 Local i
 Local cJSon		:= "{"
+Default self:id       := ''
 // define o tipo de retorno do método
 ::SetContentType("application/json")
-
+//ncpf2 =self:cpf
 //verificar se existe parametro no ctt\cpf
-If Len(::aURLParms) > 0
-	cCPF := Alltrim(::aURLParms[1])
+If Len(self:cpf) > 0
+	cCPF := Alltrim(self:cpf)
 
 // FAZ TESTE FAKE 
 	IF cCPF = "0000000000001"
@@ -53,7 +77,7 @@ If Len(::aURLParms) > 0
 
 		//faço um for para 3 registro fake se caso login retornar mais de uma pesquisa
 		// ::count pode colocar quantidade de registro para teste
-		DEFAULT ::startIndex := 1, ::count := 1
+		DEFAULT self:startIndex := 1, self:count := 1
 	   	
 	  	::SetResponse('[')
 	  	For i := ::startIndex To ::count + 1
@@ -106,12 +130,60 @@ Else
 				Self:SetResponse(cJSon)
 	
 EndIf
-Return .T.
+
+Return lRet
 
 //------------------------------------
-// post - "Envia Post da Pesquisa
+// GET - "Montagem lista de pesquisa de Satisfação
 //------------------------------------
-WSMETHOD POST WSSERVICE CTT
+WSMETHOD GET montagem  WSRECEIVE codpergunta WSSERVICE CTT
+
+Local lRet			  := .T.
+Local i
+Local cJSon		:= "{"
+// define o tipo de retorno do método
+::SetContentType("application/json")
+
+//verificar se existe parametro no ctt\cpf
+If Len(::aURLParms) > 0
+	cCPF := Alltrim(::aURLParms[1])
+
+// FAZ TESTE FAKE PARA MONTAGEM DAS PERGUNTAS A SEREM CONSUMIDAS
+	
+		//cJSon += '"resultado":"1"'
+		//	cJSon += '"XXX":"0000000000001"'
+			//cJSon += '"XXXX":"XXXX"'
+		//	cJSon += '"XXX":"XXr"'
+
+		// ::count pode colocar quantidade de registro para teste
+		DEFAULT self:startIndex := 1, self:count := 1
+	   	
+	  	::SetResponse('[')
+	  	For i := ::startIndex To ::count + 1
+	  		If i > ::startIndex
+	      		::SetResponse(',')
+	    	EndIf
+	    	//AQUI PODEMOS COLOCAR O JSON DAS PERGUNTAS PARA RETORNO
+			::SetResponse('{"Resultado":"1","PDL_CPF":"0000000000001","cEmp":"00.0000.254/00001-35","cFil":"TOTVS SA","PDL_ALUNO":"Aluno Silva Santos","PDL_EMAIL":"naotem@naotem.com.br","PD7_TURMA":"00003","PD7_PESQOK":"0","PD2_NOME":"CURSO","PD2_NOME":"PROFESSOR","PDF_DTINI":"21/06/2021","PDF_DTFIM":"21/07/2021","PD7_TURMA":"TURMA","PD3_SALA":"SALA" }')
+	  	Next
+	  	
+	  	::SetResponse(']')
+
+
+	Else
+		cJSon += '"resultado":"0"'
+Endif	
+
+
+
+Return lRet
+
+
+//------------------------------------
+// post - "Grava Dados pesquisa de Satisfação
+//------------------------------------
+WSMETHOD POST grava WSSERVICE CTT
+
 Local lPost := .T.
 local nNome := ""
  Local cJson     := Self:GetContent()
@@ -157,4 +229,4 @@ Local cErrBody    := ''
 				lRet    := .F.
 		EndIf
 	 
-Return lPost
+Return lRet
