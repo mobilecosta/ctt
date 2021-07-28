@@ -14,15 +14,17 @@ import { TokenProviderInterceptor } from '@app/security/interceptors/token-provi
 import { SharedModule } from '@shared/shared.module';
 import { ListComponent } from './list/list.component';
 import { HttpClientModule } from '@angular/common/http';
+import { TesteComponent } from '.c:/ctt/app/teste/teste.component';
 @NgModule({
-  declarations: [
+  declarations: [	
     AppComponent,
     HeaderComponent,
     FooterComponent,
     LoginComponent,
     HomeComponent,
     AccountComponent,
-      ListComponent
+      ListComponent,
+      TesteComponent
    ],
   imports: [
     BrowserModule,
