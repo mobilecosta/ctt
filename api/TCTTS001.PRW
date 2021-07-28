@@ -23,6 +23,8 @@ WSRESTFUL CTT DESCRIPTION 'API de integração do CTT'
 
 	WSDATA cpf         AS STRING	OPTIONAL
 	WSDATA codpergunta AS STRING	OPTIONAL // falta monta campo com pesquisa para retornar pergutnas
+	WSDATA turma       AS STRING	OPTIONAL // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL
+	WSDATA periodo       AS STRING	OPTIONAL // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL	
 	WSDATA id	        AS STRING	OPTIONAL
     WSDATA fields     AS STRING	OPTIONAL
   	WSDATA count      AS INTEGER
@@ -38,8 +40,8 @@ WSRESTFUL CTT DESCRIPTION 'API de integração do CTT'
 
 	WSMETHOD GET montagem ;
     DESCRIPTION 'Montagem lista de pesquisa de Satisfação' ;
-    WSSYNTAX '/api/montagem/{codpergunta}/?{fields}' ; // falta monta campo com pesquisa para retornar pergutnas
-    PATH '/api/montagem/{codpergunta}'	;
+    WSSYNTAX '/api/montagem/?{turma, periodo}' ; // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL
+    PATH '/api/montagem'	;
     TTALK 'v1' ;
     PRODUCES APPLICATION_JSON
 
@@ -74,7 +76,7 @@ If Len(self:cpf) > 0
 		//	cJSon += '"PDL_CPF":"0000000000001"'
 			//cJSon += '"PDL_NOME":"Aluno Silva Santos"'
 		//	cJSon += '"PDL_EMAIL":"naotem@naotem.com.br"'
-
+		
 		//faço um for para 3 registro fake se caso login retornar mais de uma pesquisa
 		// ::count pode colocar quantidade de registro para teste
 		DEFAULT self:startIndex := 1, self:count := 1
@@ -134,27 +136,29 @@ EndIf
 Return lRet
 
 //------------------------------------
-// GET - "Montagem lista de pesquisa de Satisfação
+// GET - "Montagem das questões para pagina da pesquisa de satisfação
 //------------------------------------
-WSMETHOD GET montagem  WSRECEIVE codpergunta WSSERVICE CTT
+WSMETHOD GET montagem  WSRECEIVE turma, periodo WSSERVICE CTT
 
-Local lRet			  := .T.
+Local lRet			       := .T.
 Local i
-Local cJSon		:= "{"
+Local cDados               :=''
+Local cJSon	               := "{"
+Default self:turma         := ''
+Default self:periodo       := ''
+
+
 // define o tipo de retorno do método
 ::SetContentType("application/json")
 
-//verificar se existe parametro no ctt\cpf
-If Len(::aURLParms) > 0
-	cCPF := Alltrim(::aURLParms[1])
+//verificar se existe parametro no ctt\turma / periodo
+If Len(self:turma) > 0 .or. Len(self:periodo) > 0 
+	
+	cTurma := Alltrim(self:turma)
+	cPeriod := Alltrim(self:periodo)
 
 // FAZ TESTE FAKE PARA MONTAGEM DAS PERGUNTAS A SEREM CONSUMIDAS
 	
-		//cJSon += '"resultado":"1"'
-		//	cJSon += '"XXX":"0000000000001"'
-			//cJSon += '"XXXX":"XXXX"'
-		//	cJSon += '"XXX":"XXr"'
-
 		// ::count pode colocar quantidade de registro para teste
 		DEFAULT self:startIndex := 1, self:count := 1
 	   	
@@ -164,20 +168,25 @@ If Len(::aURLParms) > 0
 	      		::SetResponse(',')
 	    	EndIf
 	    	//AQUI PODEMOS COLOCAR O JSON DAS PERGUNTAS PARA RETORNO
-			::SetResponse('{"Resultado":"1","PDL_CPF":"0000000000001","cEmp":"00.0000.254/00001-35","cFil":"TOTVS SA","PDL_ALUNO":"Aluno Silva Santos","PDL_EMAIL":"naotem@naotem.com.br","PD7_TURMA":"00003","PD7_PESQOK":"0","PD2_NOME":"CURSO","PD2_NOME":"PROFESSOR","PDF_DTINI":"21/06/2021","PDF_DTFIM":"21/07/2021","PD7_TURMA":"TURMA","PD3_SALA":"SALA" }')
-	  	Next
-	  	
-	  	::SetResponse(']')
+			
+	//DADOS PARA CABE		
+	cDados := '{"PD5_PESQ":"001","PD5_ITEM":"11","PD5_FINALI":"Finalidade","PD5_DEPTO":"Departamento","PD5_ASSUNTO":"Assunto","PD5_PERGUN":"Pontualidade - inicio e termino de aula saida e retorno para intervalo?","PD7_TURMA":"00003","PDF_DTINI":"21/06/2021","PDF_DTFIM":"21/07/2021","PD3_SALA":"SALA"}'
+   //PODE SER ADICIONADO MAIS 
+   // cDados += '"Resultado":"1","PDL_CPF":"0000000000001","cEmp":"00.0000.254/00001-35","cFil":"TOTVS SA","PDL_ALUNO":"Aluno Silva Santos","PDL_EMAIL":"naotem@naotem.com.br","PD7_TURMA":"00003","PD7_PESQOK":"0","PD2_NOME":"CURSO","PD2_NOME":"PROFESSOR","PDF_DTINI":"21/06/2021","PDF_DTFIM":"21/07/2021","PD7_TURMA":"TURMA","PD3_SALA":"SALA" }'
+    
+	::SetResponse(cDados)
+	
+	Next
+	  		  	::SetResponse(']')
 
 
 	Else
-		cJSon += '"resultado":"0"'
+		 cJSon += '"error":"Falta Parametros turma ou periodo"}'
+		Self:SetResponse(cJSon)
 Endif	
 
 
-
 Return lRet
-
 
 //------------------------------------
 // post - "Grava Dados pesquisa de Satisfação
