@@ -54,7 +54,7 @@ export class LoginComponent {
 */
 
     var body: any;
-    body = '{       "email":"luanpedro@gmail.com", "password":"silva" }'
+    body = '{ "email":"luanpedro@gmail.com", "password":"silva" }'
     header = new HttpHeaders().set('Content-Type', 'application/json');
 
     this.httpClient.post(url, body, { headers: header } ).subscribe((res) => {

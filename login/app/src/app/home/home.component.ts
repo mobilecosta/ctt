@@ -4,17 +4,36 @@ import { PoMenuItem } from '@po-ui/ng-components';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit,ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { PoBreadcrumb, PoDynamicViewField, PoModalComponent } from '@po-ui/ng-components';
 
 import { PoComboOption, PoComboOptionGroup, PoNotificationService, PoSelectOption } from '@po-ui/ng-components';
 import { Subscription } from 'rxjs';
 import { getMaxListeners } from 'process';
+import {
+  PoPageDynamicTableActions,
+  PoPageDynamicTableCustomAction,
+  PoPageDynamicTableCustomTableAction,
+  PoPageDynamicTableOptions
+} from '@po-ui/ng-templates';
+
+import { SamplePoPageDynamicTableUsersService } from './home.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  providers: [SamplePoPageDynamicTableUsersService]
+
+
 })
 export class HomeComponent implements OnInit {
+  detailedUser: any;
+  serviceApi(usersService: SamplePoPageDynamicTableUsersService, serviceApi: any): string | ((resources?: any) => void) {
+    throw new Error('Method not implemented.');
+  }
+  @ViewChild('userDetailModal') userDetailModal: PoModalComponent;
+
+
 
   private readonly API ='http://localhost:3000/login';
   private chamada!: Subscription;
@@ -25,7 +44,7 @@ export class HomeComponent implements OnInit {
   loginForm: any;
   cadastro: FormGroup;
 
-  constructor(private router: Router, private storage: PoStorageService, htppCliente:HttpClient, private formBuilder:FormBuilder) { }
+  constructor(private router: Router, private storage: PoStorageService, htppCliente:HttpClient, private formBuilder:FormBuilder,private usersService: SamplePoPageDynamicTableUsersService) { }
 
   title = 'Integração Protheus';
 
@@ -77,66 +96,95 @@ export class HomeComponent implements OnInit {
     });
 
   }
-  rowActions = {
-    beforeSave: this.onBeforeSave.bind(this),
-    afterSave: this.onAfterSave.bind(this),
-    beforeRemove: this.onBeforeRemove.bind(this),
-    afterRemove: this.onAfterRemove.bind(this),
-    beforeInsert: this.onBeforeInsert.bind(this)
+  readonly actions: PoPageDynamicTableActions = {
+    new: '/documentation/po-page-dynamic-edit',
+    remove: true,
+    removeAll: true
+  };
+
+  readonly breadcrumb: PoBreadcrumb = {
+    items: [{ label: '', link: '/' }, { label: '' }]
   };
 
 
 
-  columns = [
-    { property: 'datas', label: 'Datas', align: 'center', width: 140 },
-    { property: 'curso', label: 'Curso', width: '150px', required: true },
-    { property: 'turma', label: 'Turma', width: 80 },
-    { property: 'sala', label: 'Sala', width: 100,  },
-    { property: 'professor', label: 'Professor', width: 100, required: true },
+  readonly fields: Array<any> = [
+    { property: 'id', key: true, visible: false, filter: true },
+    { property: 'datas', label: 'Datas', filter: true, gridColumns: 6 },
+    { property: 'curso', label: 'Cursos', filter: true, gridColumns: 6, duplicate: true },
+    { property: 'turma', label: 'Turma', filter: true, gridColumns: 6, duplicate: true },
+    { property: 'sala', label: 'Sala', filter: true, gridColumns: 6, duplicate: true },
+    { property: 'professor', label: 'Professor', filter: true, gridColumns: 6, duplicate: true },
 
 
+    { property: 'search', filter: true, visible: false },
+    {
+      property: 'birthdate',
+      label: 'Birthdate',
+      type: 'date',
+      gridColumns: 6,
+      visible: false,
+      allowColumnsManager: true
+    },
+  //  { property: 'city', label: 'City', filter: true, duplicate: true, options: this.cityOptions, gridColumns: 12 }
   ];
 
-  data = [
-    {
-      datas: '2018-12-12',
-      curso: 'Configurador',
-      turma: '01',
-      sala:'A',
-      professor: 'João',
+  readonly detailFields: Array<PoDynamicViewField> = [
+    { property: 'status', tag: true, gridLgColumns: 4, divider: 'Personal Data' },
+    { property: 'name', gridLgColumns: 4 },
+    { property: 'nickname', label: 'User name', gridLgColumns: 4 },
+    { property: 'email', gridLgColumns: 4 },
+    { property: 'birthdate', gridLgColumns: 4, type: 'date' },
+    { property: 'genre', gridLgColumns: 4, gridSmColumns: 6 },
+    { property: 'cityName', label: 'City', divider: 'Address' },
+    { property: 'state' },
+    { property: 'country' }
+  ];
 
-    }
-      ];
+  pageCustomActions: Array<PoPageDynamicTableCustomAction> = [
+    { label: 'Print', action: this.printPage.bind(this) },
+    { label: 'Download .csv', action: this.usersService.downloadCsv.bind(this.usersService, this.serviceApi) }
+  ];
 
-  onBeforeSave(row: any, _old: any) {
-    return row.occupation !== 'Engineer';
+  tableCustomActions: Array<PoPageDynamicTableCustomTableAction> = [
+    { label: 'Details', action: this.onClickUserDetail.bind(this) }
+  ];
+
+
+  onLoad(): PoPageDynamicTableOptions {
+    return {
+      fields: [
+        { property: 'id', key: true, visible: true, filter: true },
+        { property: 'name', label: 'Name', filter: true, gridColumns: 6 },
+        { property: 'genre', label: 'Genre', filter: true, gridColumns: 6, duplicate: true },
+        { property: 'search', initValue: '0748093840433' },
+        {
+          property: 'birthdate',
+          label: 'Birthdate',
+          type: 'date',
+          gridColumns: 6,
+          visible: false,
+          allowColumnsManager: true
+        }
+      ]
+    };
   }
 
-  onAfterSave(_row: any) {
-    // console.log('onAfterSave(new): ', row);
+  printPage() {
+    window.print();
   }
 
-  onBeforeRemove(_row:any) {
-    // console.log('onBeforeRemove: ', row);
+  private onClickUserDetail(user) {
+    this.detailedUser = user;
 
-    return true;
+    this.userDetailModal.open();
   }
-
-  onAfterRemove(_row:any) {
-    // console.log('onAfterRemove: ', row);
-  }
-
-  onBeforeInsert(_row:any) {
-    // console.log('onBeforeInsert: ', row);
-
-    return true;
-
-  }
-
-
 }
+
+
+
 
 function createReactiveForm() {
-  throw new Error('Function not implemented.');
 }
+
 
