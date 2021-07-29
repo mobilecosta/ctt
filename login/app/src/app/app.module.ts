@@ -1,0 +1,39 @@
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomeModule } from './home/home.module';
+import { LoginService } from './login/login.service';
+import { SharedModule } from './shared/shared.module';
+import { LoginModule } from './login/login.module';
+import { AuthInterceptor } from './auth/auth-config.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CnpjComponent } from './cnpj/cnpj.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+@NgModule({
+  imports: [
+    AppRoutingModule,
+    BrowserModule,
+    SharedModule,
+    HomeModule,
+    LoginModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  declarations: [
+    AppComponent,
+    CnpjComponent,
+
+   ],
+  providers: [
+    LoginService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
