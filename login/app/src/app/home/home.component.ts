@@ -17,6 +17,7 @@ import {
 } from '@po-ui/ng-templates';
 
 import { SamplePoPageDynamicTableUsersService } from './home.service';
+import { Button } from 'protractor';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,7 @@ import { SamplePoPageDynamicTableUsersService } from './home.service';
 })
 export class HomeComponent implements OnInit {
   detailedUser: any;
+  printPage: any;
   serviceApi(usersService: SamplePoPageDynamicTableUsersService, serviceApi: any): string | ((resources?: any) => void) {
     throw new Error('Method not implemented.');
   }
@@ -35,7 +37,7 @@ export class HomeComponent implements OnInit {
 
 
 
-  private readonly API ='http://localhost:3000/login';
+  private readonly API ='https://api.conceitho.com/api/protheus/';
   private chamada!: Subscription;
   private headers!: HttpHeaders;
   httpClient: any;
@@ -59,6 +61,7 @@ export class HomeComponent implements OnInit {
     this.chamada = this.httpClient.get(this.API, { headers: this.headers })
     .subscribe((response: any) => {
       alert('Retornei');
+
     })
     this.configurarcadastro();
   /*   this.loginForm = this.fb.group({
@@ -100,25 +103,27 @@ export class HomeComponent implements OnInit {
     new: '/documentation/po-page-dynamic-edit',
     remove: true,
     removeAll: true
+
   };
 
-  readonly breadcrumb: PoBreadcrumb = {
-    items: [{ label: '', link: '/' }, { label: '' }]
-  };
+//  readonly breadcrumb: PoBreadcrumb = {
+  //  items: [{ label: '', link: '/' }, { label: '' }]
+//  };
+
 
 
 
   readonly fields: Array<any> = [
     { property: 'id', key: true, visible: false, filter: true },
     { property: 'datas', label: 'Datas', filter: true, gridColumns: 6 },
-    { property: 'curso', label: 'Cursos', filter: true, gridColumns: 6, duplicate: true },
-    { property: 'turma', label: 'Turma', filter: true, gridColumns: 6, duplicate: true },
-    { property: 'sala', label: 'Sala', filter: true, gridColumns: 6, duplicate: true },
-    { property: 'professor', label: 'Professor', filter: true, gridColumns: 6, duplicate: true },
+    { property: 'curso', label: 'Cursos', filter: true, gridColumns: 6},
+    { property: 'turma', label: 'Turma', filter: true, gridColumns: 6 },
+    { property: 'sala', label: 'Sala', filter: true, gridColumns: 6},
+    { property: 'professor', label: 'Professor', filter: true, gridColumns: 6}
 
 
-    { property: 'search', filter: true, visible: false },
-    {
+ //  { property: 'search', filter: true, visible: false },
+   /* {
       property: 'birthdate',
       label: 'Birthdate',
       type: 'date',
@@ -127,23 +132,20 @@ export class HomeComponent implements OnInit {
       allowColumnsManager: true
     },
   //  { property: 'city', label: 'City', filter: true, duplicate: true, options: this.cityOptions, gridColumns: 12 }
-  ];
+  */];
 
-  readonly detailFields: Array<PoDynamicViewField> = [
-    { property: 'status', tag: true, gridLgColumns: 4, divider: 'Personal Data' },
-    { property: 'name', gridLgColumns: 4 },
-    { property: 'nickname', label: 'User name', gridLgColumns: 4 },
-    { property: 'email', gridLgColumns: 4 },
-    { property: 'birthdate', gridLgColumns: 4, type: 'date' },
-    { property: 'genre', gridLgColumns: 4, gridSmColumns: 6 },
-    { property: 'cityName', label: 'City', divider: 'Address' },
-    { property: 'state' },
-    { property: 'country' }
-  ];
+// readonly detailFields: Array<PoDynamicViewField> = [
+    //{ property: 'id', key: true, visible: true,  },
+    //{ property: 'datas', label: 'Datas',  gridColumns: 6 },
+    //{ property: 'curso', label: 'cursos',  gridColumns: 6},
+    //{ property: 'turma', label: 'Turma',  gridColumns: 6},
+   // { property: 'sala', label: 'Sala',  gridColumns: 6},
+ //   { property: 'professor', label: 'Professor',  gridColumns: 6},
 
-  pageCustomActions: Array<PoPageDynamicTableCustomAction> = [
-    { label: 'Print', action: this.printPage.bind(this) },
-    { label: 'Download .csv', action: this.usersService.downloadCsv.bind(this.usersService, this.serviceApi) }
+  //];
+
+ pageCustomActions: Array<PoPageDynamicTableCustomAction> = [
+  { label: 'Salvar'},
   ];
 
   tableCustomActions: Array<PoPageDynamicTableCustomTableAction> = [
@@ -155,31 +157,46 @@ export class HomeComponent implements OnInit {
     return {
       fields: [
         { property: 'id', key: true, visible: true, filter: true },
-        { property: 'name', label: 'Name', filter: true, gridColumns: 6 },
-        { property: 'genre', label: 'Genre', filter: true, gridColumns: 6, duplicate: true },
-        { property: 'search', initValue: '0748093840433' },
-        {
-          property: 'birthdate',
-          label: 'Birthdate',
-          type: 'date',
-          gridColumns: 6,
-          visible: false,
-          allowColumnsManager: true
-        }
+        { property: 'datas', label: 'Datas', filter: true, gridColumns: 6 },
+        { property: 'curso', label: 'Cursos', filter: true, gridColumns: 6,},
+        { property: 'turma', label: 'Turma', filter: true, gridColumns: 6,},
+        { property: 'sala', label: 'Sala', filter: true, gridColumns: 6,},
+        { property: 'professor', label: 'Professor', filter: true, gridColumns: 6, duplicate:true},
+
       ]
     };
   }
 
-  printPage() {
-    window.print();
-  }
 
   private onClickUserDetail(user) {
     this.detailedUser = user;
 
-    this.userDetailModal.open();
+    this.userDetailModal.open();  }
+
+    url='http://localhost:3000/aCursos';
+
+  private loadData(params: { page?: number, search?: string } = { }) {
+
+    this.httpClient.get(this.url, { headers: this.headers, params: <any>params })
+      .subscribe((response: any) => {
+
+
+      });
+
+
+
   }
-}
+
+
+
+ }
+
+
+
+
+
+
+
 
 
 

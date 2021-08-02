@@ -1,0 +1,14 @@
+{
+  "curso": [
+    {
+      "ID": 1,
+      "PDF_DTINI":"16-07-2021",
+      "PDF_DTFIM":"16-07-2021",
+      "PDM_CURSO":"Configurador",
+      "PD3_TURMA":1,
+      "PD8_SALAS":"A",
+      "PD2_PROFESSORES":"João"
+
+    }
+  ]
+}

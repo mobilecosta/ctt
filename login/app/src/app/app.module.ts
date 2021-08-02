@@ -10,6 +10,7 @@ import { AuthInterceptor } from './auth/auth-config.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CnpjComponent } from './cnpj/cnpj.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PerguntasComponent } from './perguntas/perguntas.component';
 
 @NgModule({
   imports: [
@@ -19,12 +20,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HomeModule,
     LoginModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   declarations: [
     AppComponent,
     CnpjComponent,
-
+    PerguntasComponent,
    ],
   providers: [
     LoginService,

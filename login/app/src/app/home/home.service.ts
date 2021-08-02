@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {login} from './home'
+
 
 @Injectable()
 export class SamplePoPageDynamicTableUsersService {
@@ -42,5 +44,17 @@ export class SamplePoPageDynamicTableUsersService {
     }, csvColumnHeader + lineDelimiter);
 
     return encodeURIComponent(csvStr);
+
+
+
   }
+  url : string  = "http://localhost:3000/login";
+
+
+
+  getUsers()
+  {
+    return this.http.get<login[]>(this.url);
+  }
+
 }

@@ -8,34 +8,23 @@ formControlName="nomecpf"
 <po-input name="input" p-label="Empresa"
   formControlName="empresa"> </po-input>
 
-  <po-page-dynamic-table
-  p-auto-router
+  <po-page-dynamic-table p-auto-router
   p-concat-filters
   p-keep-filters
   p-title=""
   [p-actions]="actions"
   [p-page-custom-actions]="pageCustomActions"
-  [p-table-custom-actions]="tableCustomActions"
-  [p-breadcrumb]="breadcrumb"
   [p-fields]="fields"
   [p-service-api]="serviceApi"
   [p-load]="onLoad.bind(this)"
 >
+>
 </po-page-dynamic-table>
 
-<po-modal #userDetailModal p-title="User Detail">
-  <po-dynamic-view [p-fields]="detailFields" [p-value]="detailedUser"> </po-dynamic-view>
-</po-modal>
 
 
 
 
-<button class="btn  btn-outline-warning mb-1 btn-sm">
-  ok
-</button>
-<button class="btn  btn-outline-warning mb-1 btn-sm">
-  cancel
-</button>
 
 </form>
 
