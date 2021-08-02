@@ -8,3 +8,13 @@ curl --location --request POST 'https://apimqa.totvs.com.br/api-homologacao/toke
 
 Fonte API
 TCTTS001.PRW
+
+Orientações para consumir o json modelo da pasta Resource
+
+1) Instalar o json server
+npm install -g json-server
+
+2) Subir
+json-server --watch ctt.json
+
+Para consumir use localhost:3000/aAluno ou localhost:3000/aCursos
