@@ -145,7 +145,7 @@ export class HomeComponent implements OnInit {
   //];
 
  pageCustomActions: Array<PoPageDynamicTableCustomAction> = [
-  { label: 'Salvar'},
+  { label: 'Selecionar'},
   ];
 
   tableCustomActions: Array<PoPageDynamicTableCustomTableAction> = [
