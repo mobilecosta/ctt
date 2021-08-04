@@ -1,0 +1,33 @@
+{ 	"aAluno": [
+  {
+"PDL_CPF": "28542890809",
+"PDL_NOME": "Wagner Mobile Costa",
+"PDL_EMAIL": "mobile.costa@gmail.com",
+"A1_CGC": "10480616000160",
+"A1_NOME": "Conceitho",
+"PDL_ALUNO": "000001"
+}
+],
+"aCursos": [
+  {
+  "PD7_TURMA": "00001",
+  "PD3_NOME": "Curso de PO-UI",
+  "PD2_NOME": "Mobile",
+  "PD3_SALA": "00001",
+  "PDO_NOME": "Sala Verde",
+  "PDF_DTINI": "2021-08-01",
+  "PDF_DTFIM": "2021-08-03",
+  "PDF_FERIO": "01"
+  },
+  {
+  "PD7_TURMA": "00002",
+  "PD3_NOME": "Curso de ADVPL",
+  "PD2_NOME": "Mobile",
+  "PD3_SALA": "00001",
+  "PDO_NOME": "Sala Verde",
+  "PDF_DTINI": "2021-08-10",
+  "PDF_DTFIM": "2021-08-15",
+  "PDF_FERIO": "01"
+  }
+]
+}
