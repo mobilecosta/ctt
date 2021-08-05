@@ -22,18 +22,18 @@ Return
 WSRESTFUL CTT DESCRIPTION 'API de integração do CTT'
 
 	WSDATA cpf         AS STRING	OPTIONAL
-	WSDATA codpergunta AS STRING	OPTIONAL // falta monta campo com pesquisa para retornar pergutnas
 	WSDATA turma       AS STRING	OPTIONAL // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL
 	WSDATA periodo       AS STRING	OPTIONAL // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL	
 	WSDATA id	        AS STRING	OPTIONAL
     WSDATA fields     AS STRING	OPTIONAL
-  	WSDATA count      AS INTEGER
-	WSDATA startIndex AS INTEGER
-
+    WSDATA order			AS STRING	OPTIONAL
+	WSDATA page				AS INTEGER	OPTIONAL
+	WSDATA pageSize   AS INTEGER	OPTIONAL
+	WSDATA filter     AS STRING	OPTIONAL
 
   WSMETHOD GET Login ;
     DESCRIPTION 'Valida login por cpf CTT' ;
-    WSSYNTAX '/api/login/{cpf}/?{fields}' ;
+    WSSYNTAX '/api/login/{cpf}/?{fields, order, page, pageSize, filter,periodo,turma}' ;
     PATH '/api/login/{cpf}' ;
     TTALK 'v1' ;
     PRODUCES APPLICATION_JSON
@@ -52,86 +52,91 @@ WSRESTFUL CTT DESCRIPTION 'API de integração do CTT'
     TTALK 'v1' ;
     PRODUCES APPLICATION_JSON
 
+
+
 ENDWSRESTFUL
 
 //------------------------------------
 // GET - "Valida Login por Cpf
 //------------------------------------
-WSMETHOD GET Login  PATHPARAM cpf WSRECEIVE fields WSSERVICE CTT
-//SMETHOD GET ItemClientes PATHPARAM  id WSRECEIVE fields WSSERVICE Contas
+WSMETHOD GET Login  PATHPARAM cpf WSRECEIVE fields, order, page, pageSize, filter,turma, periodo WSSERVICE CTT
+
 Local lRet			  := .T.
-Local i
-Local cJSon		:= "{"
+Local oResponse   
+Local oDataBase   := nil
+
+Local cWhere  := ''
+Local cQuery  := ''
+
+Local aFields := {}
+Local nx      := 0
+local cFilcam :=''
+
+Local cErroBlk    := ''
+Local oException	:= ErrorBlock({|e| cErroBlk := + e:Description + e:ErrorStack, lRet := .F. })
+
+Default self:fields   := ''
 Default self:id       := ''
-// define o tipo de retorno do método
-::SetContentType("application/json")
-//ncpf2 =self:cpf
-//verificar se existe parametro no ctt\cpf
-If Len(self:cpf) > 0
-	cCPF := Alltrim(self:cpf)
+Default self:order    := ''
 
-// FAZ TESTE FAKE 
-	IF cCPF = "0000000000001"
-			//cJSon += '"resultado":"1"'
-		//	cJSon += '"PDL_CPF":"0000000000001"'
-			//cJSon += '"PDL_NOME":"Aluno Silva Santos"'
-		//	cJSon += '"PDL_EMAIL":"naotem@naotem.com.br"'
-		
-		//faço um for para 3 registro fake se caso login retornar mais de uma pesquisa
-		// ::count pode colocar quantidade de registro para teste
-		DEFAULT self:startIndex := 1, self:count := 1
-	   	
-	  	::SetResponse('[')
-	  	For i := ::startIndex To ::count + 1
-	  		If i > ::startIndex
-	      		::SetResponse(',')
-	    	EndIf
-	    	::SetResponse('{"Resultado":"1","PDL_CPF":"0000000000001","cEmp":"00.0000.254/00001-35","cFil":"TOTVS SA","PDL_ALUNO":"Aluno Silva Santos","PDL_EMAIL":"naotem@naotem.com.br","PD7_TURMA":"00003","PD7_PESQOK":"0","PD2_NOME":"CURSO","PD2_NOME":"PROFESSOR","PDF_DTINI":"21/06/2021","PDF_DTFIM":"21/07/2021","PD7_TURMA":"TURMA","PD3_SALA":"SALA" }')
-	  	Next
-	  	
-	  	::SetResponse(']')
+Begin Sequence
+
+   // Classe para consulta via Rest
+  oDataBase := FWAdapterBaseV2():new( 'GET', .F. ) 
+  oDataBase:SetFields( self:fields )  
+
+// Mapa de campos retornaveis conforme GET  self:fields o que for colocado no params no get será retornado os campos
+aFields := StrToKArr2(self:fields, ',')
+  
+ for nx := 1 to Len(aFields)
+      oDataBase:AddMapFields( aFields[nx]   , aFields[nx]  , .T., .F., { aFields[nx]  , TamSX3( aFields[nx] )[3], TamSX3( aFields[nx] )[1], 0 } )
+  next
+
+  // Dados da Query
+  cQuery := " SELECT #QueryFields#"
+  cQuery +=   " FROM " + RetSqlName( 'PDL' ) + " PDL "
+  cQuery += " WHERE #QueryWhere#"
+  cWhere := " PDL_FILIAL = '"+ FWxFilial('PDL') +"' AND PDL.D_E_L_E_T_ = ' ' AND PDL_CPF = '" + self:cpf + "' "
+  
+  oDataBase:SetQuery( cQuery )
+  oDataBase:SetWhere( cWhere )
+  oDataBase:SetOrder( self:order )
 
 
-	Else
-		cJSon += '"resultado":"0"'
-Endif	
+  //Executa a consulta, se retornar .T. tudo ocorreu conforme esperado
+  If oDataBase:Execute()
+    // Gera o arquivo Json com o retorno da Query
+    oDataBase:FillGetResponse()
+  EndIf
 
-//If Select("TMPFS2M") > 0
-			//TMPFS2M->(dbCloseArea())
-//Endif                                     
-	
-	//	cQry1 := "Select PDL.PDL_CPF,PDL.PDL_NOME "
-	//	cQry1 += "From " + RetSqlName("PDL") + " PDL (NoLock) "
-	//	cQry1 += "Where PDL.D_E_L_E_T_<>'*' "
-	//	cQry1 += "And PDL_FILIAL = '" + xFilial("PDL") 	+ "' "
-	//	cQry1 += "And PDL.PDL_CPF = '" + cCPF	+ "' "
-			 
-	//	cQry1 := ChangeQuery(cQry1)
-	//	dbUseArea(.T.,"TOPCONN",TcGenQry(,,cQry1),"TMPFS2M",.T.,.F.)
-	
-	//	dbSelectArea("TMPFS2M")
-	//	dbGoTop()
-		
-	//	if (TMPFS2M->(Eof()))
-			// NÃO ACHOU CNPJ
-		//	cJSon += '"resultado":"0"}'
-		///	TMPFS2M->(dbCloseArea())
-	//	Else
-		//	cJSon += '"resultado":"1"'
-			//cJSon += '"cpf":' 	  + '"'   + Alltrim(TMPFS2M->PDL_CPF) 	+ '"'
-			//cJSon += '"":' + '"' + Alltrim(TMPFS2M->PDL_NOME)  + '"'
-		//	cJSon += "}"
-		///	TMPFS2M->(dbCloseArea())		
-	//	Endif
-	
+  If oDataBase:lOk
 
-//::SetResponse(cJSon)
+    If Type('oResponse') == 'O'
+      FreeObj(oResponse)
+    EndIf
 
-Else
-		        cJSon += '"resultado":"0"}'
-				Self:SetResponse(cJSon)
-	
-EndIf
+    oResponse := JsonObject():New()
+
+    //Campos de exceções
+    oResponse:fromJson(oDataBase:getJSONResponse())
+    //Campo de log de alteração
+   EndIf
+
+End Sequence
+
+ErrorBlock(oException)
+
+
+  // Verifica execução da query
+  If oDataBase:lOk
+     self:SetResponse(oResponse:toJson())
+  EndIf
+
+oDataBase:DeActivate()
+oDataBase := nil
+oResponse:DeActivate()
+oResponse := nil
+aFields := nil
 
 Return lRet
 
