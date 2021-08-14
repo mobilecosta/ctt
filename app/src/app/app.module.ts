@@ -1,24 +1,36 @@
-import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PoModule } from '@po-ui/ng-components';
-import { RouterModule } from '@angular/router';
-import { LoginComponent } from './login/login.component';
+import { AppRoutingModule } from './app-routing.module';
+import { HomeModule } from './home/home.module';
+import { LoginService } from './login/login.service';
+import { SharedModule } from './shared/shared.module';
+import { LoginModule } from './login/login.module';
+import { AuthInterceptor } from './auth/auth-config.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CnpjComponent } from './cnpj/cnpj.component';
 
 @NgModule({
-  declarations: [	
-    AppComponent,
-      LoginComponent
-   ],
   imports: [
-    BrowserModule,
     AppRoutingModule,
-    PoModule,
-    RouterModule.forRoot([])
+    BrowserModule,
+    SharedModule,
+    HomeModule,
+    LoginModule,
   ],
-  providers: [],
+  declarations: [
+    AppComponent,
+    CnpjComponent
+  ],
+  providers: [
+    LoginService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

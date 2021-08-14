@@ -1,64 +1,48 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { PoNotificationService } from '@po-ui/ng-components';
+import { PoPageLogin } from '@po-ui/ng-templates';
+import { PoStorageService } from '@po-ui/ng-storage';
+
+import { LoginService } from './login.service';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment'
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
-  loginForm: any;
-  navigateTo: any;
-  fb: any;
+export class LoginComponent {
+
+  hideRememberUser: boolean = true;
 
   constructor(
+    private loginService: LoginService,
+    private router: Router,
+    private httpClient: HttpClient, 
+    private storage: PoStorageService,
+    private poNotification: PoNotificationService) { }
 
+  loginSubmit(formData: PoPageLogin) {
 
-  ) { }
+    var url = environment.api + 
+              'api/oauth2/v1/token?grant_type=password&password=' + formData.password + 
+              '&username=' + formData.login;
+    var body: any;
 
+    this.httpClient.post(url, body).subscribe((res) => {
+      this.storage.set('isLoggedIn', 'true').then(() => {
+        localStorage.setItem('access_token', res["access_token"])
+        this.router.navigate(['/']);
+      });
+    }, (res) => {
+      if ((! res.hasOwnProperty('access_token')))
+        { this.poNotification.error('Usuário ou senha invalidos ! Tente novamente.') };
+    });
 
+  }
 
-    ngOnInit(): void {
-      this.loginForm = this.fb.group({
-        cpf: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern('^[0-9]{11}$'),
-            Validators.maxLength(11),
-          ],
-        ],
-     })
-
-
-     ;
-    // this.navigateTo = this.activatedRoute.snapshot.params['to'] || '/';
-
-    }
-
-    login(): void {
-  //    const formUser = this.loginForm?.getRawValue() as FormUser;
-
-    //  this.service
-      //  .login(formUser.cpf)
-        subscribe(
-          () => this.loginForm?.reset(),
-          (error: HttpErrorResponse) => {
-          },
-//          () => this.router.navigate([this.navigateTo])
-        );
-        }
-
-
-
-
-
-      }
-
-
-
-function subscribe(arg0: () => any, arg1: (error: HttpErrorResponse) => void) {
-  throw new Error('Function not implemented.');
 }
-
