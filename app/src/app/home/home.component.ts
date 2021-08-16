@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PoStorageService } from '@po-ui/ng-storage';
-import { PoMenuItem } from '@po-ui/ng-components';
 
 @Component({
   selector: 'app-home',
@@ -10,13 +9,7 @@ import { PoMenuItem } from '@po-ui/ng-components';
 })
 export class HomeComponent {
 
-  title = 'Integração Protheus';
-
-  menus: Array<PoMenuItem> = [
-    { label: 'Home', link: '/home', icon: 'po-icon-home', shortLabel: 'Principal' },
-    { label: 'Usuarios', link: './users', icon: 'po-icon-finance', shortLabel: 'Usuários' },
-    { label: 'Logout', action: this.logout.bind(this), icon: 'po-icon-users', shortLabel: 'Logout'  }
-  ];
+  title = 'Portal Pesquisa Satisfação (CTT)';
 
   constructor(private router: Router, private storage: PoStorageService) { }
 
