@@ -33,6 +33,8 @@ export class LoginComponent {
               '&username=' + formData.login;
     var body: any;
 
+/*
+    Chamada PostLogin
     this.httpClient.post(url, body).subscribe((res) => {
       this.storage.set('isLoggedIn', 'true').then(() => {
         localStorage.setItem('access_token', res["access_token"])
@@ -42,6 +44,8 @@ export class LoginComponent {
       if ((! res.hasOwnProperty('access_token')))
         { this.poNotification.error('Usuário ou senha invalidos ! Tente novamente.') };
     });
+*/
+    this.router.navigate(['/']);
 
   }
 
