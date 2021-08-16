@@ -23,19 +23,11 @@ Return
 // @type class
 //------------------------------------
 WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Ctt"
-
-WSDATA CPF As String //String que vamos receber via URL
-WSDATA count      AS INTEGER
-WSDATA startIndex AS INTEGER
+	WSDATA CPF As String //String que vamos receber via URL
  
-WSMETHOD GET Login DESCRIPTION "Valida Login por Cpf" WSSYNTAX "/CPF || /CPF/{CPF}" 	//Disponibilizamos um método do tipo GET
-//WSMETHOD GET montagem DESCRIPTION "Retorna perguntas a serem Pesquisadas" WSSYNTAX "/pesq || /pesq/{pesq}" 
-
-
-WSMETHOD POST DESCRIPTION "Envia Post da Pesquisa " WSSYNTAX "/envia"
+	WSMETHOD GET Login DESCRIPTION "Valida Login por Cpf" WSSYNTAX "/CPF || /CPF/{CPF}" 	//Disponibilizamos um método do tipo GET
+	WSMETHOD POST DESCRIPTION "Envia Post da Pesquisa " WSSYNTAX "/envia"
 END WSRESTFUL
-
-
 
 
 //------------------------------------
@@ -43,16 +35,15 @@ END WSRESTFUL
 //------------------------------------
 WSMETHOD GET Login WSRECEIVE CPF WSSERVICE CTT
 Local i
-Local _cEmp_    := GetPvProfString(GetEnvServer(),"EMP_CTT","00",GetAdv97())
-Local _cFil_    := GetPvProfString(GetEnvServer(),"FIL_CTT","00001000100",GetAdv97())
 Local cRet		:= ""
 Local nX		  := 0
 Local cJSon		:= "{"
 Private aDadosC	:= {}
 Private aDadosI	:= {}
 
-RpcClearEnv()
-RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PDL", "PD7", "SA1" },,,,)
+// define o tipo de retorno do método
+::SetContentType("application/json")
+
 cCpf := Alltrim(::aURLParms[2])
 PDL->(DbSetOrder(3))	// PDL_FILIAL+PDL_CPF
 PDL->(DbSeek(xFilial() + cCpf))
@@ -103,18 +94,26 @@ EndSql
 
 //-- Aluno com alocação
 IF Empty(PDLQRY->PDL_ALUNO)
-	cRet := "Não existe aluno com CPF informado [" + cCPF + "]"
+	cJson := 'code: "Não existe aluno com CPF informado [" + cCPF + "]"'
  
 ELSEIF Empty(PDLQRY->PD7_TURMA)
-	cRet := "Aluno do CPF [" + cCPF + "] sem alocação"
+	cJson := 'code: "Aluno do CPF [" + cCPF + "] sem alocação"'
  
 ELSEIF ! Empty(PDLQRY->PD7_TURMA)
+
+	cJSon += '"resultado": "1"'
+	cJSon += ',"PDL_CPF":' 	  + '"'   + Alltrim(aDadosC[1][1]) 	+ '"'
+	cJSon += ',"PDL_NOME":' 	  + '"'   + Alltrim(aDadosC[1][2]) 	+ '"'
+	cJSon += ',"PDL_EMAIL":' 	  + '"'   + Alltrim(aDadosC[1][3]) 	+ '"'
+	cJSon += ',"A1_CGC":' 	  + '"'   + Alltrim(aDadosC[1][4]) 	+ '"'
+	cJSon += ',"A1_NOME":' 	  + '"'   + Alltrim(aDadosC[1][5]) 	+ '"'
+	cJSon += ',"PDL_ALUNO":' 	  + '"'   + Alltrim(aDadosC[1][8]) 	+ ''
+	cJSon += "}"
+
 	AADD(aDadosC,{ 	TRANS(PDLQRY->PDL_CPF,"@R 999.999.999-99"), PDLQRY->PDL_NOME, PDLQRY->PDL_EMAIL,;
 					transform(PDLQRY->A1_CGC, If(Len(PDLQRY->A1_CGC) = 11, "@R 999.999.999-99", "@R 99.999.999/9999-99")), PDLQRY->A1_NOME, DATE(), TIME(),;
 					PDLQRY->PDL_ALUNO, _cEmp_, _cFil_})
 					
-	//httpsession->cEMPRESA := _cEmp_+'|'+_cFil_
-	
 	WHILE PDLQRY->(!EOF())
 		AADD(aDadosI,{	PDLQRY->PD7_TURMA, PDLQRY->PD3_NOME+If(PDLQRY->PD7_PESQOK == 1, '<B> [ Pesquisa Respondida ]</B>', ""),;
 						PDLQRY->PD2_NOME, PDLQRY->PD3_SALA, PDLQRY->PDO_NOME, PDLQRY->PDF_DTINI, PDLQRY->PDF_DTFIM,;
@@ -123,110 +122,61 @@ ELSEIF ! Empty(PDLQRY->PD7_TURMA)
 		PDLQRY->(DBSKIP())
 	ENDDO
 
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ANALISE PARA SABER SE DEVE VOLTAR A PAGINA PRINCIPAL OU PROSSEGUGIR PARA A ESCOLHA DA AULA PARA RESPONDER A PESQUISA³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+	//verifica se achou cadastro do aluno  " aDadosC" se não achar traz json resultado =0
+	IF LEN(aDadosC)>0
+
+	For nX := 1 To Len(aDadosC)
+		
+		
+		Next nX
+
+	ELSE
+			cJSon += '"resultado":"0"'
+				cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '"'
+
+					Self:SetResponse(cJSon)
+	 
+	ENDIF
+
+
+
+	//verifica se achou pesquisa para o aluno  " aDadosC" se não achar traz json resultado =0
+	IF LEN(aDadosI)>0
+
+	For nX := 1 To Len(aDadosI)
+		
+			cJSon += ',"PD7_TURMA":' 	  + '"'   + Alltrim(aDadosI[1][1]) 	+ '"'
+				cJSon += ',"PD3_NOME":' 	  + '"'   + Alltrim(aDadosI[1][2]) 	+ '"'
+		  cJSon += ',"PD2_NOME":' 	  + '"'   + Alltrim(aDadosI[1][3]) 	+ '"'
+				cJSon += ',"PD3_SALA":' 	  + '"'   + Alltrim(aDadosI[1][4]) 	+ '"'
+		  cJSon += ',"PDO_NOME":' 	  + '"'   + Alltrim(aDadosI[1][5]) 	+ '"'
+		  cJSon += ',"PDF_DTINI":' 	  + '"'   + Alltrim(aDadosI[1][6]) 	+ '"'
+		  cJSon += ',"PDF_DTFIM":' 	  + '"'   + Alltrim(aDadosI[1][7]) 	+ '"'
+		  
+		  //PDLQRY->PD7_TURMA + "/" + PDLQRY->PDF_PERIO + "/" + PDLQRY->PD7_FILIA
+		  cJSon += ',"PD7_TURMA":' 	  + '"'   + Alltrim(aDadosI[1][8]) 	+ '"'
+		  cJSon += "}"
+		
+		Next nX
+
+		Self:SetResponse(cJSon)
+
+	ELSE
+			cJSon += '"resultado":"0"'
+				cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '"'
+
+					Self:SetResponse(cJSon)
+	 
+	ENDIF
+
 ENDIF
 PDLQRY->(DbCloseArea()) 
 
-//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-//³ANALISE PARA SABER SE DEVE VOLTAR A PAGINA PRINCIPAL OU PROSSEGUGIR PARA A ESCOLHA DA AULA PARA RESPONDER A PESQUISA³
-//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
-
-// define o tipo de retorno do método
-::SetContentType("application/json")
-
-//verifica se achou cadastro do aluno  " aDadosC" se não achar traz json resultado =0
-IF LEN(aDadosC)>0
-
-For nX := 1 To Len(aDadosC)
-	
-	  	cJSon += '"resultado":"1"'
-			cJSon += ',"PDL_CPF":' 	  + '"'   + Alltrim(aDadosC[1][1]) 	+ '"'
-			cJSon += ',"PDL_NOME":' 	  + '"'   + Alltrim(aDadosC[1][2]) 	+ '"'
-      cJSon += ',"PDL_EMAIL":' 	  + '"'   + Alltrim(aDadosC[1][3]) 	+ '"'
-			cJSon += ',"A1_CGC":' 	  + '"'   + Alltrim(aDadosC[1][4]) 	+ '"'
-      cJSon += ',"A1_NOME":' 	  + '"'   + Alltrim(aDadosC[1][5]) 	+ '"'
-      cJSon += ',"PDL_ALUNO":' 	  + '"'   + Alltrim(aDadosC[1][8]) 	+ '"'
-      cJSon += ',"cEmp":' 	  + '"'   + Alltrim(aDadosC[1][9]) 	+ '"'
-      cJSon += ',"cFil":' 	  + '"'   + Alltrim(aDadosC[1][10]) 	+ '"'
-      cJSon += "}"
-	
-	Next nX
-
-    //Self:SetResponse(cJSon)
-
-ELSE
-	    cJSon += '"resultado":"0"'
-			cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '"'
-
-				Self:SetResponse(cJSon)
- 
-ENDIF
-
-
-
-//verifica se achou pesquisa para o aluno  " aDadosC" se não achar traz json resultado =0
-IF LEN(aDadosI)>0
-
-For nX := 1 To Len(aDadosI)
-	
-	  	cJSon += ',"PD7_TURMA":' 	  + '"'   + Alltrim(aDadosI[1][1]) 	+ '"'
-			cJSon += ',"PD3_NOME":' 	  + '"'   + Alltrim(aDadosI[1][2]) 	+ '"'
-      cJSon += ',"PD2_NOME":' 	  + '"'   + Alltrim(aDadosI[1][3]) 	+ '"'
-			cJSon += ',"PD3_SALA":' 	  + '"'   + Alltrim(aDadosI[1][4]) 	+ '"'
-      cJSon += ',"PDO_NOME":' 	  + '"'   + Alltrim(aDadosI[1][5]) 	+ '"'
-      cJSon += ',"PDF_DTINI":' 	  + '"'   + Alltrim(aDadosI[1][6]) 	+ '"'
-      cJSon += ',"PDF_DTFIM":' 	  + '"'   + Alltrim(aDadosI[1][7]) 	+ '"'
-      
-      //PDLQRY->PD7_TURMA + "/" + PDLQRY->PDF_PERIO + "/" + PDLQRY->PD7_FILIA
-      cJSon += ',"PD7_TURMA":' 	  + '"'   + Alltrim(aDadosI[1][8]) 	+ '"'
-      cJSon += "}"
-	
-	Next nX
-
-    Self:SetResponse(cJSon)
-
-ELSE
-	    cJSon += '"resultado":"0"'
-			cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '"'
-
-				Self:SetResponse(cJSon)
- 
-ENDIF
-
-
-//verificar se existe parametro no ctt\cpf
-//If Len(::aURLParms) > 0
-	//cCPF := Alltrim(::aURLParms[2])
-// FAZ PESQUISA VIA CQRY1
-//If Select("TMPFS2M") > 0
-		//	TMPFS2M->(dbCloseArea())
-//Endif                                     
-		//cQry1 := "Select PDL.PDL_CPF,PDL.PDL_NOME,PDL.PDL_EMAIL "
-	//	cQry1 += "From " + RetSqlName("PDL") + " PDL (NoLock) "
-	//	cQry1 += "Where PDL.D_E_L_E_T_<>'*' "
-	//	cQry1 += "And PDL_FILIAL = '" + xFilial("PDL") 	+ "' "
-	//	cQry1 += "And PDL.PDL_CPF = '" + ::aURLParms[2]	+ "' "
-	//	cQry1 := ChangeQuery(cQry1)
-	//	dbUseArea(.T.,"TOPCONN",TcGenQry(,,cQry1),"TMPFS2M",.T.,.F.)
-	
-	//	dbSelectArea("TMPFS2M")
-	//	dbGoTop()
-//		if (TMPFS2M->(Eof()))
-//					cJSon += '"resultado":"0"}'
-	//		TMPFS2M->(dbCloseArea())
-	//	Else
-	//		cJSon += '"resultado":"1"'
-		//	cJSon += ',"cpf":' 	  + '"'   + Alltrim(TMPFS2M->PDL_CPF) 	+ '"'
-	//		cJSon += ',"Nome":' + '"' + Alltrim(TMPFS2M->PDL_NOME)  + '"'
-  //    cJSon += ',"E-mail":' + '"' + Alltrim(TMPFS2M->PDL_EMAIL)  + '"'
- 	//		cJSon += "}"
-	//		TMPFS2M->(dbCloseArea())		
-	//	Endif
-//Else
-		    //    cJSon += '"resultado":"0"}'
-			//	Self:SetResponse(cJSon)
-	
-//EndIf
-
+Self:SetResponse(cJSon)
 
 Return .T.
 
@@ -239,45 +189,8 @@ Return .T.
 // GET - "Envia Post da Pesquisa
 //------------------------------------
 WSMETHOD POST WSSERVICE CTT
-Local lPost := .T.
-local nNome := ""
- Local cJson     := Self:GetContent()
- Local cError := ""
- Local oParseJson    := NIL
- Local cJsonRet  := ""
- local nCpf :=""
- local nEnd :=""
-Local oResponse   := JsonObject():New()
-Local oBody       := JsonObject():New()
-Local oDataBase   := JsonObject():New()
-Local cErroAuto   := ''
-Local cErrBody    := ''
 
-//Definindo o conteÃºdo como JSON, e pegando o content e dando um parse para ver se a estrutura estÃ¡ ok
+	//Definindo o conteÃºdo como JSON, e pegando o content e dando um parse para ver se a estrutura estÃ¡ ok
     Self:SetContentType("application/json")
  
-   If FWJsonDeserialize(cJson,@oParseJson)
-		nCpf  := AllTrim(oParseJson:Cpf)
-		nEnd  := AllTrim(oParseJson:Endereco)
-		
-		//exemplo para atualizar dados ALTERA ENDEREÇO
-			DbSelectArea('PDL')
-			PDL->(DbSetOrder(3)) 
-			If PDL->(DbSEek(xFilial('PDL')+nCpf))
-				RecLock('PDL', .F.)
-					PDL->PDL_END := nEnd 
-				PDL->(MsUnLock())
-				cJsonRet    := '{"Cadastro do aluno atualizado com sucesso " ' + PDL->PDL_NOME + '}'
-				Self:SetResponse(cJsonRet)
-			ELSE
-		     	cJsonRet    := '{"NÃ£o achou o cadastro do aluno com o cpf " ' + nCpf + '}'
-				Self:SetResponse(cJsonRet)
-			Endif
-
-		ELSE
-				Conout(Dtoc(Date()) + " " + Time() + " - Erro na importação verifique " )
-				SetRestFault(500,'Erro na importação verifique ')
-				lRet    := .F.
-		EndIf
-	 
-Return lPost
+Return .t.
