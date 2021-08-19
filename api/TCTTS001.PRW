@@ -289,6 +289,7 @@ WSMETHOD POST grava WSSERVICE CTT
 Local oResponse   := JsonObject():New()
 Local oBody       := JsonObject():New()
 Local oDataBase   := JsonObject():New()
+
 Local nP4_TURMA	:= 0
 Local nP4_PERIO	:= 0
 Local nP4_PESQ	:= 0
@@ -325,6 +326,7 @@ Private aDadosC := {}
 RpcClearEnv()
 RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
 
+
 //Definindo o conteÃºdo como JSON, e pegando o content e dando um parse para ver se a estrutura estÃ¡ ok
     Self:SetContentType("application/json")
  //adiciona valores as variaveis vindo do body
@@ -337,17 +339,17 @@ RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
                 aAdd(aLinha,{"PD4_TURMA",      AllTrim(oParseJson:ITENS[nX]:PD4_TURMA),  NIL})    
 				aAdd(aLinha,{"PD4_PERIO",  AllTrim(oParseJson:ITENS[nX]:PD4_PERIO),          NIL})
                 aAdd(aLinha,{"PD4_PESQ",      AllTrim(oParseJson:ITENS[nX]:PD4_PESQ),  NIL})  
-				aAdd(aLinha,{"PD4_ALUNO",      AllTrim(oParseaItensJson:ITENS[nX]:PD4_ALUNO),  NIL})  
+				aAdd(aLinha,{"PD4_ALUNO",      AllTrim(oParseJson:ITENS[nX]:PD4_ALUNO),  NIL})  
                aAdd(aItens,aLinha)
 
             Next nX 
 
 				if len(aItens)>0
-					cCpf 	:= aItens[PDL_CPF][1][1]
-					cTurma	:= aItens[nP4_TURMA][2]
-					cPerio	:= aItens[nP4_PERIO][2]
-					cPesq   := aItens[nP4_PESQ][2]
-					cAluno	:= aItens[nP4_ALUNO][2]
+					cCpf 	:= aItens[ITENS][2]
+					cTurma	:= aItens[PD4_TURMA][2]
+					cPerio	:= aItens[PD4_PERIO][2]
+					cPesq   := aItens[PD4_PESQ][2]
+					cAluno	:= aItens[PD4_ALUNO][2]
 					
 					PD3->(DbSetOrder(1))
 					PDF->(DbSetOrder(1))
