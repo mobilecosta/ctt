@@ -281,6 +281,7 @@ WSMETHOD POST grava WSSERVICE CTT
  
  Local lPost := .T.
  Local cJson     := Self:GetContent()
+ Local oParseJson    := NIL
  Local cJsonRet  := ""
  local nCpf :=""
  local nEnd :=""
@@ -333,13 +334,12 @@ RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
     Self:SetContentType("application/json")
  //adiciona valores as variaveis vindo do body
    If FWJsonDeserialize(cJson,@oParseJson)
-		nCpf  := AllTrim(oParseJson:Cpf)
-		nEnd  := AllTrim(oParseJson:Endereco)
-		
-		// retorna dados que foi feito o post 
-	//cJsonRet    := '{"Post Realizado com sucesso " ' + nCpf + ' " " ' + nEnd + ' }'
-	Self:SetResponse(cJsonRet)
-		
+		nPCPF      := AllTrim(oParseJson:PDL_CPF)
+		nP4_TURMA  := AllTrim(oParseJson:PD4_TURMA)
+		nP4_PERIO  := AllTrim(oParseJson:PD4_PERIO)
+		nP4_PESQ   := AllTrim(oParseJson:PD4_PESQ) 
+		nP4_ALUNO  := AllTrim(oParseJson:PD4_ALUNO)
+	
 				if len(aRet)>0
 					cCpf 	:= aRet[nPCPF][2]
 					cTurma	:= aRet[nP4_TURMA][2]
@@ -421,27 +421,6 @@ RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
 					
 				Endif
 
-				cHtml := h_TCTTH040()
-
-				//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-				//³ROTINA PARA DISPARO DE E-MAIL³
-				//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
-				if len(aRet)>0
-					PD2->(DbSeek(xFilial() + PD3->PD3_PROF))
-					StartJob( "U_TCTTM010", GetEnvServer(), .F., {{	SM0->M0_CODIGO,SM0->M0_CODFIL}, AllTrim(PD2->PD2_EMAIL),;
-																	aRet[nP4_PESQ][2], aRet[nP4_ALUNO][2], aRet[nP4_TURMA][2], aDadosC, cCurso } )
-				//	U_TCTTM010({{	SM0->M0_CODIGO,SM0->M0_CODFIL}, AllTrim(PD2->PD2_EMAIL),;
-				//					aRet[nP4_PESQ][2], aRet[nP4_ALUNO][2], aRet[nP4_TURMA][2], aDadosC, cCurso } )
-
-				ENDIF
-
-
-
-
-
-
-
-
 		ELSE
 				Conout(Dtoc(Date()) + " " + Time() + " - Erro na importação verifique " )
 				SetRestFault(500,'Erro na importação verifique ')
@@ -449,11 +428,4 @@ RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
 		EndIf
 
 
-
-
-
-
-
-
 Return lRet
-
