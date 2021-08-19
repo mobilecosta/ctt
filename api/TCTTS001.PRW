@@ -282,13 +282,13 @@ WSMETHOD POST grava WSSERVICE CTT
  Local lPost := .T.
  Local cJson     := Self:GetContent()
  Local oParseJson    := NIL
+ loca oItems := NIL
  Local cJsonRet  := ""
  local nCpf :=""
  local nEnd :=""
 Local oResponse   := JsonObject():New()
 Local oBody       := JsonObject():New()
 Local oDataBase   := JsonObject():New()
-Local aRet		:= {}
 Local nP4_TURMA	:= 0
 Local nP4_PERIO	:= 0
 Local nP4_PESQ	:= 0
@@ -298,13 +298,16 @@ Local Radios	:= ""
 Local Areas		:= ""
 Local finalid	:= ""
 Local depto		:= ""
+Local nX
+Local nY
+Local oItems
+Local aItens    := {}
 Local Pontuac	:= ""
 Local lRA		:= ""
 Local lRet		:= .F.
 Local lDelete	:= .F.
 Local nGravado	:= nError := 0
 Local cSQL		:= ""
-Local Mailprof  := ""
 Local _cEmp_    := GetPvProfString(GetEnvServer(),"EMP_CTT","00",GetAdv97())
 Local _cFil_    := GetPvProfString(GetEnvServer(),"FIL_CTT","00001000100",GetAdv97())
 Local nFor		:= 0
@@ -322,30 +325,29 @@ Private aDadosC := {}
 RpcClearEnv()
 RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
 
-//aEval( HttpPost->aPost 	, {|x| aadd(aRet,{ x , &("HttpPost->"+x)} )  })
-//nP4_TURMA := aScan(aRet,{|x| x[1] == 'CODTURM' })
-//nP4_PERIO := aScan(aRet,{|x| x[1] == 'PERIODO' })
-//nP4_PESQ  := aScan(aRet,{|x| x[1] == 'CODPESQ' })
-//nP4_ALUNO := aScan(aRet,{|x| x[1] == 'CODALU' })
-//nPCPF	  := aScan(aRet,{|x| x[1] == 'CCPF' })
-
-
 //Definindo o conteÃºdo como JSON, e pegando o content e dando um parse para ver se a estrutura estÃ¡ ok
     Self:SetContentType("application/json")
  //adiciona valores as variaveis vindo do body
    If FWJsonDeserialize(cJson,@oParseJson)
-		nPCPF      := AllTrim(oParseJson:PDL_CPF)
-		nP4_TURMA  := AllTrim(oParseJson:PD4_TURMA)
-		nP4_PERIO  := AllTrim(oParseJson:PD4_PERIO)
-		nP4_PESQ   := AllTrim(oParseJson:PD4_PESQ) 
-		nP4_ALUNO  := AllTrim(oParseJson:PD4_ALUNO)
 	
-				if len(aRet)>0
-					cCpf 	:= aRet[nPCPF][2]
-					cTurma	:= aRet[nP4_TURMA][2]
-					cPerio	:= aRet[nP4_PERIO][2]
-					cPesq   := aRet[nP4_PESQ][2]
-					cAluno	:= aRet[nP4_ALUNO][2]
+			//Busca os itens no JSON, percorre eles e adiciona no array da SC6
+            For nX  := 1 To Len (oParseJson:ITENS)
+                aLinha  := {}
+                aAdd(aLinha,{"PDL_CPF",  AllTrim(oParseJson:ITENS[nX]:PDL_CPF),          NIL})
+                aAdd(aLinha,{"PD4_TURMA",      AllTrim(oParseJson:ITENS[nX]:PD4_TURMA),  NIL})    
+				aAdd(aLinha,{"PD4_PERIO",  AllTrim(oParseJson:ITENS[nX]:PD4_PERIO),          NIL})
+                aAdd(aLinha,{"PD4_PESQ",      AllTrim(oParseJson:ITENS[nX]:PD4_PESQ),  NIL})  
+				aAdd(aLinha,{"PD4_ALUNO",      AllTrim(oParseaItensJson:ITENS[nX]:PD4_ALUNO),  NIL})  
+               aAdd(aItens,aLinha)
+
+            Next nX 
+
+				if len(aItens)>0
+					cCpf 	:= aItens[PDL_CPF][1][1]
+					cTurma	:= aItens[nP4_TURMA][2]
+					cPerio	:= aItens[nP4_PERIO][2]
+					cPesq   := aItens[nP4_PESQ][2]
+					cAluno	:= aItens[nP4_ALUNO][2]
 					
 					PD3->(DbSetOrder(1))
 					PDF->(DbSetOrder(1))
@@ -353,14 +355,14 @@ RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
 					PDF->(DbSeek(_cFil_ + cTurma + cPerio))
 					
 					BeginTran()
-					For nFor := 1 to len(aRet)
+					For nFor := 1 to len(aItens)
 						if nFor < nPCPF
-							lRA			:= SUBSTR(aRet[nFor][1],1,1)=='R'
-							Radios		:= SUBSTR(aRet[nFor][1],6,2)
-							Areas		:= SUBSTR(aRet[nFor][1],5,2)
-							finalid		:= SUBSTR(aRet[nFor][1],AT('FINALID',aRet[nFor][1])+7,1)
-							depto		:= SUBSTR(aRet[nFor][1],AT('DEPTO',aRet[nFor][1])+5,1)
-							Pontuac		:= iif(lRA,SUBSTR(aRet[nFor][1],AT('PONTUAC',aRet[nFor][1])+7),' ')
+							lRA			:= SUBSTR(aItens[nFor][1],1,1)=='R'
+							Radios		:= SUBSTR(aItens[nFor][1],6,2)
+							Areas		:= SUBSTR(aItens[nFor][1],5,2)
+							finalid		:= SUBSTR(aItens[nFor][1],AT('FINALID',aItens[nFor][1])+7,1)
+							depto		:= SUBSTR(aItens[nFor][1],AT('DEPTO',aItens[nFor][1])+5,1)
+							Pontuac		:= iif(lRA,SUBSTR(aItens[nFor][1],AT('PONTUAC',aItens[nFor][1])+7),' ')
 							if UPPER(substr(IIF(lRA,Radios,Areas),1,2)) != 'OS'
 								nGravado ++
 
@@ -390,8 +392,8 @@ RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
 								PD4->PD4_ASSUNT := IIF(lRA,'1','2')
 								PD4->PD4_PONTUA := Pontuac
 								PD4->PD4_DTRESP := DATE()  
-								PD4->PD4_RESPOS := IIF(lRA,'',aRet[nFor][2])
-								PD4->PD4_EQUIV  := IIF(lRA,aRet[nFor][2],'')
+								PD4->PD4_RESPOS := IIF(lRA,'',aItens[nFor][2])
+								PD4->PD4_EQUIV  := IIF(lRA,aItens[nFor][2],'')
 								PD4->PD4_PROF	:= PDF->PDF_PROF
 								PD4->PD4_DTCURS	:= PDF->PDF_DTINI
 								PD4->(MsUnLock())
