@@ -65,7 +65,7 @@ Local _cEmp_    := GetPvProfString(GetEnvServer(),"EMP_CTT","00",GetAdv97())
 Local _cFil_    := GetPvProfString(GetEnvServer(),"FIL_CTT","00001000100",GetAdv97())
 Local cRet		:= ""
 Local nX		  := 0
-Local cJSon		:= "{"
+Local cJSon		:= "[{"
 Private aDadosC	:= {}
 Private aDadosI	:= {}
 
@@ -151,7 +151,7 @@ ELSEIF ! Empty(PDLQRY->PD7_TURMA)
 
 	
 	WHILE PDLQRY->(!EOF())
-			cJSon += ',"PD3_NOME":' 	  + '"'   + Alltrim(PDLQRY->PD3_NOME) 	+ '"'
+			cJSon += ',{"PD3_NOME":' 	  + '"'   + Alltrim(PDLQRY->PD3_NOME) 	+ '"'
             cJSon += ',"PD2_NOME":' 	  + '"'   + Alltrim(PDLQRY->PD2_NOME) 	+ '"'
 			cJSon += ',"PD3_SALA":' 	  + '"'   + Alltrim(PDLQRY->PD3_SALA) 	+ '"'
 			cJSon += ',"PDO_NOME":' 	  + '"'   + Alltrim(PDLQRY->PDO_NOME) 	+ '"'
@@ -169,7 +169,7 @@ ENDIF
 PDLQRY->(DbCloseArea()) 
 
 Self:SetResponse(cJSon)
-
+Self:SetResponse(']')
 
 Return .T.
 
@@ -184,7 +184,7 @@ Local cTurma := cChave := ""
 Local _cEmp_    := GetPvProfString(GetEnvServer(),"EMP_CTT","00",GetAdv97())
 Local _cFil_    := GetPvProfString(GetEnvServer(),"FIL_CTT","00001000100",GetAdv97())
 Local cDados               :=''
-Local cJSon	               := "{"
+Local cJSon	               := ""
 Default self:turma         := ''
 Default self:periodo       := ''
 
@@ -199,6 +199,8 @@ RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD5", "PDG" },,,
 
 //CODALU	:= HTTPPOST->aDadosC8
 //aTipo   := RetSx3Box( Posicione("SX3", 2, "PD5_FINALI", "X3CBox()" ),,, 1 )
+
+Self:SetResponse('[')
 
 PD2->(DbSetOrder(1))
 PDF->(DbSetOrder(1))
@@ -231,7 +233,7 @@ IF PDF->(DBSEEK(_cFil_+cTurma + PERIODO)) .And. PD3->(DBSEEK(_cFil_+cTurma))
 				ENDIF
 				//AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO, PD5->PD5_ASSUNTO, PD5->PD5_PERGUN, PD5->PD5_MEMO, ;
 						//	aResp, cRep, alltrim(PD5->PD5_PONTUA), cTurma, aTipo[val(PD5->PD5_FINALI)][3]})
-			cJSon += ',"PD5_PESQ":' 	  + '"'   + Alltrim(PD5->PD5_PESQ) 	+ '"'
+			cJSon += '{"PD5_PESQ":' 	  + '"'   + Alltrim(PD5->PD5_PESQ) 	+ '"'
             cJSon += ',"PD5_ITEM":' 	  + '"'   + Alltrim(PD5->PD5_ITEM) 	+ '"'
 			cJSon += ',"PD5_FINALI":' 	  + '"'   + Alltrim(PD5->PD5_FINALI) 	+ '"'
 			cJSon += ',"PD5_DEPTO":' 	  + '"'   + Alltrim(PD5->PD5_DEPTO) 	+ '"'
@@ -239,7 +241,7 @@ IF PDF->(DBSEEK(_cFil_+cTurma + PERIODO)) .And. PD3->(DBSEEK(_cFil_+cTurma))
 			cJSon += ',"PD5_MEMO":' 	  + '"'   + Alltrim(PD5->PD5_MEMO) 	+ '"'
       		cJSon += ',"PD5_PONTUA":' 	  + '"'   + Alltrim(PD5->PD5_PONTUA) 	+ '"'
 			cJSon += ',"PD5_FINALI":' 	  + '"'   + Alltrim(PD5->PD5_FINALI) 	+ '"'
-			cJSon += "}"
+			cJSon += "},"
 				
 				aResp 	:= {}
 				cRep 	:= ""
@@ -249,25 +251,26 @@ IF PDF->(DBSEEK(_cFil_+cTurma + PERIODO)) .And. PD3->(DBSEEK(_cFil_+cTurma))
 			PD5->(DBSKIP())
 		END
 		//mostra cjson rest
-		Self:SetResponse(cJSon)
+		
+	
 	ELSE
 		//cRep := "Não existe o cadastro de pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cTurma + "]"
 		cRet := "Não existe o cadastro de pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cTurma + "]"
-				cJSon += '"resultado":"0"'
-				cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '"'
+				cJSon += '[{"resultado":"0"'
+				cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '" }]'
 	ENDIF
 else
 	//cRep := "A Turma/periodo [" + cTurma + "/" + PERIODO + "] não foram encontradas"
     cRet := "A Turma/periodo [" + cTurma + "/" + PERIODO + "] não foram encontradas"
-				cJSon += '"resultado":"0"'
-				cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '"'
+				cJSon += '[{"resultado":"0"'
+				cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '"}]'
 					//	aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4,HTTPPOST->aDadosC5,HTTPPOST->aDadosC6,HTTPPOST->aDadosC7,;
 					//HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10,STOD(''),STOD(''),''})
 					//	HTTPSESSION->aDadosC := aDadosC
 ENDIF
 
 Self:SetResponse(cJSon)
-
+Self:SetResponse(']')
 Return lRet
 
 
@@ -275,47 +278,158 @@ Return lRet
 // post - "Grava Dados pesquisa de Satisfação
 //------------------------------------
 WSMETHOD POST grava WSSERVICE CTT
-Local lPost := .T.
-local nNome := ""
+ 
+ Local lPost := .T.
  Local cJson     := Self:GetContent()
- Local cError := ""
  Local oParseJson    := NIL
+ loca oItems := NIL
  Local cJsonRet  := ""
  local nCpf :=""
  local nEnd :=""
 Local oResponse   := JsonObject():New()
 Local oBody       := JsonObject():New()
 Local oDataBase   := JsonObject():New()
-Local cErroAuto   := ''
-Local cErrBody    := ''
+
+Local nP4_TURMA	:= 0
+Local nP4_PERIO	:= 0
+Local nP4_PESQ	:= 0
+Local nP4_ALUNO	:= 0
+Local nPCPF		:= 0
+Local Radios	:= ""
+Local Areas		:= ""
+Local finalid	:= ""
+Local depto		:= ""
+Local nX
+Local nY
+Local oItems
+Local aItens    := {}
+Local Pontuac	:= ""
+Local lRA		:= ""
+Local lRet		:= .F.
+Local lDelete	:= .F.
+Local nGravado	:= nError := 0
+Local cSQL		:= ""
+Local _cEmp_    := GetPvProfString(GetEnvServer(),"EMP_CTT","00",GetAdv97())
+Local _cFil_    := GetPvProfString(GetEnvServer(),"FIL_CTT","00001000100",GetAdv97())
+Local nFor		:= 0
+
+Private	cCpf	:= ""
+//Private	cCurso	:= HttpPost->cCurso
+Private cResp	:= "Problemas ao tentar salvar. Tente mais tarde ..."
+Private aDadosC := {}
+
+//aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4,HTTPPOST->aDadosC5,HTTPPOST->aDadosC6,HTTPPOST->aDadosC7,;
+			//	HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10,HTTPPOST->aDadosC11,HTTPPOST->aDadosC12,HTTPPOST->aDadosC13})
+//HTTPSESSION->aDadosC := aDadosC
+
+
+RpcClearEnv()
+RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
+
+
 //Definindo o conteÃºdo como JSON, e pegando o content e dando um parse para ver se a estrutura estÃ¡ ok
     Self:SetContentType("application/json")
- 
+ //adiciona valores as variaveis vindo do body
    If FWJsonDeserialize(cJson,@oParseJson)
-		nCpf  := AllTrim(oParseJson:Cpf)
-		nEnd  := AllTrim(oParseJson:Endereco)
-		
-		// retorna dados que foi feito o post 
-	cJsonRet    := '{"Post Realizado com sucesso " ' + nCpf + ' " " ' + nEnd + ' }'
-	Self:SetResponse(cJsonRet)
-		//exemplo para atualizar dados ALTERA ENDEREÇO
-			//DbSelectArea('PDL')
-		//	PDL->(DbSetOrder(3)) 
-		//	If PDL->(DbSEek(xFilial('PDL')+nCpf))
-		//		RecLock('PDL', .F.)
-		//			PDL->PDL_END := nEnd 
-		//		PDL->(MsUnLock())
-		//		cJsonRet    := '{"Cadastro do aluno atualizado com sucesso " ' + PDL->PDL_NOME + '}'
-		//		Self:SetResponse(cJsonRet)
-	//		ELSE
-		//     	cJsonRet    := '{"NÃ£o achou o cadastro do aluno com o cpf " ' + nCpf + '}'
-		//		Self:SetResponse(cJsonRet)
-		//	Endif
+	
+			//Busca os itens no JSON, percorre eles e adiciona no array da SC6
+            For nX  := 1 To Len (oParseJson:ITENS)
+                aLinha  := {}
+                aAdd(aLinha,{"PDL_CPF",  AllTrim(oParseJson:ITENS[nX]:PDL_CPF),          NIL})
+                aAdd(aLinha,{"PD4_TURMA",      AllTrim(oParseJson:ITENS[nX]:PD4_TURMA),  NIL})    
+				aAdd(aLinha,{"PD4_PERIO",  AllTrim(oParseJson:ITENS[nX]:PD4_PERIO),          NIL})
+                aAdd(aLinha,{"PD4_PESQ",      AllTrim(oParseJson:ITENS[nX]:PD4_PESQ),  NIL})  
+				aAdd(aLinha,{"PD4_ALUNO",      AllTrim(oParseJson:ITENS[nX]:PD4_ALUNO),  NIL})  
+               aAdd(aItens,aLinha)
+
+            Next nX 
+
+				if len(aItens)>0
+					cCpf 	:= aItens[ITENS][2]
+					cTurma	:= aItens[PD4_TURMA][2]
+					cPerio	:= aItens[PD4_PERIO][2]
+					cPesq   := aItens[PD4_PESQ][2]
+					cAluno	:= aItens[PD4_ALUNO][2]
+					
+					PD3->(DbSetOrder(1))
+					PDF->(DbSetOrder(1))
+					PD3->(DbSeek(_cFil_ + cTurma))
+					PDF->(DbSeek(_cFil_ + cTurma + cPerio))
+					
+					BeginTran()
+					For nFor := 1 to len(aItens)
+						if nFor < nPCPF
+							lRA			:= SUBSTR(aItens[nFor][1],1,1)=='R'
+							Radios		:= SUBSTR(aItens[nFor][1],6,2)
+							Areas		:= SUBSTR(aItens[nFor][1],5,2)
+							finalid		:= SUBSTR(aItens[nFor][1],AT('FINALID',aItens[nFor][1])+7,1)
+							depto		:= SUBSTR(aItens[nFor][1],AT('DEPTO',aItens[nFor][1])+5,1)
+							Pontuac		:= iif(lRA,SUBSTR(aItens[nFor][1],AT('PONTUAC',aItens[nFor][1])+7),' ')
+							if UPPER(substr(IIF(lRA,Radios,Areas),1,2)) != 'OS'
+								nGravado ++
+
+								If ! lDelete
+									cSQL := "DELETE FROM " + RetSqlName("PD4") + " " +;
+											" WHERE D_E_L_E_T_ = ' ' AND PD4_FILIAL = '" + _cFil_ + "' AND PD4_TURMA = '" + cTurma + "' " +;
+											"AND PD4_PERIO = '" + cPerio + "' AND PD4_ALUNO = '" + cAluno + "'"
+
+									If (nError := TCSQLExec(cSQL)) <> 0
+										cResp := "TCTTH040:DELETE_PD4 - " + AllTrim(Str(nError)) + "-" + TCSQLError()
+										DisarmTran()
+										Loop
+									EndIf
+
+									lDelete := .T.
+								EndIf
+								
+								RecLock("PD4", .T.)
+								PD4->PD4_FILIAL := _cFil_
+								PD4->PD4_TURMA  := cTurma
+								PD4->PD4_PERIO  := cPerio
+								PD4->PD4_PESQ   := cPesq
+								PD4->PD4_ALUNO  := cAluno
+								PD4->PD4_ITEM   := IIF(lRA,Radios,Areas)
+								PD4->PD4_FINALI := finalid 
+								PD4->PD4_DEPTO  := depto
+								PD4->PD4_ASSUNT := IIF(lRA,'1','2')
+								PD4->PD4_PONTUA := Pontuac
+								PD4->PD4_DTRESP := DATE()  
+								PD4->PD4_RESPOS := IIF(lRA,'',aItens[nFor][2])
+								PD4->PD4_EQUIV  := IIF(lRA,aItens[nFor][2],'')
+								PD4->PD4_PROF	:= PDF->PDF_PROF
+								PD4->PD4_DTCURS	:= PDF->PDF_DTINI
+								PD4->(MsUnLock())
+							EndIf
+						endif
+					Next nFor
+
+					If nGravado > 0
+						cSQL := "UPDATE " + RetSqlName("PD7") + " SET PD7_PESQRP = PD7_PESQRP + 1 " +; 
+								"WHERE D_E_L_E_T_ = ' ' AND PD7_FILIAL = '" + xFilial("PD7") + "' AND PD7_TURMA = '" + cTurma + "' " +;
+								"AND PD7_ALUNO = '" + cAluno + "'" 
+						
+						If (nError := TCSQLExec(cSQL)) <> 0
+							cResp := "TCTTH040:UPDATE_PD7 - " + AllTrim(Str(nError)) + "-" + TCSQLError()
+							DisarmTran()
+						EndIf
+					EndIf
+					If nError == 0
+						EndTran()
+						
+						If nGravado > 0
+							cResp := "Respostas salvas com Sucesso"
+						Else
+							cResp := "Nenhum resposta para ser salva ..."
+						EndIf
+					EndIf
+					
+				Endif
+
 		ELSE
 				Conout(Dtoc(Date()) + " " + Time() + " - Erro na importação verifique " )
 				SetRestFault(500,'Erro na importação verifique ')
 				lRet    := .F.
 		EndIf
-	 
-Return lRet
 
+
+Return lRet
