@@ -15,19 +15,16 @@ Return
 //------------------------------------
 WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Portal Pesquisa Satisfação CTT"
     WSDATA cpf         AS STRING	OPTIONAL
-	WSDATA turma       AS STRING	OPTIONAL // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL
-	WSDATA periodo       AS STRING	OPTIONAL // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL	
-	WSDATA id	        AS STRING	OPTIONAL
 
     WSMETHOD GET Login ;
     DESCRIPTION 'Validação do login pelo cpf' ;
     WSSYNTAX '/api/login/{cpf}/?{,cpf}' ;
     PATH '/api/login/{cpf}' 
 
-	WSMETHOD GET montagem ;
+	WSMETHOD POST montagem ;
     DESCRIPTION 'Montagem lista de cursos a partir de um CPF' ;
-    WSSYNTAX '/api/montagem/?{turma, periodo}';
-    PATH '/api/montagem'	
+    WSSYNTAX '/api/montagem/{body}';
+    PATH '/api/montagem/{body}'	
 
 	WSMETHOD POST grava ;
     DESCRIPTION 'Grava Dados pesquisa de satisfação preenchida pelo Aluno' ;
@@ -90,14 +87,14 @@ Local lCursos 	:= .F.
 		ORDER BY PD7.PD7_FILIAL, PD7.PD7_TURMA, PDF.PDF_PERIO
 	EndSql
 
-	// define o tipo de retorno do mÃ©todo
+	// define o tipo de retorno do metodo
 	::SetContentType("application/json")
 
-	//-- Aluno com alocaÃ§Ã£o
 	IF Empty(PDLQRY->PDL_ALUNO)
 		cJSon += '"RESULTADO": "0", "DESCRICAO":' + '"' + "Nao existe aluno com cpf informado [" + cCPF + "]" + '"'
 	ELSEIF Empty(PDLQRY->PD7_TURMA)
 		cJSon += '"RESULTADO": "0", "DESCRICAO":' + '"' + "Aluno do CPF [" + cCPF + "] sem alocacao" + '"'
+	//-- Aluno com alocação
 	ELSEIF ! Empty(PDLQRY->PD7_TURMA)
 		cJSon += '"resultado":"1"'
 		cJSon += ',"PDL_CPF":' + '"' + Alltrim(PDLQRY->PDL_CPF) + '"'
@@ -134,105 +131,119 @@ Local lCursos 	:= .F.
 Return .T.
 
 //------------------------------------
-// GET - "Montagem das questÃµes para pagina da pesquisa de satisfaÃ§Ã£o
+// POST - Montagem das questões para pagina da pesquisa de satisfaçaõ
 //------------------------------------
-WSMETHOD GET montagem  WSRECEIVE turma, periodo WSSERVICE CTT
-Local lRet			       := .T.
-Local i
-Local aResp	 := {}
-Local cTurma := cChave := ""
-Local _cEmp_    := GetPvProfString(GetEnvServer(),"EMP_CTT","00",GetAdv97())
-Local _cFil_    := GetPvProfString(GetEnvServer(),"FIL_CTT","00001000100",GetAdv97())
-Local cDados               :=''
-Local cJSon	               := ""
+WSMETHOD POST montagem WSSERVICE CTT
+
+Local cJson       := Self:GetContent()
+Local oJson  	  := Nil
+Local cErro  	  := ""
+Local cPDF_TURMA  :=  ""
+Local cPDF_PERIO  :=  ""
+Local cJSon	 	  := "{"
+Local aPesq		  := {}
+Local aResp		  := {}
+Local cResp       := ""
+Local nPos        := 1
+Local aPD5_FINALI := RetSx3Box( Posicione("SX3", 2, "PD5_FINALI", "X3CBox()" ),,, 1 )
+
 Default self:turma         := ''
 Default self:periodo       := ''
 
-// define o tipo de retorno do mÃ©todo
-::SetContentType("application/json")
+	// define o tipo de retorno do método
+	::SetContentType("application/json")
 
-PERIODO := Alltrim(self:periodo)
-cTurma := Alltrim(self:turma)
+    oJson := JsonObject():New()
+    cErro := oJSon:FromJson(cJson) 
 
- 
-RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD5", "PDG" },,,,)
+   	If ValType(cError) != "U"
+        cErro := '{"msg": "Erro no Parser do jSon "}'
+        SetRestFault(400, cErro)
+		Return .T.
+	EndIf
 
-//CODALU	:= HTTPPOST->aDadosC8
-//aTipo   := RetSx3Box( Posicione("SX3", 2, "PD5_FINALI", "X3CBox()" ),,, 1 )
-
-Self:SetResponse('[')
-
-PD2->(DbSetOrder(1))
-PDF->(DbSetOrder(1))
-IF PDF->(DBSEEK(_cFil_+cTurma + PERIODO)) .And. PD3->(DBSEEK(_cFil_+cTurma))
-	//aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4,HTTPPOST->aDadosC5,HTTPPOST->aDadosC6,HTTPPOST->aDadosC7,;
-					//HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10, PDF->PDF_DTINI, PDF->PDF_DTFIM, PD3->PD3_PERIOD, _cFil_, PERIODO })
-	//HTTPSESSION->aDadosC := aDadosC
+	cPDF_TURMA := Alltrim(self:turma)
+	cPDF_PERIO := Alltrim(self:periodo)
 	
-	PD2->(DbSeek(xFilial() + PDF->PDF_PROF))
-	cCurso	:= 	"Turma " + cTurma + "/" + PERIODO + " - " + ALLTRIM(PD3->PD3_NOME)+" / "+ALLTRIM(PD2->PD2_NOME) + " - " +;
-				DTOC(PDF->PDF_DTINI) + " a " + DTOC(PDF->PDF_DTFIM) + " - Carga HorÃ¡ria: " + AllTrim(Str(PDF->PDF_QTDHOR)) + " hs"   
-	
-	PD5->(dbsetorder(1))	// PERGUNTAS PESQUISA SATISFAÃ‡ÃƒO
-	PDG->(DBSETORDER(1))	// EQUIVALENCIAS
-	IF PD5->(Dbseek(xFilial("PD5")+PD3->PD3_PESQ))
-		while PD5->(!EOF()) .AND. xFilial("PD5")+PD3->PD3_PESQ == PD5->(PD5_FILIAL+PD5_PESQ)
-			IF PD5->PD5_MSBLQL == '2'	//-- NÃ£o bloqueado
-				IF ! Empty(PD5->PD5_PONTUA)
-					IF PDG->(DBSEEK(xFilial()+PD5->PD5_PONTUA))
-						AADD(aResp,{ "--", "--", 0})
-						while PDG->(!EOF()) .AND. PDG->(PDG_FILIAL + PDG_PONTUA) == PD5->(PD5_FILIAL + PD5_PONTUA) 
-							AADD(aResp,{ PDG->PDG_EQUIV, PDG->PDG_CONCEI, PDG->PDG_NOTAPO})
-							PDG->(DBSKIP())
-						END
-						//ASORT(aResp,2,,{|X,Y| X[1]>Y[1]})
-						cRep := ""
-					ELSE
-						cRep := "NÃ£o possui um grupo de resposta para essa pergunta"
-					ENDIF
-				ENDIF
-				//AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO, PD5->PD5_ASSUNTO, PD5->PD5_PERGUN, PD5->PD5_MEMO, ;
-						//	aResp, cRep, alltrim(PD5->PD5_PONTUA), cTurma, aTipo[val(PD5->PD5_FINALI)][3]})
-			cJSon += '{"PD5_PESQ":' 	  + '"'   + Alltrim(PD5->PD5_PESQ) 	+ '"'
-            cJSon += ',"PD5_ITEM":' 	  + '"'   + Alltrim(PD5->PD5_ITEM) 	+ '"'
-			cJSon += ',"PD5_FINALI":' 	  + '"'   + Alltrim(PD5->PD5_FINALI) 	+ '"'
-			cJSon += ',"PD5_DEPTO":' 	  + '"'   + Alltrim(PD5->PD5_DEPTO) 	+ '"'
-			cJSon += ',"PD5_PERGUN":' 	  + '"'   + Alltrim(PD5->PD5_PERGUN) 	+ '"'
-			cJSon += ',"PD5_MEMO":' 	  + '"'   + Alltrim(PD5->PD5_MEMO) 	+ '"'
-      		cJSon += ',"PD5_PONTUA":' 	  + '"'   + Alltrim(PD5->PD5_PONTUA) 	+ '"'
-			cJSon += ',"PD5_FINALI":' 	  + '"'   + Alltrim(PD5->PD5_FINALI) 	+ '"'
-			cJSon += "},"
-				
-				aResp 	:= {}
-				cRep 	:= ""
-				CODPESQ	:= PD5->PD5_PESQ
- 			  	CODTURM	:= cTurma
-			ENDIF
-			PD5->(DBSKIP())
-		END
-		//mostra cjson rest
+	PD2->(DbSetOrder(1))
+	PDF->(DbSetOrder(1))
+	IF PDF->(DBSEEK(_cFil_+ cPDF_TURMA + PERIODO)) .And. PD3->(DBSEEK(_cFil_+cPDF_TURMA))
+		PD2->(DbSeek(xFilial() + PDF->PDF_PROF))
 		
-	
-	ELSE
-		//cRep := "NÃ£o existe o cadastro de pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cTurma + "]"
-		cRet := "NÃ£o existe o cadastro de pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cTurma + "]"
-				cJSon += '[{"resultado":"0"'
-				cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '" }]'
+		PD5->(dbsetorder(1))	// Perguntas Pesquisa de Satisfação
+		PDG->(DBSETORDER(1))	// Equivalencias
+		IF PD5->(Dbseek(xFilial("PD5")+PD3->PD3_PESQ))
+			while PD5->(!EOF()) .AND. xFilial("PD5")+PD3->PD3_PESQ == PD5->(PD5_FILIAL+PD5_PESQ)
+				IF PD5->PD5_MSBLQL == '2'	//-- Não bloqueado
+					cResp := ""
+					IF ! Empty(PD5->PD5_PONTUA)
+						IF PDG->(DBSEEK(xFilial()+PD5->PD5_PONTUA))
+							AADD(aResp,{ "--", "--", 0})
+							while PDG->(!EOF()) .AND. PDG->(PDG_FILIAL + PDG_PONTUA) == PD5->(PD5_FILIAL + PD5_PONTUA) 
+								AADD(aResp,{ PDG->PDG_EQUIV, PDG->PDG_CONCEI, PDG->PDG_NOTAPO})
+								PDG->(DBSKIP())
+							END
+							ASORT(aResp,2,,{|X,Y| X[1]>Y[1]})
+							For nPos := 1 To Len(aResp)
+								If nResp > 1
+									cResp += ','
+								EndIF
+
+								cResp += '{"PDG_EQUIV":' + '"' + aResp[nPos][1] + '"'
+								cResp += ',"PDG_CONCEI":'+ '"' + aResp[nPos][2] + '"'
+								cResp += ',"PDG_NOTAPO":'+ '"' + aResp[nPos][3] + '"}'
+							Next
+						ENDIF
+					ENDIF
+					AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO, PD5->PD5_ASSUNTO, PD5->PD5_PERGUN, PD5->PD5_MEMO, ;
+								cResp, alltrim(PD5->PD5_PONTUA), aPD5_FINALI[val(PD5->PD5_FINALI)][3] })
+
+				ENDIF
+				PD5->(DBSKIP())
+			END
+
+			If Len(aPesq) > 0
+				cJSon += '"resultado":"1"'
+				cJSon += ',"PDL_CPF":' + '"' + Alltrim(self:PDL_CPF) + '"'
+				cJSon += ',"PDL_NOME":' + '"' + Alltrim(self:PDL_NOME) + '"'
+				cJSon += ',"PDL_EMAIL":' + '"' + Alltrim(self:PDL_EMAIL) + '"'
+				cJSon += ',"A1_CGC":' + '"' + Alltrim(self:A1_CGC) + '"'
+				cJSon += ',"A1_NOME":' + '"' + Alltrim(self:A1_NOME) + '"'
+				cJSon += ',	"PDL_ALUNO":' + '"' + Alltrim(self:PDL_ALUNO) + '"'
+				cJSon += ', ",aPesq": ['
+				For nPos := 1 To Len(aPesq)
+					If nPos > 1
+						cJSon += ","
+					EndIf
+					cJSon += '{"PD5_PESQ":' 	  + '"'   + Alltrim(aPesq[nPos][1]) 	+ '"'
+					cJSon += ',"PD5_ITEM":' 	  + '"'   + Alltrim(aPesq[nPos][2]) 	+ '"'
+					cJSon += ',"PD5_FINALI":' 	  + '"'   + Alltrim(aPesq[nPos][3]) 	+ '"'
+					cJSon += ',"PD5_DEPTO":' 	  + '"'   + Alltrim(aPesq[nPos][4]) 	+ '"'
+					cJSon += ',"PD5_ASSUNTO":' 	  + '"'   + Alltrim(aPesq[nPos][5]) 	+ '"'
+					cJSon += ',"PD5_PERGUN":' 	  + '"'   + Alltrim(aPesq[nPos][6]) 	+ '"'
+					cJSon += ',"PD5_MEMO":' 	  + '"'   + Alltrim(aPesq[nPos][7]) 	+ '"'
+					cJSon += ', "aRespostas": [' + aPesq[nPos][8] + "]"
+					cJSon += ',"PD5_PONTUA":' 	  + '"'   + Alltrim(aPesq[nPos][9]) 	+ '"'
+					cJSon += ',"PD5_FINALI_D":'   + '"'   + Alltrim(aPesq[nPos][10]) 	+ '"'
+					cJSon += "}"
+				Next
+				cJSon += ']'
+			Else
+				cJSon += '"RESULTADO": "0", '
+				cJSon += '"DESCRICAO":' + '"' + "Não existe perguntas ativas para pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cPDF_TURMA + "]" + '"'
+			EndIF
+		ELSE
+			cJSon += '"RESULTADO": "0", '
+			cJSon += '"DESCRICAO":' + '"' + "Não existe o cadastro de pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cPDF_TURMA + "]" + '"'
+		ENDIF
+	else
+		cJSon += '"RESULTADO": "0", "DESCRICAO":' + '"' + "A Turma/periodo [" + cPDF_TURMA + "/" + cPDF_PERIO + "] não foram encontradas" + '"'
 	ENDIF
-else
-	//cRep := "A Turma/periodo [" + cTurma + "/" + PERIODO + "] nÃ£o foram encontradas"
-    cRet := "A Turma/periodo [" + cTurma + "/" + PERIODO + "] nÃ£o foram encontradas"
-				cJSon += '[{"resultado":"0"'
-				cJSon += ',"Motivo":' 	  + '"'   + Alltrim(cRet) 	+ '"}]'
-					//	aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4,HTTPPOST->aDadosC5,HTTPPOST->aDadosC6,HTTPPOST->aDadosC7,;
-					//HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10,STOD(''),STOD(''),''})
-					//	HTTPSESSION->aDadosC := aDadosC
-ENDIF
 
-Self:SetResponse(cJSon)
-Self:SetResponse(']')
-Return lRet
-
+	cJson += '}'
+	Self:SetResponse(cJSon)
+	
+Return .T.
 
 //------------------------------------
 // post - "Grava Dados pesquisa de SatisfaÃ§Ã£o
@@ -246,9 +257,6 @@ WSMETHOD POST grava WSSERVICE CTT
  Local cJsonRet  := ""
  local nCpf :=""
  local nEnd :=""
-Local oResponse   := JsonObject():New()
-Local oBody       := JsonObject():New()
-Local oDataBase   := JsonObject():New()
 
 Local nP4_TURMA	:= 0
 Local nP4_PERIO	:= 0
@@ -269,8 +277,6 @@ Local lRet		:= .F.
 Local lDelete	:= .F.
 Local nGravado	:= nError := 0
 Local cSQL		:= ""
-Local _cEmp_    := GetPvProfString(GetEnvServer(),"EMP_CTT","00",GetAdv97())
-Local _cFil_    := GetPvProfString(GetEnvServer(),"FIL_CTT","00001000100",GetAdv97())
 Local nFor		:= 0
 
 Private	cCpf	:= ""
@@ -278,18 +284,8 @@ Private	cCpf	:= ""
 Private cResp	:= "Problemas ao tentar salvar. Tente mais tarde ..."
 Private aDadosC := {}
 
-//aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4,HTTPPOST->aDadosC5,HTTPPOST->aDadosC6,HTTPPOST->aDadosC7,;
-			//	HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10,HTTPPOST->aDadosC11,HTTPPOST->aDadosC12,HTTPPOST->aDadosC13})
-//HTTPSESSION->aDadosC := aDadosC
-
-
-RpcClearEnv()
-RpcSetEnv( _cEmp_,_cFil_,,, "FIN", "pesquisa", { "PD2", "PD3", "PD4" },,,,)
-
-
-//Definindo o conteÃƒÂºdo como JSON, e pegando o content e dando um parse para ver se a estrutura estÃƒÂ¡ ok
     Self:SetContentType("application/json")
- //adiciona valores as variaveis vindo do body
+ 	//adiciona valores as variaveis vindo do body
    If FWJsonDeserialize(cJson,@oParseJson)
 	
 			//Busca os itens no JSON, percorre eles e adiciona no array da SC6
