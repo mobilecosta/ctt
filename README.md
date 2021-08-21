@@ -18,3 +18,7 @@ npm install -g json-server
 json-server --watch ctt.json
 
 Para consumir use localhost:3000/aAluno ou localhost:3000/aCursos
+
+a) Metodos do Projeto:
+![image](https://user-images.githubusercontent.com/20256620/130312057-d03f1827-6ecd-4765-ae22-05f6df194c48.png)
+
