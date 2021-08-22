@@ -14,17 +14,19 @@ Return
 // @type class
 //------------------------------------
 WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Portal Pesquisa Satisfação CTT"
-    WSDATA cpf         AS STRING	OPTIONAL
+    WSDATA cpf         AS STRING
+	WSDATA turma       AS STRING // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL
+	WSDATA periodo     AS STRING // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL	
 
     WSMETHOD GET Login ;
     DESCRIPTION 'Validação do login pelo cpf' ;
-    WSSYNTAX '/api/login/{cpf}/?{,cpf}' ;
+    WSSYNTAX '/api/login/{cpf}' ;
     PATH '/api/login/{cpf}' 
 
-	WSMETHOD POST montagem ;
+	WSMETHOD GET montagem ;
     DESCRIPTION 'Montagem lista de cursos a partir de um CPF' ;
-    WSSYNTAX '/api/montagem/{body}';
-    PATH '/api/montagem/{body}'	
+    WSSYNTAX '/api/montagem/?{turma, periodo}';
+    PATH '/api/montagem'	
 
 	WSMETHOD POST grava ;
     DESCRIPTION 'Grava Dados pesquisa de satisfação preenchida pelo Aluno' ;
@@ -131,12 +133,10 @@ Local lCursos 	:= .F.
 Return .T.
 
 //------------------------------------
-// POST - Montagem das questões para pagina da pesquisa de satisfaçaõ
+// GET - Montagem das questões para pagina da pesquisa de satisfaçaõ
 //------------------------------------
-WSMETHOD POST montagem WSSERVICE CTT
+WSMETHOD GET montagem  WSRECEIVE turma, periodo WSSERVICE CTT
 
-Local cJson       := Self:GetContent()
-Local oJson  	  := Nil
 Local cErro  	  := ""
 Local cPDF_TURMA  :=  ""
 Local cPDF_PERIO  :=  ""
@@ -153,21 +153,12 @@ Default self:periodo       := ''
 	// define o tipo de retorno do método
 	::SetContentType("application/json")
 
-    oJson := JsonObject():New()
-    cErro := oJSon:FromJson(cJson) 
-
-   	If ValType(cError) != "U"
-        cErro := '{"msg": "Erro no Parser do jSon "}'
-        SetRestFault(400, cErro)
-		Return .T.
-	EndIf
-
 	cPDF_TURMA := Alltrim(self:turma)
 	cPDF_PERIO := Alltrim(self:periodo)
 	
 	PD2->(DbSetOrder(1))
 	PDF->(DbSetOrder(1))
-	IF PDF->(DBSEEK(_cFil_+ cPDF_TURMA + PERIODO)) .And. PD3->(DBSEEK(_cFil_+cPDF_TURMA))
+	IF PDF->(DBSEEK(xFilial() + cPDF_TURMA + cPDF_PERIO)) .And. PD3->(DBSEEK(xFilial() +cPDF_TURMA))
 		PD2->(DbSeek(xFilial() + PDF->PDF_PROF))
 		
 		PD5->(dbsetorder(1))	// Perguntas Pesquisa de Satisfação
@@ -178,24 +169,24 @@ Default self:periodo       := ''
 					cResp := ""
 					IF ! Empty(PD5->PD5_PONTUA)
 						IF PDG->(DBSEEK(xFilial()+PD5->PD5_PONTUA))
-							AADD(aResp,{ "--", "--", 0})
+							AADD(aResp,{ "--", "--", 0 })
 							while PDG->(!EOF()) .AND. PDG->(PDG_FILIAL + PDG_PONTUA) == PD5->(PD5_FILIAL + PD5_PONTUA) 
 								AADD(aResp,{ PDG->PDG_EQUIV, PDG->PDG_CONCEI, PDG->PDG_NOTAPO})
 								PDG->(DBSKIP())
 							END
 							ASORT(aResp,2,,{|X,Y| X[1]>Y[1]})
 							For nPos := 1 To Len(aResp)
-								If nResp > 1
+								If nPos > 1
 									cResp += ','
 								EndIF
 
 								cResp += '{"PDG_EQUIV":' + '"' + aResp[nPos][1] + '"'
 								cResp += ',"PDG_CONCEI":'+ '"' + aResp[nPos][2] + '"'
-								cResp += ',"PDG_NOTAPO":'+ '"' + aResp[nPos][3] + '"}'
+								cResp += ',"PDG_NOTAPO":'+ '"' + AllTrim(Str(aResp[nPos][3])) + '"}'
 							Next
 						ENDIF
 					ENDIF
-					AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO, PD5->PD5_ASSUNTO, PD5->PD5_PERGUN, PD5->PD5_MEMO, ;
+					AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO, PD5->PD5_ASSUNT, PD5->PD5_PERGUN, PD5->PD5_MEMO, ;
 								cResp, alltrim(PD5->PD5_PONTUA), aPD5_FINALI[val(PD5->PD5_FINALI)][3] })
 
 				ENDIF
@@ -203,14 +194,7 @@ Default self:periodo       := ''
 			END
 
 			If Len(aPesq) > 0
-				cJSon += '"resultado":"1"'
-				cJSon += ',"PDL_CPF":' + '"' + Alltrim(self:PDL_CPF) + '"'
-				cJSon += ',"PDL_NOME":' + '"' + Alltrim(self:PDL_NOME) + '"'
-				cJSon += ',"PDL_EMAIL":' + '"' + Alltrim(self:PDL_EMAIL) + '"'
-				cJSon += ',"A1_CGC":' + '"' + Alltrim(self:A1_CGC) + '"'
-				cJSon += ',"A1_NOME":' + '"' + Alltrim(self:A1_NOME) + '"'
-				cJSon += ',	"PDL_ALUNO":' + '"' + Alltrim(self:PDL_ALUNO) + '"'
-				cJSon += ', ",aPesq": ['
+				cJSon += '"resultado":"1", "aPesq": ['
 				For nPos := 1 To Len(aPesq)
 					If nPos > 1
 						cJSon += ","
