@@ -1,0 +1,23 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "PO-UI",
+			"request": "launch",
+			"type": "pwa-chrome",
+			"url": "http://localhost:4200/login",
+			"webRoot": "${workspaceFolder}"
+		},
+	
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "Debug Client 25 Totvs",
+			"program": "${command:AskForProgramName}",
+			"cwb": "${workspaceFolder}",
+			"smartclientBin": "C:/TOTVS25\/martclient25/smartclient.exe",
+			"isMultiSession": true,
+			"enableTableSync": true
+		}
+	]
+}
