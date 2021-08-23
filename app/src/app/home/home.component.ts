@@ -15,42 +15,27 @@ export class HomeComponent {
 
 
   constructor(private router: Router, private storage: PoStorageService, private httpClient: HttpClient) {
-
-
-
-    this.httpClient.get('http://172.24.50.16:8044/CTT/api/login/26277712802') .subscribe (
-
-      (datajson)=>{
-        var curso = datajson.aCursos
-
-        datajson.aCursos.forEach((value,index) => {
-
-
-          console.log(datajson.aCursos);
-          this.data.push(
-            {
-
-            datas: `${value['PDF_DTINI']}  até ${value['PDF_DTFIM']}`,
-            curso: value['PD3_NOME'],
-            turma: value['PD7_TURMA'],
-            sala: value['PD3_SALA'],
-            professor:value['PD2_NOME']
-          });
-
-
-
-        });
-
-        console.log(this.data);
-      },
-      (error)=>{
-
-        console.log(error);
-
-
-      }
-      )
-
+    // this.httpClient.get('http://172.24.50.16:8044/CTT/api/login/26277712802') .subscribe (
+    //   (datajson)=>{
+    //     var curso = datajson.aCursos
+    //     datajson.aCursos.forEach((value,index) => {
+    //       console.log(datajson.aCursos);
+    //       this.data.push(
+    //         {
+    //         datas: `${value['PDF_DTINI']}  até ${value['PDF_DTFIM']}`,
+    //         curso: value['PD3_NOME'],
+    //         turma: value['PD7_TURMA'],
+    //         sala: value['PD3_SALA'],
+    //         professor:value['PD2_NOME']
+    //       });
+    //     });
+    //     console.log(this.data);
+    //   },
+    //   (error)=>{
+    //     console.log(error);
+    //   }
+    //   )
+// fim do constructor
    }
 
   ngOnInit(): void {
@@ -70,6 +55,13 @@ export class HomeComponent {
   ];
 
   data = [
+    {
+      datas: 'teste',
+      curso: 'teste',
+      turma: 'teste',
+      sala: 'teste',
+      professor: 'teste',
+    }
       ];
 
   onBeforeSave(row: any, _old: any) {
