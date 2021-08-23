@@ -12,18 +12,33 @@ export class HomeComponent {
 
   title = 'Portal Pesquisa Satisfação (CTT)';
 
+
+
   constructor(private router: Router, private storage: PoStorageService, private httpClient: HttpClient) {
 
-    this.httpClient.get('http://172.24.50.16:8044/CTT/api/login/26277712802') .subscribe (
-      (datajson)=>{
 
-        console.log(datajson.aCursos);
-        this.data.push({
-          datas: '1980-01-01 até 1980-01-01',
-          curso: 'Teste',
-          turma: '01',
-          sala:'C',
-          professor: 'Mobile'
+
+    this.httpClient.get('http://172.24.50.16:8044/CTT/api/login/26277712802') .subscribe (
+
+      (datajson)=>{
+        var curso = datajson.aCursos
+
+        datajson.aCursos.forEach((value,index) => {
+
+
+          console.log(datajson.aCursos);
+          this.data.push(
+            {
+
+            datas: `${value['PDF_DTINI']}  até ${value['PDF_DTFIM']}`,
+            curso: value['PD3_NOME'],
+            turma: value['PD7_TURMA'],
+            sala: value['PD3_SALA'],
+            professor:value['PD2_NOME']
+          });
+
+
+
         });
 
         console.log(this.data);
@@ -55,56 +70,6 @@ export class HomeComponent {
   ];
 
   data = [
-    {
-      datas: '2021-08-04 até 2021-08-04',
-      curso: 'Configurador',
-      turma: '01',
-      sala:'A',
-      professor: 'João'
-    },
-    {
-      datas: '2021-08-08 até 2021-08-08',
-      curso: 'Módulo Financeiro',
-      turma: '01',
-      sala:'A',
-      professor: 'Fernanda'
-    },
-    {
-      datas: '2021-08-10 até 2021-08-10',
-      curso: 'Configurador',
-      turma: '02',
-      sala:'A',
-      professor: 'João'
-
-    },
-    {
-      datas: '2021-08-11 até 2021-08-11',
-      curso: 'Configurador',
-      turma: '03',
-      sala:'A',
-      professor: 'João'
-    },
-    {
-      datas: '2021-08-04 até 2021-08-04',
-      curso: 'Advpl Básico',
-      turma: '02',
-      sala:'B',
-      professor: 'Mário'
-    },
-    {
-      datas: '2021-08-05 até 2021-08-06',
-      curso: 'Módulo Faturamento',
-      turma: '01',
-      sala:'D',
-      professor: 'Jéssica'
-    },
-    {
-      datas: '2021-08-05 até 2021-08-08',
-      curso: 'Advpl Avançado',
-      turma: '01',
-      sala:'D',
-      professor: 'José'
-    }
       ];
 
   onBeforeSave(row: any, _old: any) {
