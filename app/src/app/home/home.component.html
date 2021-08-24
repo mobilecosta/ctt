@@ -1,5 +1,16 @@
 <div class="po-wrapper">
+
+
   <po-toolbar [p-title]="title"></po-toolbar>
-  <po-grid [p-row-actions]="rowActions" [p-data]="data" [p-columns]="columns"> </po-grid>
+
+
+   <po-grid [p-row-actions]="rowActions" [p-data]="data" [p-columns]="columns" >
+
+
+</po-grid>
+<po-button p-label="ok" (p-click)="onClick()"> </po-button>
+
+
+
   <router-outlet></router-outlet>
 </div>
