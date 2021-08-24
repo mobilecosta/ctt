@@ -1,5 +1,20 @@
 <div class="po-wrapper">
   <po-toolbar [p-title]="title"></po-toolbar>
-  <po-grid [p-row-actions]="rowActions" [p-data]="data" [p-columns]="columns"> </po-grid>
+
+  <po-checkbox-group
+  name="checkboxGroup"
+  p-label="PO Checkbox Group"
+  [p-options]="">
+</po-checkbox-group>
+
+  <po-grid  [p-row-actions]="rowActions" [p-data]="data" [p-columns]="columns">
+    <po-checkbox-group
+    name="checkboxGroup"
+    p-label="PO Checkbox Group"
+    [p-options]="data">
+  </po-checkbox-group>
+
+  </po-grid>
+
   <router-outlet></router-outlet>
 </div>

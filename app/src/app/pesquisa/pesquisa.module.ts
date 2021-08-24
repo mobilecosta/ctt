@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     PoModule,
     PoDynamicModule,
     FormsModule, ReactiveFormsModule, PoButtonModule
-
     ],
   declarations: [
     PesquisaComponent

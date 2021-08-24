@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PoDynamicFormField } from '@po-ui/ng-components';
+import { PoDynamicFormField, PoDynamicFormLoad } from '@po-ui/ng-components';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -12,15 +13,20 @@ export class PesquisaComponent implements OnInit {
 
   title = 'Pesquisas'
 
+  aluno = {}
+
   constructor() {
 
   }
 
-    ngOnInit(): void {
+    ngOnInit(): void {}
+
+  responder(){
+    //this.http.post('http://172.24.50.16:8044/CTT/api/login/26277712802', {});
   }
+
+
   fields: Array<PoDynamicFormField> = [
-
-
     {
       property: '1.0.1 Pontualidade(Inicio e termino de aula, saida  e retorno para avaliação)?',
       divider: 'Pergunta 01 Instrutor',

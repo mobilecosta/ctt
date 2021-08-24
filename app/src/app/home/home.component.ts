@@ -2,12 +2,20 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PoStorageService } from '@po-ui/ng-storage';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ViewChild } from '@angular/core';
+import { PoCheckboxComponent } from '@po-ui/ng-components';
+import { PoPageDynamicTableModule } from '@po-ui/ng-templates';
+import { PoGridModule, PoGridRowActions } from '@po-ui/ng-components';
+
+
+
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
 export class HomeComponent {
 
   title = 'Portal Pesquisa Satisfação (CTT)';
@@ -42,8 +50,7 @@ export class HomeComponent {
 
   }
 
-  rowActions = {
-
+  rowActions: PoGridRowActions = {
   };
 
   columns = [
@@ -60,13 +67,11 @@ export class HomeComponent {
       curso: 'teste',
       turma: 'teste',
       sala: 'teste',
-      professor: 'teste',
+      professor: 'teste'
     }
-      ];
-
+  ];
   onBeforeSave(row: any, _old: any) {
-    return row.occupation !== 'Engineer';
-  }
+  };
 
   logout(): void {
   };
