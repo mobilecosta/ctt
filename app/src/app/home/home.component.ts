@@ -77,6 +77,7 @@ export class HomeComponent {
       ];
 
   onBeforeSave(row: any, _old: any) {
+    console.log(row)
     return row.occupation !== 'Engineer';
   }
 

@@ -9,6 +9,7 @@ import { SharedModule } from './shared/shared.module';
 import { LoginModule } from './login/login.module';
 import { AuthInterceptor } from './auth/auth-config.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { PesquisaModule } from './pesquisa/pesquisa.module';
 
 @NgModule({
   imports: [
@@ -17,6 +18,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     SharedModule,
     HomeModule,
     LoginModule,
+    PesquisaModule
+
   ],
   declarations: [
     AppComponent
