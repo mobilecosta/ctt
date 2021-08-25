@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PoDynamicFormField, PoDynamicFormLoad } from '@po-ui/ng-components';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
+import { PoNotificationService } from '@po-ui/ng-components';
 
 
 
@@ -9,19 +11,26 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './pesquisa.component.html',
   styleUrls: ['./pesquisa.component.scss']
 })
+
 export class PesquisaComponent implements OnInit {
 
   title = 'Pesquisas'
 
-  aluno = {}
-
-  constructor() {
-
+  constructor(private httpClient: HttpClient, private activatedRoute: ActivatedRoute, private notify: PoNotificationService) {
   }
 
-    ngOnInit(): void {}
+  ngOnInit() {
+      const params = this.activatedRoute.snapshot.paramMap.get('params')
+      console.log(params)
+  }
 
   responder(){
+    const params = this.activatedRoute.snapshot.paramMap.get('params')
+    this.notify.success(`Prova do usuário ${params} avaliada com sucesso `)
+    //const aluno = enviroment.apialuno + params
+    // this.httpClient(aluno).subscribe(res =>{
+    //   res.push()
+    // })
     //this.http.post('http://172.24.50.16:8044/CTT/api/login/26277712802', {});
   }
 
@@ -103,6 +112,6 @@ export class PesquisaComponent implements OnInit {
       options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
     },
 
-  ]
+  ];
 
 }

@@ -3,7 +3,6 @@
 
   <po-toolbar [p-title]="title"></po-toolbar>
 
-<<<<<<< HEAD
   <po-checkbox-group
   name="checkboxGroup"
   p-label="PO Checkbox Group"
@@ -18,16 +17,11 @@
   </po-checkbox-group>
 
   </po-grid>
-=======
 
-   <po-grid [p-row-actions]="rowActions" [p-data]="data" [p-columns]="columns" >
-
-
-</po-grid>
-<po-button p-label="ok" (p-click)="onClick()"> </po-button>
+  <po-button p-label="ok" (p-click)='onClick()'> </po-button>
+<po-button p-label="ok" routerLink="/pesquisa/joao"> </po-button>
 
 
->>>>>>> 33343738c597e159a82b646885b88f3661342419
 
   <router-outlet></router-outlet>
 </div>

@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { PoNotificationModule } from '@po-ui/ng-components';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,7 +19,8 @@ import { PesquisaModule } from './pesquisa/pesquisa.module';
     SharedModule,
     HomeModule,
     LoginModule,
-    PesquisaModule
+    PesquisaModule,
+    PoNotificationModule
 
   ],
   declarations: [

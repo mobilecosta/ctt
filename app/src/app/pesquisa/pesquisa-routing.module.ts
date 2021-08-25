@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PesquisaComponent } from './pesquisa.component';
 
 const pesquisaRoutes: Routes = [
-  { path: '', component: PesquisaComponent,
+  { path: ':params', component: PesquisaComponent,
     children: [
     ] }
 ];

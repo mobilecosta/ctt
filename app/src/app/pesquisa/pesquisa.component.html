@@ -1,7 +1,9 @@
 <div class="po-wrapper">
-  <po-page-default p-title="Pesquisas">
+  <po-page-default p-title="Perguntas">
+
     <po-dynamic-form [p-fields]="fields"></po-dynamic-form>
-    <po-button p-label="Responder" (click)='responder' ></po-button>
+
+    <po-button p-label="Responder" (click)='responder()' ></po-button>
   </po-page-default>
   <router-outlet></router-outlet>
 </div>
