@@ -188,7 +188,12 @@ User Function WsProf(nOperation)
 
 	default nOperation	:= 0	// 3=INCLUSAO;4=ALTERACAO;5=EXCLUCAO;
 
-		oWsdl:lSSLInsecure 	:= .T.	// Define se fará a conexão SSL com o servidor de forma anônima, ou seja, sem verIficação de certIficados ou chaves.
+	// Caso parametro esteja em branco não tenta integrar
+	If Empty(cURL)
+		Return ""
+	EndIf
+
+	oWsdl:lSSLInsecure 	:= .T.	// Define se fará a conexão SSL com o servidor de forma anônima, ou seja, sem verIficação de certIficados ou chaves.
 
 	If nOperation == 5
 		cMetodo := 'DeleteCTTInstructor'

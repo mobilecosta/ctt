@@ -48,6 +48,7 @@ Static Function MenuDef()
 	ADD OPTION aRotina TITLE STR0031 	ACTION 'U_TCTTA220()' 		OPERATION 4 ACCESS 0 //"Propostas"
 	ADD OPTION aRotina TITLE STR0032 	ACTION 'U_TCTTA132()' 		OPERATION 4 ACCESS 0 //"Envio EMail Confirmação"
 	ADD OPTION aRotina TITLE STR0033 	ACTION 'U_TCTTR050()' 		OPERATION 4 ACCESS 0 //"Relatório Alocações"
+	ADD OPTION aRotina TITLE STR0034 	ACTION 'U_LmsIntegrar()'	OPERATION 4 ACCESS 0 //"Integrar com LMS"
 
 Return aRotina
 
@@ -595,9 +596,12 @@ User Function WsAloca(nOperation, oModelPD7, nPD7)
 	
 	// 3=INCLUSAO;4=ALTERACAO;5=EXCLUCAO;
 
+	// Caso parametro esteja em branco não tenta integrar
+	If Empty(cURL)
+		Return ""
+	EndIf
+
 	oWsdl:lSSLInsecure 	:= .T.	// Define se fará a conexão SSL com o servidor de forma anônima, ou seja, sem verIficação de certIficados ou chaves.
-
-
 	
 	If nOperation == MODEL_OPERATION_DELETE
 		cMetodo := 'DeleteCTTRegistration'

@@ -230,7 +230,12 @@ User Function WsCurso(nOperation)
 	Local cRemove := "RemoveTraining#1.TrainingInfo#1"
 	default nOperation	:= 0	// 3=INCLUSAO;4=ALTERACAO;5=EXCLUCAO;
 
-		oWsdl:lSSLInsecure 	:= .T.	// Define se fará a conexão SSL com o servidor de forma anônima, ou seja, sem verIficação de certIficados ou chaves.
+	// Caso parametro esteja em branco não tenta integrar
+	If Empty(cURL)
+		Return ""
+	EndIf
+
+	oWsdl:lSSLInsecure 	:= .T.	// Define se fará a conexão SSL com o servidor de forma anônima, ou seja, sem verIficação de certIficados ou chaves.
 
 	If nOperation == 5
 		cMetodo := 'DeleteCTTTraining'
@@ -281,10 +286,6 @@ User Function WsCurso(nOperation)
 		
 		
 	ElseIf nOperation == 3
-	
-
-	
-	
 		nPos := aScan( aSimple, {|aVet| Upper(aVet[2]) == "TOKEN" .AND. aVet[5] == "CTTAuthToken#1" } )
 		xRet := oWsdl:SetValue( aSimple[nPos][1], U_RetToken() )
 
@@ -298,16 +299,19 @@ User Function WsCurso(nOperation)
 		xRet := oWsdl:SetValue( aSimple[nPos][1], cValToChar(M->PDM_QTDHOR) )
 		
 		nPos := aScan( aSimple, {|aVet| Upper(aVet[2]) == "MODALITY" .AND. aVet[5] == cTraining } )
-		IF M->PDM_CATEG =='1'
-			xRet := oWsdl:SetValue( aSimple[nPos][1],'Presencial')
-		ElseIf M->PDM_CATEG =='2'
-			xRet := oWsdl:SetValue( aSimple[nPos][1],'Elearning')
-		ElseIf M->PDM_CATEG =='3'
-			xRet := oWsdl:SetValue( aSimple[nPos][1],'Controller' )
+
+		If M->PDM_CATEG == "1"
+			xRet := oWsdl:SetValue(aSimple[nPos][1],"Presencial")
+		ElseIf M->PDM_CATEG == "2"
+			xRet := oWsdl:SetValue(aSimple[nPos][1],"Elearning")
+		ElseIf M->PDM_CATEG == "3"
+			xRet := oWsdl:SetValue(aSimple[nPos][1],"Controller")
+		ElseIf M->PDM_CATEG == "4"
+			xRet := oWsdl:SetValue(aSimple[nPos][1],"EAD")
 		EndIf
-      
-      
-      nPos := aScan( aSimple, {|aVet| Upper(aVet[2]) == "PRODUCT" .AND. aVet[5] == cTraining } )
+
+		nPos := aScan( aSimple, {|aVet| Upper(aVet[2]) == "PRODUCT" .AND. aVet[5] == cTraining } )
+
 		If M->PDM_TPOSIS =='P'
 			xRet := oWsdl:SetValue( aSimple[nPos][1],'PROTHEUS')
 		ElseIf M->PDM_TPOSIS =='R'
@@ -327,8 +331,7 @@ User Function WsCurso(nOperation)
 		ElseIf M->PDM_TPOSIS =='I'
 			xRet := oWsdl:SetValue( aSimple[nPos][1],'VIRTUALAGE')		
 		EndIF
-      
-      
+
      /* Alteração realizada - 18/10/2018 
 		aSx3Box 	:= (SX3->(DbSetOrder(2)), SX3->(DbSeek(M->PDM_TPOSIS)), RetSx3Box( X3CBox(),,, 1 ))
 		nPos		:= Ascan( aSx3Box, { |aBox| aBox[2] = M->PDM_TPOSIS } )
