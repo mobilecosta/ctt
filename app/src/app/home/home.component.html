@@ -8,17 +8,16 @@
   p-label="PO Checkbox Group"
   [p-options]="">
 </po-checkbox-group>
+<po-table
+  [p-selectable]="true"
+  [p-single-select]="true"
+  [p-sort]="true"
+  [p-striped]="true"
+  [p-columns]="hiringProcessesColumns"
+  [p-items]="hiringProcessesFiltered"
+>
+</po-table>
 
-  <po-grid  [p-row-actions]="rowActions" [p-data]="data" [p-columns]="columns">
-    <po-checkbox-group
-    name="checkboxGroup"
-    p-label="PO Checkbox Group"
-    [p-options]="data">
-  </po-checkbox-group>
-
-  </po-grid>
-
-  <po-button p-label="ok" (p-click)='onClick()'> </po-button>
 <po-button p-label="ok" routerLink="/pesquisa/joao"> </po-button>
 
 

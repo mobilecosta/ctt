@@ -17,6 +17,7 @@ export class PesquisaComponent implements OnInit {
   title = 'Pesquisas'
 
   constructor(private httpClient: HttpClient, private activatedRoute: ActivatedRoute, private notify: PoNotificationService) {
+
   }
 
   ngOnInit() {
