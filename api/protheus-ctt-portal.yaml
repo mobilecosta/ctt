@@ -1,0 +1,83 @@
+swagger: "2.0"
+info:
+  description: "Serviço REST para retornar informacoes do Portal Pesquisa Satisfação CTT"
+  version: "v1.0"
+  title: "CTT"
+  termsOfService: ""
+host: "172.24.50.16:8044"
+basePath: "/"
+schemes:
+- "https"
+- "http"
+paths:
+  /api/grava:
+    post:
+      summary: ""
+      description: "Grava dados pesquisa de satisfação preenchida pelo aluno"
+      operationId: "0"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Bad Request"
+        "404":
+          description: "Not found"
+  /api/login/{cpf}:
+    get:
+      summary: ""
+      description: "validação do login pelo cpf"
+      operationId: "1"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "cpf"
+        type: "string"
+        description: ""
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Bad Request"
+        "404":
+          description: "Not found"
+  /api/montagem:
+    get:
+      summary: ""
+      description: "Montagem lista de cursos a partir de um cpf"
+      operationId: "2"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "turma"
+        type: "string"
+        description: ""
+        required: true
+      - in: "query"
+        name: "periodo"
+        type: "string"
+        description: ""
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Bad Request"
+        "404":
+          description: "Not found"
