@@ -1,2 +1,3 @@
 PD6;1;Proposta;Proposta;Proposta;U;;
 PD6;2;Controle;Controle;Controle;U;;
+PD6;3;Recorrencia;Recorrencia;Recorrencia;U;;
