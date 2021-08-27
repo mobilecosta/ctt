@@ -9,6 +9,7 @@ import { LoginService } from './login.service';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment'
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -18,18 +19,44 @@ import { environment } from 'src/environments/environment'
 export class LoginComponent {
 
   hideRememberUser: boolean = true;
+  loginForm: any;
+  fb: any;
 
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private httpClient: HttpClient, 
+    private httpClient: HttpClient,
     private storage: PoStorageService,
-    private poNotification: PoNotificationService) { }
+    private poNotification: PoNotificationService
+
+
+
+    ) { }
+
+    ngOnInit(): void {
+      this.loginForm = this.fb.group({
+        cpf: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern('^[0-9]{11}$'),
+            Validators.maxLength(11),
+          ],
+        ],
+     })
+
+
+     ;
+    // this.navigateTo = this.activatedRoute.snapshot.params['to'] || '/';
+
+    }
+
+
 
   loginSubmit(formData: PoPageLogin) {
 
-    var url = environment.api + 
-              'api/oauth2/v1/token?grant_type=password&password=' + formData.password + 
+    var url = environment.api +
+              'api/oauth2/v1/token?grant_type=password&password=' + formData.password +
               '&username=' + formData.login;
     var body: any;
 
