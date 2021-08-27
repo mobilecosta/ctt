@@ -11,6 +11,9 @@ import { LoginModule } from './login/login.module';
 import { AuthInterceptor } from './auth/auth-config.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { PesquisaModule } from './pesquisa/pesquisa.module';
+import { SuccessModule } from './success/success.module';
+
+
 
 @NgModule({
   imports: [
@@ -20,8 +23,8 @@ import { PesquisaModule } from './pesquisa/pesquisa.module';
     HomeModule,
     LoginModule,
     PesquisaModule,
-    PoNotificationModule
-
+    PoNotificationModule,
+    SuccessModule
   ],
   declarations: [
     AppComponent

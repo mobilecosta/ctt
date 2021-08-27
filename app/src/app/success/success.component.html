@@ -1,0 +1,12 @@
+<div class="po-wrapper">
+  <po-dynamic-view [p-fields]="fields" [p-value]="employee"> </po-dynamic-view>
+
+  <po-divider></po-divider>
+  <po-info p-label="Respostas salvas com Sucesso"> </po-info>
+<po-divider></po-divider>
+
+<po-button
+[routerLink]="['']" p-label='Voltar'></po-button>
+
+<router-outlet></router-outlet>
+</div>
