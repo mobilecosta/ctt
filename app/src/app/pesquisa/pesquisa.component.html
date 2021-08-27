@@ -3,8 +3,7 @@
 
     <po-divider></po-divider>
     <po-dynamic-form [p-fields]="fields"></po-dynamic-form>
-
-    <po-button p-label="Responder" (click)='responder()' ></po-button>
+    <po-button p-label="Ok" [routerLink]="['/success']"  ></po-button>
   </po-page-default>
   <router-outlet></router-outlet>
 </div>

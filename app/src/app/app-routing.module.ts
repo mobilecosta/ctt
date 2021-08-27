@@ -2,6 +2,7 @@ import { NgModule, Component } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 import { AuthGuardService } from './auth/auth-guard.service';
+import { SuccessComponent } from './success/success.component';
 
 const routes: Routes = [
 
@@ -18,6 +19,10 @@ const routes: Routes = [
   {
     path: 'pesquisa',
     loadChildren: () => import('./pesquisa/pesquisa.module').then(m => m.PesquisaModule)
+  },
+  {
+    path: 'success',
+    component: SuccessComponent
   }
 ];
 

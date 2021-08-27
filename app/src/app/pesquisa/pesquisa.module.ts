@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PesquisaComponent } from './pesquisa.component';
 import { PesquisaRoutingModule } from './pesquisa-routing.module';
-import { PoModule, PoDynamicModule, PoButtonModule, PoFieldModule } from '@po-ui/ng-components';
+import { PoModule, PoDynamicModule, PoButtonModule, PoInfoModule } from '@po-ui/ng-components';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 
@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     PesquisaRoutingModule,
     PoModule,
     PoDynamicModule,
-    FormsModule, ReactiveFormsModule, PoButtonModule
+    FormsModule, ReactiveFormsModule, PoButtonModule, PoInfoModule
     ],
   declarations: [
     PesquisaComponent
