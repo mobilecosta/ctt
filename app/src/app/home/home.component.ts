@@ -5,6 +5,9 @@ import { HttpClient } from '@angular/common/http';
 import { PoTableColumn } from '@po-ui/ng-components';
 import { PoCheckboxGroupOption} from '@po-ui/ng-components';
 import { environment } from 'src/environments/environment';
+import { PoDynamicViewField, PoListViewLiterals } from '@po-ui/ng-components';
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -13,6 +16,13 @@ import { environment } from 'src/environments/environment';
 export class HomeComponent {
 
   title = 'Portal Pesquisa Satisfação (CTT)';
+  fields: Array<PoDynamicViewField> = [
+    {property: 'name', label: 'CPF/Nome'},
+    {property: 'email', label: 'Email'},
+    {property: 'business', label: 'Empresa'},
+    {property: 'class', label: 'Turma/Periodo - Curso/Professor'}
+  ]
+  employee = {}
 
   hiringProcesses: Array<object>;
   hiringProcessesColumns: Array<PoTableColumn>;
@@ -22,16 +32,7 @@ export class HomeComponent {
   statusOptions: Array<PoCheckboxGroupOption>;
 
 
-  getItems = [
-      {
-        hireStatus: 'hired',
-        datas: '00/00/0000 até 00/00/0000',
-        curso: 'João Victor',
-        turma: '0001',
-        sala: '0002',
-        professores: 'Operador'
-      }
-    ];
+  getItems = [];
    getColumns: Array<PoTableColumn> = [
      {
        property: 'hireStatus',
@@ -59,23 +60,28 @@ export class HomeComponent {
 
   constructor(private router: Router, private storage: PoStorageService, private httpClient: HttpClient) {
 
-    // this.httpClient.get('http://localhost:8080/api/v1/alunos') .subscribe (
-    //   (datajson)=>{
-    //  var curso = datajson.aCursos         //Variavel criado a partir do Json.
-    //   datajson.aCursos.forEach((value,index) => {            //Foreach para percorrer o caminho do Json a cursos.
-    //     this.getItems.push({
-    //           hireStatus: 'hired',
-    //           datas: `${value['PDF_DTINI']}  até ${value['PDF_DTFIM']}`,
-    //           curso: value['PD3_NOME'],
-    //           turma: value['PD7_TURMA'],
-    //           sala: value['PD3_SALA'],
-    //           professores: value['PD2_NOME']
-    //         })
-    //     });
-    //   }
-    // )
-    // fim do httpclient
-   }
+    this.storage.get('user').then((res)=>{
+      console.log(res)
+      this.employee = {
+        name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
+        email: res.PDL_EMAIL,
+        business: `${res.A1_CGC} - ${res.A1_NOME} / Orçamento cod.`,
+        class: `${res.PDL_NOME}`
+      }
+      res.aCursos.forEach((value,index) => {            //Foreach para percorrer o caminho do Json a cursos.
+        this.getItems.push({
+              hireStatus: 'progress',
+              datas: `${value['PDF_DTINI']}  até ${value['PDF_DTFIM']}`,
+              curso: value['PD3_NOME'],
+              turma: value['PD7_TURMA'],
+              sala: value['PD3_SALA'],
+              professores: value['PD2_NOME']
+            })
+        })
+      })
+
+
+      }
 
   ngOnInit(): void {
     this.statusOptions = this.getHireStatus;

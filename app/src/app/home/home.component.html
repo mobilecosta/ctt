@@ -1,11 +1,13 @@
 <div class="po-wrapper">
 
 
-  <po-toolbar [p-title]="title"></po-toolbar>
+  
+  <po-dynamic-view [p-fields]="fields" [p-value]="employee"> </po-dynamic-view>
 
+  <po-divider></po-divider>
   <po-checkbox-group
   name="checkboxGroup"
-  p-label="PO Checkbox Group"
+  p-label=""
   [p-options]="">
 </po-checkbox-group>
 <po-table

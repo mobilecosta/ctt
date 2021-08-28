@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PoDynamicViewField, PoListViewLiterals } from '@po-ui/ng-components';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { PoStorageService } from '@po-ui/ng-storage';
 
 @Component({
   templateUrl: './success.component.html',
@@ -17,25 +18,19 @@ export class SuccessComponent implements OnInit {
     {property: 'business', label: 'Empresa'},
     {property: 'class', label: 'Turma/Periodo - Curso/Professor'}
   ]
-  employee = {
-    name: 'xxx.xxx.xxx-xx / Nome',
-    email: 'email@email.com',
-    business: 'xxx.xxx.xxx/xxx-xx - Business / Oraçamento cod.',
-    class: 'class/turn - course/teacher'
-  }
-  constructor(private httpClient: HttpClient) {
+  employee = {}
+  constructor(private storage: PoStorageService) {
 
-    // employee = {}
-    //  var url = environment.aluno;
-    // this.httpClient.get(url) .subscribe (
-    //   (datajson)=>{
-    //  var curso = datajson.alunos         //Variavel criado a partir do Json.
-    //   datajson.aCursos.forEach((value,index) => {            //Foreach para percorrer o caminho do Json a cursos.
-    //this.employee = { name: value; email: string; business: string; class: string; }
-    //     });
-    //   }
-    // )
-
+    this.storage.get('user').then((res)=>{
+      console.log(res)
+      this.employee = {
+        name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
+        email: res.PDL_EMAIL,
+        business: `${res.A1_CGC} - ${res.A1_NOME} / Orçamento cod.`,
+        class: `${res.PDL_NOME}`
+      }
+    })
+    
   }
 
   ngOnInit() {

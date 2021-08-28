@@ -9,7 +9,7 @@ import { LoginService } from './login.service';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment'
-import { Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 
 @Component({
   selector: 'app-login',
@@ -19,22 +19,25 @@ import { Validators } from '@angular/forms';
 export class LoginComponent {
 
   hideRememberUser: boolean = true;
-  loginForm: any;
-  fb: any;
+  form: FormGroup;
+  formData: PoPageLogin
 
   constructor(
     private loginService: LoginService,
     private router: Router,
     private httpClient: HttpClient,
     private storage: PoStorageService,
-    private poNotification: PoNotificationService
+    private poNotification: PoNotificationService,
+    private formBuilder: FormBuilder
 
-
-
-    ) { }
+    ) {
+      this.storage.remove('user').then((res)=>{
+        console.log('usuario removido')
+      })
+    }
 
     ngOnInit(): void {
-      this.loginForm = this.fb.group({
+      this.form = this.formBuilder.group({
         cpf: [
           '',
           [
@@ -53,26 +56,48 @@ export class LoginComponent {
 
 
 
-  loginSubmit(formData: PoPageLogin) {
+  loginSubmit() {
 
-    var url = environment.api +
-              'api/oauth2/v1/token?grant_type=password&password=' + formData.password +
-              '&username=' + formData.login;
+    // var url_token = environment.api +
+    //           'api/oauth2/v1/token?grant_type=password&password=' + this.formData.password +
+    //           '&username=' + this.formData.login;
     var body: any;
+    const cpf = this.form.controls['cpf'].value
+    var url_login = environment.api + "api/login/" + cpf
+
+    this.httpClient.get(url_login).subscribe((res) => {
+      if(res.resultado == 1){
+        this.storage.set('user', res).then(()=>{
+          this.poNotification.success('Usuário encontrado banco de dados')
+          this.router.navigate(['/']);
+        })
+      }else{
+        this.poNotification.error('error usuário nao vindo do banco de dados')
+      }
+
+    }, (error) =>{
+      if(! error.hasOwnProperty('user')){
+        console.log(error)
+
+      }
+    
+    })
 
 /*
     Chamada PostLogin
     this.httpClient.post(url, body).subscribe((res) => {
+      
       this.storage.set('isLoggedIn', 'true').then(() => {
         localStorage.setItem('access_token', res["access_token"])
         this.router.navigate(['/']);
       });
+
     }, (res) => {
       if ((! res.hasOwnProperty('access_token')))
         { this.poNotification.error('Usuário ou senha invalidos ! Tente novamente.') };
     });
 */
-    this.router.navigate(['/']);
+    //this.router.navigate(['/']);
 
   }
 
