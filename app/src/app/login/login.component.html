@@ -7,16 +7,13 @@
 
     <form [formGroup]="form" >
     <div class="po-row po-md-12">
-    <span class="po-font-subtitle po-text-color-02 po-md-12"
-      >Sejam Bem Vindo, <br>
-      Identifique-se abaixo com seu CPF(sem pontos)  para realização da pesquisa</span
-    >
+    <span class="po-font-subtitle po-text-color-02 po-md-12">Sejam Bem Vindo, <br>
+      Identifique-se abaixo com seu CPF(sem pontos)  para realização da pesquisa</span>
       <div class="flex-container">
         <po-login name="cpf" p-label="CPF" formControlName="cpf" class="po-md-12">
         </po-login>
 
-<po-button p-label="Acessar portal" class="po-md-8" (click)='loginSubmit()' > </po-button>
-</div>
+        <po-button p-label="Acessar portal" class="po-md-8" (click)='loginSubmit()' > </po-button>
+      </div>
     </div>
-
   </form>

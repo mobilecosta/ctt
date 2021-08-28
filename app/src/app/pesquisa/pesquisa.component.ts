@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PoDynamicFormField, PoDynamicFormLoad } from '@po-ui/ng-components';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PoNotificationService, PoDynamicFormField } from '@po-ui/ng-components';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { PoNotificationService } from '@po-ui/ng-components';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pesquisa',
@@ -29,7 +27,7 @@ export class PesquisaComponent implements OnInit {
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     },
 
     {
@@ -37,7 +35,7 @@ export class PesquisaComponent implements OnInit {
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     },
 
     {
@@ -45,7 +43,7 @@ export class PesquisaComponent implements OnInit {
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     },
 
     {
@@ -53,7 +51,7 @@ export class PesquisaComponent implements OnInit {
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     },
 
     {
@@ -61,42 +59,40 @@ export class PesquisaComponent implements OnInit {
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10'],
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
 
     },
 
     {
-      property:'2.0.1 Conteudo programatico foi apresentado e seus topicos abordados? ' ,
-      divider:'Pergunta 02 Material-Didático',
+      property: '2.0.1 Conteudo programatico foi apresentado e seus topicos abordados? ',
+      divider: 'Pergunta 02 Material-Didático',
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     },
 
     {
-      property:'2.0.2 Exercicios praticos no sistema(Promeveram fixacao do aprendizado)?' ,
+      property: '2.0.2 Exercicios praticos no sistema(Promeveram fixacao do aprendizado)?',
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     },
 
     {
-      property:'2.0.3 Material Didatico(Apostila e/ou Material complementar) Adequado para consultas?' ,
+      property: '2.0.3 Material Didatico(Apostila e/ou Material complementar) Adequado para consultas?',
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     },
-
-
     {
-      property:'2.0.4 Roteiro de Aprendizado(Apresentação das informacoes foi de facil compreensao?',
+      property: '2.0.4 Roteiro de Aprendizado(Apresentação das informacoes foi de facil compreensao?',
       gridColumns: 10,
       gridSmColumns: 15,
       optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     },
 
   ];

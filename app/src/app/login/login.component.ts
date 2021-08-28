@@ -7,7 +7,7 @@ import { PoStorageService } from '@po-ui/ng-storage';
 
 import { LoginService } from './login.service';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 
@@ -30,29 +30,29 @@ export class LoginComponent {
     private poNotification: PoNotificationService,
     private formBuilder: FormBuilder
 
-    ) {
-      this.storage.remove('user').then((res)=>{
-        console.log('usuario removido')
-      })
-    }
+  ) {
+    this.storage.remove('user').then((res) => {
+      console.log('usuario removido')
+    })
+  }
 
-    ngOnInit(): void {
-      this.form = this.formBuilder.group({
-        cpf: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern('^[0-9]{11}$'),
-            Validators.maxLength(11),
-          ],
+  ngOnInit(): void {
+    this.form = this.formBuilder.group({
+      cpf: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('^[0-9]{11}$'),
+          Validators.maxLength(11),
         ],
-     })
+      ],
+    })
 
 
-     ;
+      ;
     // this.navigateTo = this.activatedRoute.snapshot.params['to'] || '/';
 
-    }
+  }
 
 
 
@@ -66,37 +66,37 @@ export class LoginComponent {
     var url_login = environment.api + "api/login/" + cpf
 
     this.httpClient.get(url_login).subscribe((res) => {
-      if(res.resultado == 1){
-        this.storage.set('user', res).then(()=>{
+      if (res['resultado']) {
+        this.storage.set('user', res).then(() => {
           this.poNotification.success('Usuário encontrado banco de dados')
           this.router.navigate(['/']);
         })
-      }else{
+      } else {
         this.poNotification.error('error usuário nao vindo do banco de dados')
       }
 
-    }, (error) =>{
-      if(! error.hasOwnProperty('user')){
+    }, (error) => {
+      if (!error.hasOwnProperty('user')) {
         console.log(error)
 
       }
-    
+
     })
 
-/*
-    Chamada PostLogin
-    this.httpClient.post(url, body).subscribe((res) => {
-      
-      this.storage.set('isLoggedIn', 'true').then(() => {
-        localStorage.setItem('access_token', res["access_token"])
-        this.router.navigate(['/']);
-      });
-
-    }, (res) => {
-      if ((! res.hasOwnProperty('access_token')))
-        { this.poNotification.error('Usuário ou senha invalidos ! Tente novamente.') };
-    });
-*/
+    /*
+        Chamada PostLogin
+        this.httpClient.post(url, body).subscribe((res) => {
+          
+          this.storage.set('isLoggedIn', 'true').then(() => {
+            localStorage.setItem('access_token', res["access_token"])
+            this.router.navigate(['/']);
+          });
+    
+        }, (res) => {
+          if ((! res.hasOwnProperty('access_token')))
+            { this.poNotification.error('Usuário ou senha invalidos ! Tente novamente.') };
+        });
+    */
     //this.router.navigate(['/']);
 
   }
