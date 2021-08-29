@@ -73,16 +73,7 @@ export class HomeComponent {
           turma: value['PD7_TURMA'],
           sala: value['PD3_SALA'],
           professores: value['PD2_NOME']
-        },
-          {
-            hireStatus: 'progress',
-            datas: `${value['PDF_DTINI']}  até ${value['PDF_DTFIM']}`,
-            curso: value['PD3_NOME'],
-            turma: value['PD7_TURMA'],
-            sala: value['PD3_SALA'],
-            professores: value['PD2_NOME']
-          }
-        )
+        })
       })
     })
 
@@ -96,7 +87,6 @@ export class HomeComponent {
         this.router.navigate([`/${value.curso}`]);
       }
     })
-
   }
   ngOnInit(): void {
     this.statusOptions = this.getHireStatus;

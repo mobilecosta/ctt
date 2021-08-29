@@ -30,11 +30,7 @@ export class LoginComponent {
     private poNotification: PoNotificationService,
     private formBuilder: FormBuilder
 
-    ) {
-      this.storage.remove('user').then((res)=>{
-        console.log('usuario removido')
-      })
-    }
+    ) {}
 
     ngOnInit(): void {
       this.loginForm = this.formBuilder.group({

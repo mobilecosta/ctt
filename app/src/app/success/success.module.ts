@@ -3,10 +3,6 @@ import { SuccessComponent } from './success.component';
 import { SuccessRoutingModule } from './success-routing.module';
 import { PoModule, PoDynamicModule, PoFieldModule, PoDividerModule } from '@po-ui/ng-components';
 
-
-
-
-
 @NgModule({
   imports: [
     SuccessRoutingModule,
@@ -17,4 +13,5 @@ import { PoModule, PoDynamicModule, PoFieldModule, PoDividerModule } from '@po-u
   ],
   providers: []
 })
+
 export class SuccessModule { }
