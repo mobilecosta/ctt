@@ -278,7 +278,7 @@ WSMETHOD POST grava WSSERVICE CTT
 		           "AND PD7_ALUNO = '" + cAluno + "'" 
 		
 		If (nError := TCSQLExec(cSQL)) <> 0
-			cResponse := '{ "msg": "Erro Update - " + AllTrim(Str(nError)) + "-" + TCSQLError()" }'
+			cResponse := '{ "msg": "Erro Update - " + ' + AllTrim(Str(nError)) + "-" + TCSQLError() + " }"
    			DisarmTran()
 		Else
 			cResponse := '{ "msg": "Sucesso" } '
