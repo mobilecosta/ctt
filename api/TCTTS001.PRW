@@ -234,57 +234,142 @@ Return .T.
 //------------------------------------
 WSMETHOD POST grava WSSERVICE CTT
  
-    Local cJSON     := Self:GetContent() // Pega a string do JSON
-    Local oJson     := Nil
-    Local cResponse := ""
-	Local aItem     := {}
-	Local nPos      := 1
-	Local aNames    := {}
-	Local nNames    := 1
-	Local xValue    := Nil
-	Local cTurma    := ""
-	Local cPeriodo  := ""
+ Local lPost := .T.
+ Local cJson     := Self:GetContent()
+ Local oParseJson    := NIL
+ loca oItems := NIL
+ Local cJsonRet  := ""
+ local nCpf :=""
+ local nEnd :=""
 
-    // define o tipo de retorno do metodo
+Local nP4_TURMA	:= 0
+Local nP4_PERIO	:= 0
+Local nP4_PESQ	:= 0
+Local nP4_ALUNO	:= 0
+Local nPCPF		:= 0
+Local Radios	:= ""
+Local Areas		:= ""
+Local finalid	:= ""
+Local depto		:= ""
+Local nX
+Local nY
+Local oItems
+Local aItens    := {}
+Local Pontuac	:= ""
+Local lRA		:= ""
+Local lRet		:= .F.
+Local lDelete	:= .F.
+Local nGravado	:= nError := 0
+Local cSQL		:= ""
+Local nFor		:= 0
+
+Private	cCpf	:= ""
+//Private	cCurso	:= HttpPost->cCurso
+Private cResp	:= "Problemas ao tentar salvar. Tente mais tarde ..."
+Private aDadosC := {}
+
     Self:SetContentType("application/json")
-    oJson  := JsonObject():New()
-    cError := oJSon:FromJson(cJson) 
+ 	//adiciona valores as variaveis vindo do body
+   If FWJsonDeserialize(cJson,@oParseJson)
+	
+			//Busca os itens no JSON, percorre eles e adiciona no array da SC6
+            For nX  := 1 To Len (oParseJson:ITENS)
+                aLinha  := {}
+                aAdd(aLinha,{"PDL_CPF",  AllTrim(oParseJson:ITENS[nX]:PDL_CPF),          NIL})
+                aAdd(aLinha,{"PD4_TURMA",      AllTrim(oParseJson:ITENS[nX]:PD4_TURMA),  NIL})    
+				aAdd(aLinha,{"PD4_PERIO",  AllTrim(oParseJson:ITENS[nX]:PD4_PERIO),          NIL})
+                aAdd(aLinha,{"PD4_PESQ",      AllTrim(oParseJson:ITENS[nX]:PD4_PESQ),  NIL})  
+				aAdd(aLinha,{"PD4_ALUNO",      AllTrim(oParseJson:ITENS[nX]:PD4_ALUNO),  NIL})  
+               aAdd(aItens,aLinha)
 
-   If ValType(cError) != "U"
+            Next nX 
 
-        cResponse := '{"msg": "Erro no Parser do jSon "}'
-        SetRestFault(400, cResponse)
-    Else
-		aItem := oJson:GetJsonObject('respostas') 
-		for nPos := 1 to len(aItem)
-			aMatriz  := {}
-			oJsonDet :=  aItem[nPos]
-			aNames := oJson['respostas'][nPos]:GETNAMES()
+				if len(aItens)>0
+					cCpf 	:= aItens[ITENS][2]
+					cTurma	:= aItens[PD4_TURMA][2]
+					cPerio	:= aItens[PD4_PERIO][2]
+					cPesq   := aItens[PD4_PESQ][2]
+					cAluno	:= aItens[PD4_ALUNO][2]
+					
+					PD3->(DbSetOrder(1))
+					PDF->(DbSetOrder(1))
+					PD3->(DbSeek(_cFil_ + cTurma))
+					PDF->(DbSeek(_cFil_ + cTurma + cPerio))
+					
+					BeginTran()
+					For nFor := 1 to len(aItens)
+						if nFor < nPCPF
+							lRA			:= SUBSTR(aItens[nFor][1],1,1)=='R'
+							Radios		:= SUBSTR(aItens[nFor][1],6,2)
+							Areas		:= SUBSTR(aItens[nFor][1],5,2)
+							finalid		:= SUBSTR(aItens[nFor][1],AT('FINALID',aItens[nFor][1])+7,1)
+							depto		:= SUBSTR(aItens[nFor][1],AT('DEPTO',aItens[nFor][1])+5,1)
+							Pontuac		:= iif(lRA,SUBSTR(aItens[nFor][1],AT('PONTUAC',aItens[nFor][1])+7),' ')
+							if UPPER(substr(IIF(lRA,Radios,Areas),1,2)) != 'OS'
+								nGravado ++
 
-			RecLock("PD4", .T.)
-			PD4->PD4_FILIAL := xFilial("PD4")
-			For nNames := 1 To Len(aNames)
-				If ! Empty(oJsonDet[aNames[nPos]])
-					xValue := oJsonDet[aNames[nNames]]
-					If FWSX3Util():GetFieldType( aNames[nPos] ) == "D"
-						xValue := Stod(StrTran(xValue, "-", ""))
-					EndIF
-					&("PD4->" + aNames[nPos]) := xValue
-				EndIf
-			Next
-		Next
-		cSQL := "UPDATE " + RetSqlName("PD7") + " SET PD7_PESQRP = PD7_PESQRP + 1 " +; 
-		         "WHERE D_E_L_E_T_ = ' ' AND PD7_FILIAL = '" + xFilial("PD7") + "' AND PD7_TURMA = '" + cTurma + "' " +;
-		           "AND PD7_ALUNO = '" + cAluno + "'" 
-		
-		If (nError := TCSQLExec(cSQL)) <> 0
-			cResponse := '{ "msg": "Erro Update - " + ' + AllTrim(Str(nError)) + "-" + TCSQLError() + " }"
-   			DisarmTran()
-		Else
-			cResponse := '{ "msg": "Sucesso" } '
-   		EndIf
+								If ! lDelete
+									cSQL := "DELETE FROM " + RetSqlName("PD4") + " " +;
+											" WHERE D_E_L_E_T_ = ' ' AND PD4_FILIAL = '" + _cFil_ + "' AND PD4_TURMA = '" + cTurma + "' " +;
+											"AND PD4_PERIO = '" + cPerio + "' AND PD4_ALUNO = '" + cAluno + "'"
 
-		Self:SetResponse( cResponse )
-    EndIf
+									If (nError := TCSQLExec(cSQL)) <> 0
+										cResp := "TCTTH040:DELETE_PD4 - " + AllTrim(Str(nError)) + "-" + TCSQLError()
+										DisarmTran()
+										Loop
+									EndIf
 
-Return .T.
+									lDelete := .T.
+								EndIf
+								
+								RecLock("PD4", .T.)
+								PD4->PD4_FILIAL := _cFil_
+								PD4->PD4_TURMA  := cTurma
+								PD4->PD4_PERIO  := cPerio
+								PD4->PD4_PESQ   := cPesq
+								PD4->PD4_ALUNO  := cAluno
+								PD4->PD4_ITEM   := IIF(lRA,Radios,Areas)
+								PD4->PD4_FINALI := finalid 
+								PD4->PD4_DEPTO  := depto
+								PD4->PD4_ASSUNT := IIF(lRA,'1','2')
+								PD4->PD4_PONTUA := Pontuac
+								PD4->PD4_DTRESP := DATE()  
+								PD4->PD4_RESPOS := IIF(lRA,'',aItens[nFor][2])
+								PD4->PD4_EQUIV  := IIF(lRA,aItens[nFor][2],'')
+								PD4->PD4_PROF	:= PDF->PDF_PROF
+								PD4->PD4_DTCURS	:= PDF->PDF_DTINI
+								PD4->(MsUnLock())
+							EndIf
+						endif
+					Next nFor
+
+					If nGravado > 0
+						cSQL := "UPDATE " + RetSqlName("PD7") + " SET PD7_PESQRP = PD7_PESQRP + 1 " +; 
+								"WHERE D_E_L_E_T_ = ' ' AND PD7_FILIAL = '" + xFilial("PD7") + "' AND PD7_TURMA = '" + cTurma + "' " +;
+								"AND PD7_ALUNO = '" + cAluno + "'" 
+						
+						If (nError := TCSQLExec(cSQL)) <> 0
+							cResp := "TCTTH040:UPDATE_PD7 - " + AllTrim(Str(nError)) + "-" + TCSQLError()
+							DisarmTran()
+						EndIf
+					EndIf
+					If nError == 0
+						EndTran()
+						
+						If nGravado > 0
+							cResp := "Respostas salvas com Sucesso"
+						Else
+							cResp := "Nenhum resposta para ser salva ..."
+						EndIf
+					EndIf
+					
+				Endif
+
+		ELSE
+				Conout(Dtoc(Date()) + " " + Time() + " - Erro na importação verifique " )
+				SetRestFault(500,'Erro na importação verifique ')
+				lRet    := .F.
+		EndIf
+
+
+Return lRet
