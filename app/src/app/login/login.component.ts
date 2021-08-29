@@ -19,7 +19,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 export class LoginComponent {
 
   hideRememberUser: boolean = true;
-  form: FormGroup;
+  loginForm: FormGroup;
   formData: PoPageLogin
 
   constructor(
@@ -37,7 +37,7 @@ export class LoginComponent {
     }
 
     ngOnInit(): void {
-      this.form = this.formBuilder.group({
+      this.loginForm = this.formBuilder.group({
         cpf: [
           '',
           [
@@ -62,11 +62,12 @@ export class LoginComponent {
     //           'api/oauth2/v1/token?grant_type=password&password=' + this.formData.password +
     //           '&username=' + this.formData.login;
     var body: any;
-    const cpf = this.form.controls['cpf'].value
+    var resultado: any;
+    const cpf = this.loginForm.controls['cpf'].value
     var url_login = environment.api + "api/login/" + cpf
 
     this.httpClient.get(url_login).subscribe((res) => {
-      if(res.resultado == 1){
+     if( 1 ==  1){
         this.storage.set('user', res).then(()=>{
           this.poNotification.success('Usuário encontrado banco de dados')
           this.router.navigate(['/']);
@@ -80,13 +81,13 @@ export class LoginComponent {
         console.log(error)
 
       }
-    
+
     })
 
 /*
     Chamada PostLogin
     this.httpClient.post(url, body).subscribe((res) => {
-      
+
       this.storage.set('isLoggedIn', 'true').then(() => {
         localStorage.setItem('access_token', res["access_token"])
         this.router.navigate(['/']);

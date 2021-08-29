@@ -1,22 +1,41 @@
-
-
-
-<form>
-  <img src="https://seeklogo.com/images/T/totvs-logo-AC24AADE6C-seeklogo.com.png" alt="center" width=100
-    height=30>
-
-    <form [formGroup]="form" >
-    <div class="po-row po-md-12">
-    <span class="po-font-subtitle po-text-color-02 po-md-12"
-      >Sejam Bem Vindo, <br>
-      Identifique-se abaixo com seu CPF(sem pontos)  para realização da pesquisa</span
-    >
-      <div class="flex-container">
-        <po-login name="cpf" p-label="CPF" formControlName="cpf" class="po-md-12">
-        </po-login>
-
-<po-button p-label="Acessar portal" class="po-md-8" (click)='loginSubmit()' > </po-button>
-</div>
+<div class="flex-container">
+  <po-container class="po-md-6 po-lg-4">
+    <div class="po-row po-md-12 po-mb-4" id="logo">
+      <img src="https://seeklogo.com/images/T/totvs-logo-AC24AADE6C-seeklogo.com.png" alt="logotipo" />
     </div>
-
-  </form>
+    <div class="po-row po-md-12">
+      <span class="po-font-subtitle po-text-color-01 po-md-12 po-text-center"
+        >Acesso</span
+      >
+    </div>
+    <form [formGroup]="loginForm">
+      <div class="po-row">
+        <po-input
+          p-auto-focus="true"
+          #cnpjCpf
+          class="po-md-12"
+          formControlName="cpf"
+          p-placeholder="CPF"
+          p-icon="po-icon-warehouse"
+          p-error-pattern="Informe somente números. CPF: 99999999999"
+          p-min-length="11"
+          p-max-length="11"
+        >
+        </po-input>
+      </div>
+      <div class="po-row">
+        <po-divider class="po-md-12"></po-divider>
+      </div>
+      <div class="po-row">
+        <po-button
+          class="po-md-12"
+          [p-disabled]="loginForm?.invalid"
+          p-label="Entrar"
+          p-type="primary"
+          (p-click)="loginSubmit()"
+        >
+        </po-button>
+      </div>
+    </form>
+  </po-container>
+</div>
