@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PoStorageService } from '@po-ui/ng-storage';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PoDynamicViewField, PoCheckboxGroupOption, PoTableColumn } from '@po-ui/ng-components';
 
 
@@ -83,8 +83,14 @@ export class HomeComponent {
 
     this.getItems.forEach((value, index) => {
       if (value.$selected == true) {
+        this.storage.set('pergunta', {"turma":value.turma,"sala":value.sala}).then((res) => {
+        this.storage.get('pergunta').then((res)=>{
+          console.log(res)
+        })
+        })
         console.log(value.curso, index)
-        this.router.navigate([`/${value.curso}`]);
+
+        this.router.navigate([`/pesquisa`]);
       }
     })
   }

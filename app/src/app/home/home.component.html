@@ -16,16 +16,6 @@
 >
 </po-table>
 
-
-
-<po-button p-label="Ok" [routerLink]="['/pesquisa']"> </po-button>
-<po-button p-label="Voltar" [routerLink]="['/login']"> </po-button>
-
-  <po-checkbox-group name="checkboxGroup" p-label="" [p-options]=""></po-checkbox-group>
-
-  <po-table [p-selectable]="true" [p-single-select]="true" [p-sort]="true" [p-striped]="true" 
-    [p-columns]="hiringProcessesColumns" [p-items]="hiringProcessesFiltered"></po-table>
-
   <po-button p-label="Ok" (click)="pesquisa()"> </po-button>
   <po-button p-label="Voltar" [routerLink]="['/home']"> </po-button>
   

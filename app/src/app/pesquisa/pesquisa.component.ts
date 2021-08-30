@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { PoNotificationService } from '@po-ui/ng-components';
 import { environment } from 'src/environments/environment';
-
+import { PoStorageService } from '@po-ui/ng-storage';
 @Component({
   selector: 'app-pesquisa',
   templateUrl: './pesquisa.component.html',
@@ -12,18 +12,35 @@ import { environment } from 'src/environments/environment';
 })
 
 export class PesquisaComponent implements OnInit {
-
+  
   title = 'Pesquisas'
-
-  constructor(private httpClient: HttpClient, private activatedRoute: ActivatedRoute, private notify: PoNotificationService) {
-
+  fields: Array<PoDynamicFormField> = []
+  
+  
+  constructor(private storage: PoStorageService,private httpClient: HttpClient, private activatedRoute: ActivatedRoute, private notify: PoNotificationService) {
+    this.storage.get('pergunta').then((res)=>{
+      var url = environment.api + `api/montagem/?{${res.turma},${res.sala}}`
+      this.httpClient.get(url).subscribe((element)=>{
+        this.storage.set('perguntas', element).then(e => console.log(e))
+      },(res)=>{})
+    })
   }
-
+  
   ngOnInit() {
+    this.storage.get('perguntas').then((res)=>{
+      console.log(res)
+      this.fields.push({
+        property: '1.0.1 Pontualidade(Inicio e termino de aula, saida  e retorno para avaliação)?',
+      divider: 'Pergunta 01 Instrutor',
+      gridColumns: 10,
+      gridSmColumns: 15,
+      optional: false,
+      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+      })
+    })
   }
 
-  fields: Array<PoDynamicFormField> = [
-    {
+    ss = [{
       property: '1.0.1 Pontualidade(Inicio e termino de aula, saida  e retorno para avaliação)?',
       divider: 'Pergunta 01 Instrutor',
       gridColumns: 10,
@@ -32,7 +49,7 @@ export class PesquisaComponent implements OnInit {
       options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
     },
 
-    {
+    { 
       property: '1.0.2 Habilitar em promover a participação do grupo e/ou aluno?',
       gridColumns: 10,
       gridSmColumns: 15,
