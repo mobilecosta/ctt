@@ -30,8 +30,8 @@ WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Portal Pesq
 
 	WSMETHOD POST grava ;
     DESCRIPTION 'Grava Dados pesquisa de satisfação preenchida pelo Aluno' ;
-    WSSYNTAX '/api/grava/{body}' ;
-    PATH '/api/grava/{body}' 
+    WSSYNTAX '/api/grava' ;
+    PATH '/api/grava' 
 END WSRESTFUL
 
 //------------------------------------
@@ -283,6 +283,12 @@ WSMETHOD POST grava WSSERVICE CTT
 		Else
 			cResponse := '{ "msg": "Sucesso" } '
    		EndIf
+
+		if .F.
+			PD2->(DbSeek(xFilial() + PD3->PD3_PROF))
+			StartJob( "U_TCTTM010", GetEnvServer(), .F., {{	SM0->M0_CODIGO,SM0->M0_CODFIL}, AllTrim(PD2->PD2_EMAIL),;
+															aRet[nP4_PESQ][2], aRet[nP4_ALUNO][2], aRet[nP4_TURMA][2], aDadosC, cCurso } )
+		ENDIF
 
 		Self:SetResponse( cResponse )
     EndIf
