@@ -137,7 +137,6 @@ Return .T.
 //------------------------------------
 WSMETHOD GET montagem  WSRECEIVE turma, periodo WSSERVICE CTT
 
-Local cErro  	  := ""
 Local cPDF_TURMA  :=  ""
 Local cPDF_PERIO  :=  ""
 Local cJSon	 	  := "{"
@@ -242,8 +241,7 @@ WSMETHOD POST grava WSSERVICE CTT
 	Local aNames    := {}
 	Local nNames    := 1
 	Local xValue    := Nil
-	Local cTurma    := ""
-	Local cPeriodo  := ""
+	Local aPD4		:= {}
 
     // define o tipo de retorno do metodo
     Self:SetContentType("application/json")
@@ -255,6 +253,21 @@ WSMETHOD POST grava WSSERVICE CTT
         cResponse := '{"msg": "Erro no Parser do jSon "}'
         SetRestFault(400, cResponse)
     Else
+		aNames := oJson:GETNAMES()
+		For nNames := 1 To Len(aNames)
+			If Upper(aNames[nNames]) == "RESPOSTAS"
+				Loop
+			EndIF
+			xValue := oJson[aNames[nNames]]
+			If FWSX3Util():GetFieldType( aNames[nNames] ) == "D"
+				xValue := Stod(StrTran(xValue, "-", ""))
+			EndIF
+			Aadd(aPD4, { aNames[nNames], xValue })
+		Next
+
+		M->PD4_TURMA := ""
+		M->PD4_PROF  := ""
+		M->PD4_ALUNO := ""
 		aItem := oJson:GetJsonObject('respostas') 
 		for nPos := 1 to len(aItem)
 			aMatriz  := {}
@@ -263,18 +276,29 @@ WSMETHOD POST grava WSSERVICE CTT
 
 			RecLock("PD4", .T.)
 			PD4->PD4_FILIAL := xFilial("PD4")
+			For nNames := 1 To Len(aPD4)
+				If aPD4[nNames][1] == "PD4_PROF"
+					M->PD4_PROF := aPD4[nNames][2]
+				ElseIf aPD4[nNames][1] == "PD4_TURMA"
+					M->PD4_TURMA := aPD4[nNames][2]
+				ElseIf aPD4[nNames][1] == "PD4_ALUNO"
+					M->PD4_ALUNO := aPD4[nNames][2]
+				EndIf
+				&("PD4->" + aPD4[nNames][1]) := aPD4[nNames][2]
+			Next
+
 			For nNames := 1 To Len(aNames)
 				If ! Empty(oJsonDet[aNames[nPos]])
 					xValue := oJsonDet[aNames[nNames]]
 					If FWSX3Util():GetFieldType( aNames[nPos] ) == "D"
 						xValue := Stod(StrTran(xValue, "-", ""))
 					EndIF
-					&("PD4->" + aNames[nPos]) := xValue
+					&("PD4->" + aNames[nNames]) := xValue
 				EndIf
 			Next
 		Next
 		cSQL := "UPDATE " + RetSqlName("PD7") + " SET PD7_PESQRP = PD7_PESQRP + 1 " +; 
-		         "WHERE D_E_L_E_T_ = ' ' AND PD7_FILIAL = '" + xFilial("PD7") + "' AND PD7_TURMA = '" + cTurma + "' " +;
+		         "WHERE D_E_L_E_T_ = ' ' AND PD7_FILIAL = '" + xFilial("PD7") + "' AND PD7_TURMA = '" + M->PD4_TURMA + "' " +;
 		           "AND PD7_ALUNO = '" + cAluno + "'" 
 		
 		If (nError := TCSQLExec(cSQL)) <> 0
@@ -282,13 +306,11 @@ WSMETHOD POST grava WSSERVICE CTT
    			DisarmTran()
 		Else
 			cResponse := '{ "msg": "Sucesso" } '
-   		EndIf
-
-		if .F.
-			PD2->(DbSeek(xFilial() + PD3->PD3_PROF))
+			PD2->(DbSeek(xFilial() + M->PD4_PROF))
 			StartJob( "U_TCTTM010", GetEnvServer(), .F., {{	SM0->M0_CODIGO,SM0->M0_CODFIL}, AllTrim(PD2->PD2_EMAIL),;
-															aRet[nP4_PESQ][2], aRet[nP4_ALUNO][2], aRet[nP4_TURMA][2], aDadosC, cCurso } )
-		ENDIF
+															"", "", "", {}, M->PD3_CURSO } )
+
+   		EndIf
 
 		Self:SetResponse( cResponse )
     EndIf
