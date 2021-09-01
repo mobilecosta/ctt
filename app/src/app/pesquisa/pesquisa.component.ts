@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PoNotificationService } from '@po-ui/ng-components';
 import { environment } from 'src/environments/environment';
 import { PoStorageService } from '@po-ui/ng-storage';
+import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-pesquisa',
   templateUrl: './pesquisa.component.html',
@@ -12,20 +13,20 @@ import { PoStorageService } from '@po-ui/ng-storage';
 })
 
 export class PesquisaComponent implements OnInit {
-  
+
   title = 'Pesquisas'
-  fields: Array<PoDynamicFormField> = []
-  
-  
+  dynamicForm: NgForm;
+
+
   constructor(private storage: PoStorageService,private httpClient: HttpClient, private activatedRoute: ActivatedRoute, private notify: PoNotificationService) {
-/*    
+/*
     this.storage.get('pergunta').then((res)=>{
       var url = environment.api + `api/montagem/?{${res.turma},${res.sala}}`
       this.httpClient.get(url).subscribe((element)=>{
         this.storage.set('perguntas', element).then(e => console.log(e))
       },(res)=>{})
     })
-*/    
+*/
   }
 
   onLoadFields(): PoDynamicFormLoad {
@@ -37,9 +38,30 @@ export class PesquisaComponent implements OnInit {
       ],
       focus: 'cpf'
     };
-    
+
   }
-    
+
+  fields: Array<PoDynamicFormField> = [
+
+    {
+      property: 'pergunta1',
+      label:'1.0.1 Pontualidade(Inicio e termino de aula, saida  e retorno para avaliação)?',
+      divider: 'Pergunta 01 Instrutor',
+      gridColumns: 10,
+      gridSmColumns: 15,
+      optional: false,
+      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+    },
+    {
+      property: 'pergunta2',
+      label:'1.0.2 Habilitar em promover a participação do grupo e/ou aluno?',
+      gridColumns: 10,
+      gridSmColumns: 15,
+      optional: false,
+      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+    }
+  ]
+
   ngOnInit() {
 /*
     this.storage.get('perguntas').then((res)=>{
@@ -53,7 +75,7 @@ export class PesquisaComponent implements OnInit {
       options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
       })
     })
-*/    
+*/
   }
 
 }
