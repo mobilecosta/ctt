@@ -16,19 +16,33 @@ export class PesquisaComponent implements OnInit {
 
   title = 'Pesquisas'
   dynamicForm: NgForm;
+  respotas: [];
+  url_post = environment.api + '/grava'
+  cod_turma: any;
 
 
   constructor(private storage: PoStorageService,private httpClient: HttpClient, private activatedRoute: ActivatedRoute, private notify: PoNotificationService) {
-/*
-    this.storage.get('pergunta').then((res)=>{
-      var url = environment.api + `api/montagem/?{${res.turma},${res.sala}}`
-      this.httpClient.get(url).subscribe((element)=>{
-        this.storage.set('perguntas', element).then(e => console.log(e))
-      },(res)=>{})
-    })
-*/
-  }
+   this.storage.get('pergunta').then(turma=> this.cod_turma = turma['turma'])
+      this.storage.get('user').then((value1)=>{
+        console.log(value1)
+        value1.aCursos.forEach((element) => {
+          this.httpClient.post(this.url_post, {
+            "PD4_ALUNO": value1['PDL_ALUNO'],
+            "PD4_PERIO": element['PDF_PERIO'],
+          "PD4_TURMA": this.cod_turma,
+          "PD4_PROF": value1['PDL_NOME'],
+          "PD4_PESQ": 'codigo da pesquisa',
+          "PD4_DTCURS": `${element['PDF_DTINI']}  até ${element['PDF_DTFIM']}`,
+          "respostas": this.respotas // respostas deve ser um array com os campos identicos ao requeridos a api e o valor vindo do form controll
+          }).subscribe((success)=> {
+            console.log('success')
+          }, (error)=>{
+            console.log('error')
+          })
+        });
+      })
 
+  }
   onLoadFields(): PoDynamicFormLoad {
 
     return {
