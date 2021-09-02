@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "protheus": {
+    "portalctt": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -66,24 +66,78 @@
                   "maximumError": "10kb"
                 }
               ]
-            }
+            },
+            "dev": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
+              "outputPath": "dist/dev/portal-ctt",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "pre": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.pre.ts"
+                }
+              ],
+              "outputPath": "dist/pre/portal-ctt",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }			
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "protheus:build"
+            "browserTarget": "portalctt:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "protheus:build:production"
+              "browserTarget": "portalctt:build:production"
+            },
+            "pre": {
+              "browserTarget": "portalctt:build:pre"
+            },
+            "dev": {
+              "browserTarget": "portalctt:build:dev"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "protheus:build"
+            "browserTarget": "portalctt:build"
           }
         },
         "test": {
@@ -126,18 +180,24 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "protheus:serve"
+            "devServerTarget": "portalctt:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "protheus:serve:production"
+              "devServerTarget": "portalctt:serve:production"
+            },
+            "dev": {
+              "devServerTarget": "portalctt:serve:dev"
+            },
+            "pre": {
+              "devServerTarget": "portalctt:serve:pre"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "protheus",
+  "defaultProject": "portalctt",
   "cli": {
     "analytics": "e8aa9a88-edda-4eb7-b04f-9ce016eca024"
   }

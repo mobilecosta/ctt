@@ -54,48 +54,49 @@ export class LoginComponent {
 
   loginSubmit() {
 
-    // var url_token = environment.api +
-    //           'api/oauth2/v1/token?grant_type=password&password=' + this.formData.password +
-    //           '&username=' + this.formData.login;
     var body: any;
     var resultado: any;
-    const cpf = this.loginForm.controls['cpf'].value
-    var url_login = environment.api + "api/login/" + cpf
+    const cpf = this.loginForm.controls['cpf'].value;
+    var url_token = environment.urltoken;
+    var url_login = environment.api + "api/login/" + cpf;
 
-    this.httpClient.get(url_login).subscribe((res) => {
-     if( 1 ==  1){
-        this.storage.set('user', res).then(()=>{
-          this.poNotification.success('Usuário encontrado banco de dados')
-          this.router.navigate(['/']);
+    // Autenticação Metodo retorno TOKEN
+    this.httpClient.post(url_token, body).subscribe((res) => {
+      if( 1 ==  1){
+         this.storage.set('user', res).then(()=>{
+          localStorage.setItem('access_token', res["access_token"])
+
+          // Autenticação Metodo LOGIN baseado no CPF
+          this.httpClient.get(url_login).subscribe((res) => {
+            if( 1 ==  1){
+              this.storage.set('user', res).then(()=>{
+                this.router.navigate(['/']);
+              })
+            }else{
+              this.poNotification.error('error usuário nao vindo do banco de dados')
+            }
+      
+          }, (error) =>{
+            if(! error.hasOwnProperty('user')){
+              console.log(error)
+      
+            }
+      
+          })
+ 
         })
-      }else{
-        this.poNotification.error('error usuário nao vindo do banco de dados')
-      }
-
-    }, (error) =>{
-      if(! error.hasOwnProperty('user')){
-        console.log(error)
-
-      }
-
-    })
-
-/*
-    Chamada PostLogin
-    this.httpClient.post(url, body).subscribe((res) => {
-
-      this.storage.set('isLoggedIn', 'true').then(() => {
-        localStorage.setItem('access_token', res["access_token"])
-        this.router.navigate(['/']);
-      });
-
-    }, (res) => {
-      if ((! res.hasOwnProperty('access_token')))
-        { this.poNotification.error('Usuário ou senha invalidos ! Tente novamente.') };
-    });
-*/
-    //this.router.navigate(['/']);
-
+       }else{
+         this.poNotification.error('Falha na autenticação')
+       }
+ 
+     }, (error) =>{
+       if(! error.hasOwnProperty('user')){
+         console.log(error)
+ 
+       }
+ 
+     })
+ 
   }
 
 }
