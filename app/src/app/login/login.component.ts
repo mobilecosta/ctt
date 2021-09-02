@@ -21,7 +21,8 @@ export class LoginComponent {
   hideRememberUser: boolean = true;
   loginForm: FormGroup;
   formData: PoPageLogin
-
+  private headers: HttpHeaders;
+    
   constructor(
     private loginService: LoginService,
     private router: Router,
@@ -60,8 +61,14 @@ export class LoginComponent {
     var url_token = environment.urltoken;
     var url_login = environment.api + "api/login/" + cpf;
 
+    if (environment.wso2) {
+      this.headers = new HttpHeaders().set('Authorization', 'Basic UjJhbHJFZDRoQWh1MmZSMFRPQnVCTlpxdFM0YTpsUDBUYktKUDdmQ245WGJDUktkM2pYZDFYRW9hIA');
+      this.headers.append('Content-Type', 'application/x-www-form-urlencoded');
+      body = 'grant_type=client_credentials';
+    };
+
     // Autenticação Metodo retorno TOKEN
-    this.httpClient.post(url_token, body).subscribe((res) => {
+    this.httpClient.post(url_token, body, { headers: this.headers }).subscribe((res) => {
       if( 1 ==  1){
          this.storage.set('user', res).then(()=>{
           localStorage.setItem('access_token', res["access_token"])

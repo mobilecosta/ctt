@@ -104,7 +104,7 @@
                   "with": "src/environments/environment.pre.ts"
                 }
               ],
-              "outputPath": "dist/pre/portal-ctt",
+              "outputPath": "dist",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
