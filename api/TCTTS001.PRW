@@ -242,6 +242,7 @@ WSMETHOD POST grava WSSERVICE CTT
 	Local nNames    := 1
 	Local xValue    := Nil
 	Local aPD4		:= {}
+	Local lOk		:= .F.
 
     // define o tipo de retorno do metodo
     Self:SetContentType("application/json")
@@ -268,6 +269,37 @@ WSMETHOD POST grava WSSERVICE CTT
 		M->PD4_TURMA := ""
 		M->PD4_PROF  := ""
 		M->PD4_ALUNO := ""
+		M->PD4_PESQ  := ""
+		M->PD4_PERIO := ""
+		// PD4_FILIAL+PD4_PESQ+PD4_TURMA+PD4_ALUNO+PD4_PERIO+PD4_ITEM  
+		// 0100100000100000101
+		aItem := oJson:GetJsonObject('respostas') 
+		for nPos := 1 to len(aItem)
+			aNames := oJson['respostas'][nPos]:GETNAMES()
+			For nNames := 1 To Len(aPD4)
+				If aPD4[nNames][1] == "PD4_PROF"
+					M->PD4_PROF := Left(aPD4[nNames][2] + Space(Len(PD4->PD4_PROF)), Len(PD4->PD4_PROF))
+				ElseIf aPD4[nNames][1] == "PD4_TURMA"
+					M->PD4_TURMA := Left(aPD4[nNames][2] + Space(Len(PD4->PD4_TURMA)), Len(PD4->PD4_TURMA))
+				ElseIf aPD4[nNames][1] == "PD4_ALUNO"
+					M->PD4_ALUNO := Left(aPD4[nNames][2] + Space(Len(PD4->PD4_ALUNO)), Len(PD4->PD4_ALUNO))
+				ElseIf aPD4[nNames][1] == "PD4_PESQ"
+					M->PD4_PESQ := Left(aPD4[nNames][2] + Space(Len(PD4->PD4_PESQ)), Len(PD4->PD4_PESQ))
+				ElseIf aPD4[nNames][1] == "PD4_PERIO"
+					M->PD4_PERIO := Left(aPD4[nNames][2] + Space(Len(PD4->PD4_PERIO)), Len(PD4->PD4_PERIO))
+				EndIf
+			Next
+		Next
+
+		// ConOut("Chave: [" + xFilial("PD4") + M->PD4_PESQ+M->PD4_TURMA+M->PD4_ALUNO+M->PD4_PERIO + "]")
+		If PD4->(DbSeek(xFilial("PD4") + M->PD4_PESQ+M->PD4_TURMA+M->PD4_ALUNO+M->PD4_PERIO, .T.))
+			cResponse := '{ "msg": "Pesquisa já respondida para essa turma/aluno e periodo" }"
+		Else
+			lOk := .T.
+		EndIf
+	EndIf
+	
+	If lOk
 		aItem := oJson:GetJsonObject('respostas') 
 		for nPos := 1 to len(aItem)
 			aMatriz  := {}
@@ -277,13 +309,6 @@ WSMETHOD POST grava WSSERVICE CTT
 			RecLock("PD4", .T.)
 			PD4->PD4_FILIAL := xFilial("PD4")
 			For nNames := 1 To Len(aPD4)
-				If aPD4[nNames][1] == "PD4_PROF"
-					M->PD4_PROF := aPD4[nNames][2]
-				ElseIf aPD4[nNames][1] == "PD4_TURMA"
-					M->PD4_TURMA := aPD4[nNames][2]
-				ElseIf aPD4[nNames][1] == "PD4_ALUNO"
-					M->PD4_ALUNO := aPD4[nNames][2]
-				EndIf
 				&("PD4->" + aPD4[nNames][1]) := aPD4[nNames][2]
 			Next
 
@@ -299,7 +324,7 @@ WSMETHOD POST grava WSSERVICE CTT
 		Next
 		cSQL := "UPDATE " + RetSqlName("PD7") + " SET PD7_PESQRP = PD7_PESQRP + 1 " +; 
 		         "WHERE D_E_L_E_T_ = ' ' AND PD7_FILIAL = '" + xFilial("PD7") + "' AND PD7_TURMA = '" + M->PD4_TURMA + "' " +;
-		           "AND PD7_ALUNO = '" + cAluno + "'" 
+		           "AND PD7_ALUNO = '" + M->PD4_ALUNO + "'" 
 		
 		If (nError := TCSQLExec(cSQL)) <> 0
 			cResponse := '{ "msg": "Erro Update - " + ' + AllTrim(Str(nError)) + "-" + TCSQLError() + " }"
@@ -312,7 +337,7 @@ WSMETHOD POST grava WSSERVICE CTT
 
    		EndIf
 
-		Self:SetResponse( cResponse )
     EndIf
+	Self:SetResponse( cResponse )
 
 Return .T.
