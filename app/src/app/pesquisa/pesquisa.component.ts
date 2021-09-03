@@ -5,24 +5,68 @@ import { ActivatedRoute } from '@angular/router';
 import { PoNotificationService } from '@po-ui/ng-components';
 import { environment } from 'src/environments/environment';
 import { PoStorageService } from '@po-ui/ng-storage';
-import { NgForm } from '@angular/forms';
+import { NgForm, NgModelGroup } from '@angular/forms';
 @Component({
   selector: 'app-pesquisa',
   templateUrl: './pesquisa.component.html',
   styleUrls: ['./pesquisa.component.scss']
 })
 
+
 export class PesquisaComponent implements OnInit {
 
   title = 'Pesquisas'
   dynamicForm: NgForm;
   respotas: [];
-  url_post = environment.api + '/grava'
+  url_post = environment.api + '/grava';
   cod_turma: any;
+  fields: Array<PoDynamicFormField>;
 
 
   constructor(private storage: PoStorageService,private httpClient: HttpClient, private activatedRoute: ActivatedRoute, private notify: PoNotificationService) {
-   this.storage.get('pergunta').then(turma=> this.cod_turma = turma['turma'])
+    // this.fields = [
+
+    //   {
+    //     property: 'pergunta1',
+    //     label:'1.0.1 Pontualidade(Inicio e termino de aula, saida  e retorno para avaliação)?',
+    //     divider: 'Pergunta 01 Instrutor',
+    //     gridColumns: 10,
+    //     gridSmColumns: 15,
+    //     fieldValue: '',
+    //     optional: false,
+    //     options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+    //   },
+    //   {
+    //     property: 'pergunta2',
+    //     label:'1.0.2 Habilitar em promover a participação do grupo e/ou aluno?',
+    //     gridColumns: 10,
+    //     gridSmColumns: 15,
+    //     optional: false,
+    //     options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+    //   }
+    // ]
+
+    let url = environment.api + 'api/montagem/?{000001,01}'
+    this.httpClient.get(url).subscribe((res)=>{
+      console.log(res);
+      var p = res['aPesq']
+      p.forEach((value, index) => {
+        this.fields = [
+          {
+            property: 'pergunta2',
+            label: value['PD5_ASSUNTO'],
+            gridColumns: 10,
+            gridSmColumns: 15,
+            optional: false,
+            options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+          }
+        ]
+      });
+    }, (err)=>{
+      console.log(err)
+    })
+
+   /* this.storage.get('pergunta').then(turma=> this.cod_turma = turma['turma'])
       this.storage.get('user').then((value1)=>{
         console.log(value1)
         value1.aCursos.forEach((element) => {
@@ -40,41 +84,25 @@ export class PesquisaComponent implements OnInit {
             console.log('error')
           })
         });
-      })
+      }) */
 
   }
-  onLoadFields(): PoDynamicFormLoad {
+  getForm(form: NgForm) {
+    console.log(this.dynamicForm)
+}
 
+  onLoadFields(): PoDynamicFormLoad {
+    console.log('dsds');
     return {
-      value: { cpf: undefined },
+      value: { property: 'pergunta2' },
       fields: [
-        { property: 'cpf' }
-      ],
-      focus: 'cpf'
+        { property: 'pergunta1' }
+      ]
     };
 
   }
 
-  fields: Array<PoDynamicFormField> = [
 
-    {
-      property: 'pergunta1',
-      label:'1.0.1 Pontualidade(Inicio e termino de aula, saida  e retorno para avaliação)?',
-      divider: 'Pergunta 01 Instrutor',
-      gridColumns: 10,
-      gridSmColumns: 15,
-      optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
-    },
-    {
-      property: 'pergunta2',
-      label:'1.0.2 Habilitar em promover a participação do grupo e/ou aluno?',
-      gridColumns: 10,
-      gridSmColumns: 15,
-      optional: false,
-      options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
-    }
-  ]
 
   ngOnInit() {
 /*
