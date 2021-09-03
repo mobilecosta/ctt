@@ -243,6 +243,7 @@ WSMETHOD POST grava WSSERVICE CTT
 	Local xValue    := Nil
 	Local aPD4		:= {}
 	Local lOk		:= .F.
+	Local aDadosC	:= {}
 
     // define o tipo de retorno do metodo
     Self:SetContentType("application/json")
@@ -261,7 +262,7 @@ WSMETHOD POST grava WSSERVICE CTT
 			EndIF
 			xValue := oJson[aNames[nNames]]
 			If FWSX3Util():GetFieldType( aNames[nNames] ) == "D"
-				xValue := Stod(StrTran(xValue, "-", ""))
+ 				xValue := Stod(StrTran(xValue, "-", ""))
 			EndIF
 			Aadd(aPD4, { aNames[nNames], xValue })
 		Next
@@ -332,8 +333,20 @@ WSMETHOD POST grava WSSERVICE CTT
 		Else
 			cResponse := '{ "msg": "Sucesso" } '
 			PD2->(DbSeek(xFilial() + M->PD4_PROF))
+			PDL->(DbSeek(xFilial() + M->PDL_ALUNO))
+
+// Versão Advpl ASP
+//			aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4 ,HTTPPOST->aDadosC5 ,HTTPPOST->aDadosC6,;
+//							HTTPPOST->aDadosC7,HTTPPOST->aDadosC8,HTTPPOST->aDadosC9,HTTPPOST->aDadosC10,HTTPPOST->aDadosC11,HTTPPOST->aDadosC12,;
+//							HTTPPOST->aDadosC13})
+//	AADD(aDadosC,{ 	TRANS(PDLQRY->PDL_CPF,"@R 999.999.999-99") 01, PDLQRY->PDL_NOME 02, PDLQRY->PDL_EMAIL 03,;
+//					transform(PDLQRY->A1_CGC, If(Len(PDLQRY->A1_CGC) = 11, "@R 999.999.999-99", "@R 99.999.999/9999-99")) 04, PDLQRY->A1_NOME 05,;
+//                  DATE() 06, TIME() 07, PDLQRY->PDL_ALUNO 08, _cEmp_ 09, _cFil_ 10, PDF->PDF_DTINI 11, PDF->PDF_DTFIM 12, PD3->PD3_PERIOD 13 })
+
+			aDadosC := { 	"", PDL->PDL_NOME, PDL->PDL_EMAIL, "", "", Date(), Time(), M->PD4_ALUNO, cEmpAnt, cFilAnt,;
+							PDF->PDF_DTINI, PDF->PDF_DTFIM, M->PD4_PERIO }
 			StartJob( "U_TCTTM010", GetEnvServer(), .F., {{	SM0->M0_CODIGO,SM0->M0_CODFIL}, AllTrim(PD2->PD2_EMAIL),;
-															"", "", "", {}, M->PD3_CURSO } )
+															"", "", "", aDadosC, M->PD3_CURSO } )
 
    		EndIf
 
