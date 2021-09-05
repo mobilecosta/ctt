@@ -21,6 +21,9 @@ export class PesquisaComponent implements OnInit {
   url_post = environment.api + '/grava';
   cod_turma: any;
   fields: Array<PoDynamicFormField>;
+  filedstemp = []
+  count: number = 0;
+
 
 
   constructor(private storage: PoStorageService,private httpClient: HttpClient, private activatedRoute: ActivatedRoute, private notify: PoNotificationService) {
@@ -45,23 +48,38 @@ export class PesquisaComponent implements OnInit {
     //     options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
     //   }
     // ]
-
     let url = environment.api + 'api/montagem/?{000001,01}'
     this.httpClient.get(url).subscribe((res)=>{
-      console.log(res);
-      var p = res['aPesq']
-      p.forEach((value, index) => {
-        this.fields = [
-          {
-            property: 'pergunta2',
-            label: value['PD5_ASSUNTO'],
+      var [pesquisa] = [res['aPesq']]
+
+      pesquisa.forEach(element => {
+        console.log(element)
+          if(element['PD5_ASSUNTO'] == '0'){
+            this.filedstemp.push({
+              property: `${this.count}`,
+              label: `${element['PD5_PERGUN']}`,
+              divider: 'Pergunta 01 Instrutor',
+              gridColumns: 10,
+              gridSmColumns: 15,
+              rows: 5,
+              placeholder: 'coloque seu texto'
+            })
+          }else{
+            this.filedstemp.push({
+            property: `${this.count}`,
+            label: `${this.count}`+`${element['PD5_PERGUN']}`,
+            divider: 'Pergunta 01 Instrutor',
             gridColumns: 10,
             gridSmColumns: 15,
+            fieldValue: '',
             optional: false,
-            options: ['1', '2', '3', '4', '5', '6', '7','8','9','10']
+            options: ['1', '2', '3', '4', '5']
+          })
           }
-        ]
-      });
+        this.count+=1
+        });
+        this.fields = this.filedstemp;
+
     }, (err)=>{
       console.log(err)
     })

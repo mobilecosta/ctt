@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { PoStorageService } from '@po-ui/ng-storage';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PoDynamicViewField, PoCheckboxGroupOption, PoTableColumn } from '@po-ui/ng-components';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -57,6 +58,8 @@ export class HomeComponent {
 
   constructor(private router: Router, private storage: PoStorageService, private httpClient: HttpClient) {
     console.log(this.getHireStatus)
+
+    this.httpClient.get(environment.api)
     this.storage.get('user').then((res) => {
       this.employee = {
         name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
