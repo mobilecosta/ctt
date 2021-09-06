@@ -193,6 +193,7 @@ Default self:periodo       := ''
 			END
 
 			If Len(aPesq) > 0
+				Asort(aPesq,,,{|z,x| z[1]+z[3]+z[2]< x[1]+x[3]+x[2] })			
 				cJSon += '"resultado":"1", "aPesq": ['
 				For nPos := 1 To Len(aPesq)
 					If nPos > 1
