@@ -185,7 +185,8 @@ Default self:periodo       := ''
 							Next
 						ENDIF
 					ENDIF
-					AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO, PD5->PD5_ASSUNT, PD5->PD5_PERGUN, PD5->PD5_MEMO, ;
+					AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO,;
+								PD5->PD5_ASSUNT, EncodeUTF8(PD5->PD5_PERGUN), EncodeUTF8(PD5->PD5_MEMO), ;
 								cResp, alltrim(PD5->PD5_PONTUA), aPD5_FINALI[val(PD5->PD5_FINALI)][3] })
 
 				ENDIF
