@@ -54,11 +54,11 @@ export class PesquisaComponent implements OnInit {
 
       pesquisa.forEach(element => {
         console.log(element)
-          if(element['PD5_ASSUNTO'] == '0'){
+          if(element['PD5_ASSUNTO'] == '2'){
             this.filedstemp.push({
               property: `${this.count}`,
               label: `${element['PD5_PERGUN']}`,
-              divider: 'Pergunta 01 Instrutor',
+              divider: `${element['PD5_FINALI_D']}`,
               gridColumns: 10,
               gridSmColumns: 15,
               rows: 5,
@@ -68,7 +68,7 @@ export class PesquisaComponent implements OnInit {
             this.filedstemp.push({
             property: `${this.count}`,
             label: `${this.count}`+`${element['PD5_PERGUN']}`,
-            divider: 'Pergunta 01 Instrutor',
+            divider: `${element['PD5_FINALI_D']}`,
             gridColumns: 10,
             gridSmColumns: 15,
             fieldValue: '',
