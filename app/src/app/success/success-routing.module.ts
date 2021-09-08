@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SuccessComponent } from './success.component';
 
 const successRoutes: Routes = [
-  { path: '', component: SuccessComponent,
+  { path: 'sucess', component: SuccessComponent,
     children: [
     ] }
 ];

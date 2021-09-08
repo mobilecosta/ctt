@@ -91,7 +91,7 @@ export class PesquisaComponent implements OnInit {
           console.log('success')
           this.router.navigate([`/sucess`]);
         }, (error)=>{
-          window.alert('Erro na gravação das perguntas');
+          window.alert('Erro na gravação das perguntas ' + error["msg"]);
         })
       });
     }) 
