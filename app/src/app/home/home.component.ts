@@ -36,21 +36,23 @@ export class HomeComponent {
       type: 'subtitle',
       subtitles: [
         { value: 'hired', color: 'success', label: 'Respondido', content: '1' },
-        { value: 'progress', color: 'warning', label: 'Respondendo', content: '2' },
-        { value: 'canceled', color: 'danger', label: 'Cancelado', content: '3' }
+        { value: 'progress', color: 'warning', label: 'Respondendo', content: '2' }
       ]
     },
     { property: 'datas', label: 'Datas', type: 'string' },
     { property: 'curso', label: 'Curso' },
     { property: 'turma', label: 'Turma' },
+    { property: 'periodo', label: 'Periodo' },
     { property: 'sala', label: 'Sala' },
-    { property: 'professor', label: 'Professor', type: 'string' }
+    { property: 'cod_professor', label: 'Cod Professor', type: 'string', visible: false },
+    { property: 'professor', label: 'Nome Professor', type: 'string' },
+    { property: 'pesquisa', label: 'Pesquisa', type: 'string', visible: false },
+    { property: 'inicio', label: 'Dt Inicio', type: 'string', visible: false }
   ];
 
   getHireStatus = [
     { value: 'hired', label: 'Hired' },
-    { value: 'progress', label: 'Progress' },
-    { value: 'canceled', label: 'Canceled' }
+    { value: 'progress', label: 'Progress' }
   ];
 
 
@@ -62,18 +64,24 @@ export class HomeComponent {
       this.employee = {
         name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
         email: res.PDL_EMAIL,
-        business: `${res.A1_CGC} - ${res.A1_NOME} / Orçamento cod.`,
+        business: `${res.A1_CGC} - ${res.A1_NOME}`,
         class: `${res.PDL_NOME}`
       }
 
       res.aCursos.forEach((value, index) => {            //Foreach para percorrer o caminho do Json a cursos.
+        var status = 'progress';
+        if (value['PD7_PESQOK'] == 1) { status = 'hired' };
         this.getItems.push({
-          hireStatus: 'progress',
-          datas: `${value['PDF_DTINI']}  até ${value['PDF_DTFIM']}`,
+          hireStatus: status,
+          datas: `${value['PDF_DTINI']} até ${value['PDF_DTFIM']}`,
           curso: value['PD3_NOME'],
           turma: value['PD7_TURMA'],
+          periodo: value['PDF_PERIO'],
           sala: value['PD3_SALA'],
-          professor: value['PD2_NOME']
+          cod_professor: value['PD3_PROF'],
+          professor: value['PD2_NOME'],
+          pesquisa: value['PD3_PESQ'],
+          inicio: value['PDF_DTINI']
         })
       })
     })
@@ -84,7 +92,12 @@ export class HomeComponent {
 
     this.getItems.forEach((value, index) => {
       if (value.$selected == true) {
-        this.storage.set('pergunta', {"turma":value.turma,"sala":value.sala}).then((res) => {
+        this.storage.set('pergunta', 
+          { "turma": value.turma, 
+            "periodo": value.periodo,
+            "professor": value.cod_professor,
+            "pesquisa": value.pesquisa,
+            "inicio": value.inicio }).then((res) => {
         this.storage.get('pergunta').then((res)=>{
           console.log(res)
         })

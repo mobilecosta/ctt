@@ -44,10 +44,7 @@ export class LoginComponent {
           ],
         ],
      })
-
-
      ;
-    // this.navigateTo = this.activatedRoute.snapshot.params['to'] || '/';
 
     }
 
@@ -75,12 +72,12 @@ export class LoginComponent {
 
           // Autenticação Metodo LOGIN baseado no CPF
           this.httpClient.get(url_login).subscribe((res) => {
-            if( 1 ==  1){
+            if( res["resultado"] ==  1){
               this.storage.set('user', res).then(()=>{
                 this.router.navigate(['/']);
               })
-            }else{
-              this.poNotification.error('error usuário nao vindo do banco de dados')
+            } else{
+              window.alert(res["DESCRICAO"])
             }
       
           }, (error) =>{
