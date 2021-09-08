@@ -77,6 +77,11 @@ export class PesquisaComponent implements OnInit {
 
   onClick() {
     this.respostas = [];
+    this.fields.forEach((element) => {
+      console.log(element);
+    }
+    );
+
     this.storage.get('user').then((value1)=>{
       value1.aCursos.forEach((element) => {
         this.httpClient.post(this.url_post, {
