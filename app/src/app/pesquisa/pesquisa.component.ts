@@ -76,24 +76,25 @@ export class PesquisaComponent implements OnInit {
   };
 
   onClick() {
-      this.storage.get('user').then((value1)=>{
-        value1.aCursos.forEach((element) => {
-          this.httpClient.post(this.url_post, {
-            "PD4_ALUNO": value1['aluno'],
-            "PD4_TURMA": value1['turma'],
-            "PD4_PERIO": value1['periodo'],
-            "PD4_PROF": value1['professor'],
-            "PD4_PESQ": value1['pesquisa'],
-            "PD4_DTCURS": value1['inicio'],
-            "respostas": this.respostas // respostas deve ser um array com os campos identicos ao requeridos a api e o valor vindo do form controll
-          }).subscribe((success)=> {
-            console.log('success')
-            this.router.navigate([`/sucess`]);
-          }, (error)=>{
-            window.alert('Erro na gravação das perguntas');
-          })
-        });
-      }) 
+    this.respostas = [];
+    this.storage.get('user').then((value1)=>{
+      value1.aCursos.forEach((element) => {
+        this.httpClient.post(this.url_post, {
+          "PD4_ALUNO": value1['aluno'],
+          "PD4_TURMA": value1['turma'],
+          "PD4_PERIO": value1['periodo'],
+          "PD4_PROF": value1['professor'],
+          "PD4_PESQ": value1['pesquisa'],
+          "PD4_DTCURS": value1['inicio'],
+          "respostas": this.respostas // respostas deve ser um array com os campos identicos ao requeridos a api e o valor vindo do form controll
+        }).subscribe((success)=> {
+          console.log('success')
+          this.router.navigate([`/sucess`]);
+        }, (error)=>{
+          window.alert('Erro na gravação das perguntas');
+        })
+      });
+    }) 
   }  
 
 }
