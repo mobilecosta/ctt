@@ -45,6 +45,7 @@ export class PesquisaComponent implements OnInit {
               gridColumns: 10,
               gridSmColumns: 15,
               rows: 5,
+              key: element['PD5_ITEM'],
               placeholder: 'coloque seu texto'
             })
           }else{
@@ -54,9 +55,12 @@ export class PesquisaComponent implements OnInit {
             divider: `${element['PD5_FINALI_D']}`,
             gridColumns: 10,
             gridSmColumns: 15,
-            fieldValue: '',
-            optional: false,
-            options: ['1', '2', '3', '4', '5']
+            required: true,
+            minLength: 1,
+            fieldValue: ' ',            
+            key: element['PD5_ITEM'],
+            options: [  { label: '', value: '' }, { label: 'Nota 1', value: '1' }, { label: 'Nota 2', value: '2' }, 
+                        { label: 'Nota 3', value: '3' }, { label: 'Nota 4', value: '4' }, { label: 'Nota 5', value: '5' }]
           })
           }
         this.count+=1
@@ -69,7 +73,7 @@ export class PesquisaComponent implements OnInit {
 
   }
   getForm(form: NgForm) {
-    console.log(this.dynamicForm)
+    this.dynamicForm = form;
 }
 
   ngOnInit() {
@@ -77,10 +81,12 @@ export class PesquisaComponent implements OnInit {
 
   onClick() {
     this.respostas = [];
+    var icount: number = 0;
     this.fields.forEach((element) => {
-      console.log(element);
+      console.log(element.key + ' ' + this.dynamicForm.controls[icount].value);
+      icount = icount + 1;
     }
-    );
+    );    
 
     this.storage.get('user').then((value1)=>{
       value1.aCursos.forEach((element) => {
