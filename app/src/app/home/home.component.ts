@@ -5,7 +5,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PoDynamicViewField, PoCheckboxGroupOption, PoTableColumn } from '@po-ui/ng-components';
 import { environment } from 'src/environments/environment';
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -29,7 +28,6 @@ export class HomeComponent {
   status: Array<string> = [];
   statusOptions: Array<PoCheckboxGroupOption>;
 
-
   getItems = [];
   getColumns: Array<PoTableColumn> = [
     {
@@ -46,7 +44,7 @@ export class HomeComponent {
     { property: 'curso', label: 'Curso' },
     { property: 'turma', label: 'Turma' },
     { property: 'sala', label: 'Sala' },
-    { property: 'professores', label: 'Professors', type: 'string' }
+    { property: 'professor', label: 'Professor', type: 'string' }
   ];
 
   getHireStatus = [
@@ -75,7 +73,7 @@ export class HomeComponent {
           curso: value['PD3_NOME'],
           turma: value['PD7_TURMA'],
           sala: value['PD3_SALA'],
-          professores: value['PD2_NOME']
+          professor: value['PD2_NOME']
         })
       })
     })
