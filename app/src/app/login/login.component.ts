@@ -66,7 +66,7 @@ export class LoginComponent {
 
     // Autenticação Metodo retorno TOKEN
     this.httpClient.post(url_token, body, { headers: this.headers }).subscribe((res) => {
-      if( 1 ==  1){
+      if( res.hasOwnProperty('access_token') ){
          this.storage.set('user', res).then(()=>{
           localStorage.setItem('access_token', res["access_token"])
 

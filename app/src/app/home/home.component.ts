@@ -4,6 +4,7 @@ import { PoStorageService } from '@po-ui/ng-storage';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PoDynamicViewField, PoCheckboxGroupOption, PoTableColumn } from '@po-ui/ng-components';
 import { environment } from 'src/environments/environment';
+import { TouchSequence } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +22,7 @@ export class HomeComponent {
   ]
   employee = { }
 
+  aluno: string;
   hiringProcesses: Array<object>;
   hiringProcessesColumns: Array<PoTableColumn>;
   hiringProcessesFiltered: Array<object>;
@@ -61,6 +63,7 @@ export class HomeComponent {
 
     this.httpClient.get(environment.api)
     this.storage.get('user').then((res) => {
+      this.aluno = res.PDL_ALUNO;
       this.employee = {
         name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
         email: res.PDL_EMAIL,
@@ -93,7 +96,8 @@ export class HomeComponent {
     this.getItems.forEach((value, index) => {
       if (value.$selected == true) {
         this.storage.set('pergunta', 
-          { "turma": value.turma, 
+          { "aluno": this.aluno,
+            "turma": value.turma, 
             "periodo": value.periodo,
             "professor": value.cod_professor,
             "pesquisa": value.pesquisa,

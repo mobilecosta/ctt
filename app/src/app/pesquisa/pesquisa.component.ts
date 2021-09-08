@@ -19,23 +19,24 @@ export class PesquisaComponent implements OnInit {
   title = 'Pesquisas'
   dynamicForm: NgForm;
   respostas: [];
-  url_post = environment.api + '/grava';
-  cod_turma: any;
+  url_post = environment.api + 'api/grava';
   fields: Array<PoDynamicFormField>;
   filedstemp = []
   count: number = 0;
+  turma: string;
+  periodo: string;
 
   constructor(private storage: PoStorageService,
               private httpClient: HttpClient, 
               private router: Router, 
               private notify: PoNotificationService) {
 
-    let url = environment.api + 'api/montagem/?{000001,01}'
+    this.storage.get('pergunta').then(turma=> this.turma = turma['turma'], turma=> this.periodo = turma['periodo']);
+    let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + '}';
     this.httpClient.get(url).subscribe((res)=>{
       var [pesquisa] = [res['aPesq']]
 
       pesquisa.forEach(element => {
-        console.log(element)
           if(element['PD5_ASSUNTO'] == '2'){
             this.filedstemp.push({
               property: `${this.count}`,
@@ -71,38 +72,25 @@ export class PesquisaComponent implements OnInit {
     console.log(this.dynamicForm)
 }
 
-  onLoadFields(): PoDynamicFormLoad {
-    console.log('dsds');
-    return {
-      value: { property: 'pergunta2' },
-      fields: [
-        { property: 'pergunta1' }
-      ]
-    };
-
-  }
-
   ngOnInit() {
   };
 
   onClick() {
-    this.storage.get('pergunta').then(turma=> this.cod_turma = turma['turma'])
       this.storage.get('user').then((value1)=>{
-        console.log(value1)
         value1.aCursos.forEach((element) => {
           this.httpClient.post(this.url_post, {
-            "PD4_ALUNO": value1['PDL_ALUNO'],
-            "PD4_PERIO": element['PDF_PERIO'],
-            "PD4_TURMA": this.cod_turma,
-            "PD4_PROF": value1['PDL_NOME'],
-            "PD4_PESQ": 'codigo da pesquisa',
-            "PD4_DTCURS": `${element['PDF_DTINI']}`,
+            "PD4_ALUNO": value1['aluno'],
+            "PD4_TURMA": value1['turma'],
+            "PD4_PERIO": value1['periodo'],
+            "PD4_PROF": value1['professor'],
+            "PD4_PESQ": value1['pesquisa'],
+            "PD4_DTCURS": value1['inicio'],
             "respostas": this.respostas // respostas deve ser um array com os campos identicos ao requeridos a api e o valor vindo do form controll
           }).subscribe((success)=> {
             console.log('success')
             this.router.navigate([`/sucess`]);
           }, (error)=>{
-            console.log('error')
+            window.alert('Erro na gravação das perguntas');
           })
         });
       }) 
