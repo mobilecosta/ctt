@@ -5,10 +5,9 @@
 			"name": "PO-UI",
 			"request": "launch",
 			"type": "pwa-chrome",
-			"url": "http://localhost:4200/login",
+			"url": "http://localhost:4200",
 			"webRoot": "${workspaceFolder}"
 		},
-	
 		{
 			"type": "totvs_language_debug",
 			"request": "launch",

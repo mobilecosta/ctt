@@ -4,7 +4,7 @@ info:
   version: "v1.0"
   title: "CTT"
   termsOfService: ""
-host: "api.conceitho.com/api/protheus/ctt"
+host: "prewscorp.totvs.com.br"
 basePath: "/"
 schemes:
 - "https"

@@ -8,6 +8,7 @@ const routes: Routes = [
 
   {
     path: 'login',
+    canActivate: [AuthGuardService],
     loadChildren: () => import('./login/login.module').then(m => m.LoginModule)
   },
   {
@@ -18,10 +19,12 @@ const routes: Routes = [
 
   {
     path: 'pesquisa',
+    canActivate: [AuthGuardService],
     loadChildren: () => import('./pesquisa/pesquisa.module').then(m => m.PesquisaModule)
   },
   {
     path: 'success',
+    canActivate: [AuthGuardService],
     component: SuccessComponent
   }
 ];
