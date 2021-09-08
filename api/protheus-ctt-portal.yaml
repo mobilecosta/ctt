@@ -4,7 +4,7 @@ info:
   version: "v1.0"
   title: "CTT"
   termsOfService: ""
-host: "172.24.50.16:8044"
+host: "prewscorp.totvs.com.br"
 basePath: "/"
 schemes:
 - "https"
@@ -21,6 +21,12 @@ paths:
       produces:
       - "application/xml"
       - "application/json"
+      parameters: 
+        - in: body
+          name: param
+          description: Dados a serem gravados
+          schema:
+            $ref: '#/definitions/body_pd4'
       responses:
         "200":
           description: "successful operation"
@@ -52,7 +58,7 @@ paths:
           description: "Bad Request"
         "404":
           description: "Not found"
-  /api/montagem:
+  /api/montagem/{turma},{periodo}:
     get:
       summary: ""
       description: "Montagem lista de cursos a partir de um cpf"
@@ -64,15 +70,15 @@ paths:
       - "application/xml"
       - "application/json"
       parameters:
-      - in: "query"
+      - in: "path"
         name: "turma"
         type: "string"
-        description: ""
+        description: "Turma para montagem"
         required: true
-      - in: "query"
+      - in: "path"
         name: "periodo"
         type: "string"
-        description: ""
+        description: "Periodo para montagem"
         required: true
       responses:
         "200":
@@ -81,3 +87,38 @@ paths:
           description: "Bad Request"
         "404":
           description: "Not found"
+definitions:
+  body_pd4:
+      type: object
+      properties:
+        PD4_ALUNO:
+          type: string
+        PD4_TURMA:
+          type: string
+        PD4_PERIO:
+          type: string
+        PD4_PROF:
+          type: string
+        PD4_PESQ:
+          type: string
+        PD4_DTCURS:
+          type: string
+        respostas:
+          type: array
+          items:
+            type: object
+            properties:
+              PD4_ITEM:
+                type: string
+              PD4_FINALI:
+                type: string
+              PD4_DEPTO:
+                type: string
+              PD4_ASSUNT:
+                type: string
+              PD4_PONTUA:
+                type: string
+              PD4_RESPOS:
+                type: string
+              PD4_EQUIV:
+                type: string
