@@ -4,7 +4,7 @@ info:
   version: "v1.0"
   title: "CTT"
   termsOfService: ""
-host: "prewscorp.totvs.com.br"
+host: "api.conceitho.com/api/protheus/ctt"
 basePath: "/"
 schemes:
 - "https"
@@ -58,7 +58,7 @@ paths:
           description: "Bad Request"
         "404":
           description: "Not found"
-  /api/montagem/{turma},{periodo}:
+  /api/montagem/?{turma},{periodo}:
     get:
       summary: ""
       description: "Montagem lista de cursos a partir de um cpf"
