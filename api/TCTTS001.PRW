@@ -25,7 +25,7 @@ WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Portal Pesq
 
 	WSMETHOD GET montagem ;
     DESCRIPTION 'Montagem lista de cursos a partir de um CPF' ;
-    WSSYNTAX '/api/montagem/?{turma, periodo}';
+    WSSYNTAX '/api/montagem/{turma},{periodo}';
     PATH '/api/montagem'	
 
 	WSMETHOD POST grava ;
