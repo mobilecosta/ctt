@@ -300,7 +300,7 @@ WSMETHOD POST grava WSSERVICE CTT
 
 		// ConOut("Chave: [" + xFilial("PD4") + M->PD4_PESQ+M->PD4_TURMA+M->PD4_ALUNO+M->PD4_PERIO + "]")
 		If PD4->(DbSeek(xFilial("PD4") + M->PD4_PESQ+M->PD4_TURMA+M->PD4_ALUNO+M->PD4_PERIO, .T.))
-			cResponse := '{ "msg": "Pesquisa já respondida para essa turma/aluno e periodo" }"
+			cResponse := '{ "msg": "Pesquisa já respondida para essa turma/aluno e periodo" }'
 		Else
 			lOk := .T.
 		EndIf
@@ -334,7 +334,7 @@ WSMETHOD POST grava WSSERVICE CTT
 		           "AND PD7_ALUNO = '" + M->PD4_ALUNO + "'" 
 		
 		If (nError := TCSQLExec(cSQL)) <> 0
-			cResponse := '{ "msg": "Erro Update - " + ' + AllTrim(Str(nError)) + "-" + TCSQLError() + " }"
+			cResponse := '{ "msg": "Erro Update - " + ' + AllTrim(Str(nError)) + "-" + TCSQLError() + " }'
    			DisarmTran()
 		Else
 			cResponse := '{ "msg": "Sucesso" } '
