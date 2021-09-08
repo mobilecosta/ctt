@@ -54,6 +54,7 @@ Local lCursos 	:= .F.
 		
 		SELECT PDL.PDL_ALUNO, PDL.PDL_NOME, PDL.PDL_CPF, PDL.PDL_EMAIL, PD7.PD7_FILIAL, PD7.PD7_TURMA, PDF.PDF_PERIO, 
 			   PD3.PD3_NOME, PD3_PROF, PD2.PD2_NOME, PD3.PD3_SALA, PDO.PDO_NOME, PDF.PDF_DTINI, PDF.PDF_DTFIM, 
+			   PD3_PESQ,
 			   CASE WHEN PD4.PD4_FILIAL IS NULL THEN 0 ELSE 1 END PD7_PESQOK, 
 			   CASE WHEN SUS.US_FILIAL IS NULL THEN SA1.A1_CGC ELSE SUS.US_CGC END AS A1_CGC, 
 			   CASE WHEN SUS.US_FILIAL IS NULL THEN SA1.A1_NOME ELSE SUS.US_NOME END AS A1_NOME
@@ -120,7 +121,8 @@ Local lCursos 	:= .F.
 			cJSon += ',"PDF_DTFIM":' 	  + '"'   + DTOC(PDLQRY->PDF_DTFIM) 	+ '"'
 			cJSon += ',"PDF_PERIO":' 	  + '"'   + Alltrim(PDLQRY->PDF_PERIO) 	+ '"'
 			cJSon += ',"PD7_TURMA":' 	  + '"'   + Alltrim(PDLQRY->PD7_TURMA) 	+ '"'
-			cJSon += ',"PD7_PESQOK":' 	  +AllTrim(Str(PDLQRY->PD7_PESQOK))  	+ '"'
+			cJSon += ',"PD3_PESQ":' 	  + '"'   + Alltrim(PDLQRY->PD3_PESQ) 	+ '"'
+			cJSon += ',"PD7_PESQOK":' 	  +AllTrim(Str(PDLQRY->PD7_PESQOK)) 
 			cJSon += "}"
 			lCursos := .T.
 			PDLQRY->(DBSKIP())
