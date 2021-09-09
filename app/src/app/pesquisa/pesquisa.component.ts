@@ -7,6 +7,8 @@ import { PoNotificationService } from '@po-ui/ng-components';
 import { environment } from 'src/environments/environment';
 import { PoStorageService } from '@po-ui/ng-storage';
 import { NgForm, NgModelGroup } from '@angular/forms';
+import { PoDynamicViewField, PoListViewLiterals } from '@po-ui/ng-components';
+
 @Component({
   selector: 'app-pesquisa',
   templateUrl: './pesquisa.component.html',
@@ -26,11 +28,31 @@ export class PesquisaComponent implements OnInit {
   turma: string;
   periodo: string;
   PD5_FINALI: string;
+  pd5Table = []
+
+  headerFields: Array<PoDynamicViewField> = [
+    {property: 'name', label: 'CPF/Nome'},
+    {property: 'email', label: 'Email'},
+    {property: 'business', label: 'Empresa'},
+    {property: 'class', label: 'Turma/Periodo - Curso/Professor'}
+  ]
+
+  employee = {}
+
 
   constructor(private storage: PoStorageService,
               private httpClient: HttpClient,
               private router: Router,
               private notify: PoNotificationService) {
+
+                this.storage.get('user').then((res)=>{
+                  this.employee = {
+                    name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
+                    email: res.PDL_EMAIL,
+                    business: `${res.A1_CGC} - ${res.A1_NOME}`,
+                    class: `${res.PDL_NOME}`
+                  }
+                })
 
     this.storage.get('pergunta').then(turma=> this.turma = turma['turma'], turma=> this.periodo = turma['periodo']);
     let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + '}';
@@ -39,6 +61,13 @@ export class PesquisaComponent implements OnInit {
       var [pesquisa] = [res['aPesq']]
 
       pesquisa.forEach(element => {
+        this.pd5Table.push({
+          "PD5_ITEM": element['PD5_ITEM'],
+          "PD5_FINALI": element['PD5_FINALI'],
+          "PD5_DEPTO":  element['PD5_DEPTO'],
+          "PD5_ASSUNT": element['PD5_ASSUNTO'],
+          "PD5_PONTUA": element['PD5_PONTUA'],
+        })
 		      if (! (this.PD5_FINALI == element['PD5_FINALI'])) { this.count = 1 };
 		      this.PD5_FINALI = element['PD5_FINALI'];
           if(element['PD5_ASSUNTO'] == '2'){
@@ -77,20 +106,32 @@ export class PesquisaComponent implements OnInit {
   }
   getForm(form: NgForm) {
     this.dynamicForm = form;
-}
+  }
 
-  ngOnInit() {
-  };
+  ngOnInit() {};
 
   onClick() {
     var icount: number = 0;
+    var validates = []
+    var pesquisa = this.pd5Table[icount]
+
     this.fields.forEach((element) => {
-      this.respostas.push(this.dynamicForm.controls[icount].value)
+
+      this.respostas.push({
+        "PD4_ITEM":   pesquisa['PD5_ITEM'],
+        "PD4_FINALI": pesquisa['PD5_FINALI'],
+        "PD4_DEPTO":  pesquisa['PD5_DEPTO'],
+        "PD4_ASSUNT": pesquisa['PD5_ASSUNT'],
+        "PD4_PONTUA": pesquisa['PD5_PONTUA'],
+        "PD4_RESPOS": this.dynamicForm.controls[element.property].value,
+        "PD4_EQUIV": this.dynamicForm.controls[element.property].value,
+    })
+      validates.push(this.dynamicForm.controls[element.property].value)
       icount += 1;
-    }
-    );
-    var result = this.respostas.every(e => e !== undefined)
-    if(result){
+    });
+
+    var result = validates.every(e => e !== undefined)
+     if(result){
       this.storage.get('user').then((value1)=>{
         value1.aCursos.forEach((element) => {
           this.httpClient.post(this.url_post, {
@@ -100,7 +141,7 @@ export class PesquisaComponent implements OnInit {
             "PD4_PROF": value1['professor'],
             "PD4_PESQ": value1['pesquisa'],
             "PD4_DTCURS": value1['inicio'],
-            "respostas": this.respostas // respostas deve ser um array com os campos identicos ao requeridos a api e o valor vindo do form controll
+            "respostas": this.respostas
           }).subscribe((success)=> {
             this.router.navigate([`/sucess`]);
           }, (error)=>{

@@ -23,7 +23,6 @@ export class SuccessComponent implements OnInit {
   constructor(private storage: PoStorageService) {
 
     this.storage.get('user').then((res)=>{
-       console.log(res)
        this.employee = {
          name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
          email: res.PDL_EMAIL,
@@ -38,7 +37,4 @@ export class SuccessComponent implements OnInit {
   }
 
 }
-const fields = [
-  {}
-]
 

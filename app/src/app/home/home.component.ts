@@ -59,7 +59,6 @@ export class HomeComponent {
 
 
   constructor(private router: Router, private storage: PoStorageService, private httpClient: HttpClient) {
-    console.log(this.getHireStatus)
 
     this.httpClient.get(environment.api)
     this.storage.get('user').then((res) => {
@@ -95,9 +94,9 @@ export class HomeComponent {
 
     this.getItems.forEach((value, index) => {
       if (value.$selected == true) {
-        this.storage.set('pergunta', 
+        this.storage.set('pergunta',
           { "aluno": this.aluno,
-            "turma": value.turma, 
+            "turma": value.turma,
             "periodo": value.periodo,
             "professor": value.cod_professor,
             "pesquisa": value.pesquisa,

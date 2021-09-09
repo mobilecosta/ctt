@@ -1,9 +1,14 @@
 .flex-container {
-
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  vertical-align: middle;
-  margin-top: 5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    vertical-align: middle;
+    margin-top: 5%;
 }
 
+#btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    vertical-align: middle;
+}
