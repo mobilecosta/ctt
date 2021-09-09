@@ -59,8 +59,7 @@ export class PesquisaComponent implements OnInit {
             minLength: 1,
             fieldValue: ' ',
             key: element['PD5_ITEM'],
-            options: [  { label: '', value: '' }, { label: 'Nota 1', value: '1' }, { label: 'Nota 2', value: '2' },
-                        { label: 'Nota 3', value: '3' }, { label: 'Nota 4', value: '4' }, { label: 'Nota 5', value: '5' }]
+            options: element['aRespostas']
           })
           }
         this.count+=1
