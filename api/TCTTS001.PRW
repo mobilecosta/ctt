@@ -148,6 +148,7 @@ Local aPesq		  := {}
 Local aResp		  := {}
 Local cResp       := ""
 Local nPos        := 1
+Local nRet		  := 1
 Local aPD5_FINALI := RetSx3Box( Posicione("SX3", 2, "PD5_FINALI", "X3CBox()" ),,, 1 )
 
 Default self:turma         := ''
@@ -182,10 +183,8 @@ Default self:periodo       := ''
 								If nPos > 1
 									cResp += ','
 								EndIF
-
-								cResp += '{"PDG_EQUIV":' + '"' + aResp[nPos][1] + '"'
-								cResp += ',"PDG_CONCEI":'+ '"' + aResp[nPos][2] + '"'
-								cResp += ',"PDG_NOTAPO":'+ '"' + AllTrim(Str(aResp[nPos][3])) + '"}'
+								cResp += '{"label":'+ '"' + AllTrim(Str(aResp[nPos][3])) + '"'
+								cResp += ',"value":'+ '"' + AllTrim(Str(aResp[nPos][3])) + '"}'
 							Next
 						ENDIF
 					ENDIF
@@ -212,7 +211,7 @@ Default self:periodo       := ''
 					cJSon += ',"PD5_PERGUN":' 	  + '"'   + Alltrim(aPesq[nPos][6]) 	+ '"'
 					cJSon += ',"PD5_MEMO":' 	  + '"'   + Alltrim(aPesq[nPos][7]) 	+ '"'
 					cJSon += ', "aRespostas": [' + aPesq[nPos][8] + "]"
-					cJSon += ',"PD5_PONTUA":' 	  + '"'   + Alltrim(aPesq[nPos][9]) 	+ '"'
+					cJSon += ',"PD5_PONTUA":' 	  + '"'   + Alltrim(aPesq[nPos][9]) 	+ '"'					
 					cJSon += ',"PD5_FINALI_D":'   + '"'   + Alltrim(aPesq[nPos][10]) 	+ '"'
 					cJSon += "}"
 				Next
