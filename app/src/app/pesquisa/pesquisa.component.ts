@@ -25,6 +25,7 @@ export class PesquisaComponent implements OnInit {
   count: number = 0;
   turma: string;
   periodo: string;
+  PD5_FINALI: string;
 
   constructor(private storage: PoStorageService,
               private httpClient: HttpClient,
@@ -33,13 +34,16 @@ export class PesquisaComponent implements OnInit {
 
     this.storage.get('pergunta').then(turma=> this.turma = turma['turma'], turma=> this.periodo = turma['periodo']);
     let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + '}';
-    this.httpClient.get(url).subscribe((res)=>{
+    this.PD5_FINALI = ' ';
+	this.httpClient.get(url).subscribe((res)=>{
       var [pesquisa] = [res['aPesq']]
 
       pesquisa.forEach(element => {
+		      if (! (this.PD5_FINALI == element['PD5_FINALI'])) { this.count = 1 };
+		      this.PD5_FINALI = element['PD5_FINALI'];
           if(element['PD5_ASSUNTO'] == '2'){
             this.filedstemp.push({
-              property: `${this.count}`,
+              property: element['PD5_ITEM'],
               label: `${this.count}: `+`${element['PD5_PERGUN']}`,
               divider: `${element['PD5_FINALI_D']}`,
               gridColumns: 10,
@@ -50,7 +54,7 @@ export class PesquisaComponent implements OnInit {
             })
           }else{
             this.filedstemp.push({
-            property: `${this.count}`,
+            property: element['PD5_ITEM'],
             label: `${this.count}: `+`${element['PD5_PERGUN']}`,
             divider: `${element['PD5_FINALI_D']}`,
             gridColumns: 10,
@@ -62,7 +66,7 @@ export class PesquisaComponent implements OnInit {
             options: element['aRespostas']
           })
           }
-        this.count+=1
+		  this.count+=1;
         });
         this.fields = this.filedstemp;
         this.isHideLoading = true;
