@@ -45,7 +45,7 @@ export class PesquisaComponent implements OnInit {
             this.filedstemp.push({
               property: element['PD5_ITEM'],
               label: `${this.count}: `+`${element['PD5_PERGUN']}`,
-              divider: `${element['PD5_FINALI_D']}`,
+              divider: `${element['PD5_FINALI']}: `+`${element['PD5_FINALI_D']}`,
               gridColumns: 10,
               gridSmColumns: 15,
               rows: 5,
@@ -56,7 +56,7 @@ export class PesquisaComponent implements OnInit {
             this.filedstemp.push({
             property: element['PD5_ITEM'],
             label: `${this.count}: `+`${element['PD5_PERGUN']}`,
-            divider: `${element['PD5_FINALI_D']}`,
+            divider: `${element['PD5_FINALI']}: `+`${element['PD5_FINALI_D']}`,
             gridColumns: 10,
             gridSmColumns: 15,
             required: true,
