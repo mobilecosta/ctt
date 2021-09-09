@@ -18,7 +18,7 @@ export class PesquisaComponent implements OnInit {
   isHideLoading = false;
   title = 'Pesquisas'
   dynamicForm: NgForm;
-  respostas: [];
+  respostas = [];
   url_post = environment.api + 'api/grava';
   fields: Array<PoDynamicFormField>;
   filedstemp = []
@@ -27,8 +27,8 @@ export class PesquisaComponent implements OnInit {
   periodo: string;
 
   constructor(private storage: PoStorageService,
-              private httpClient: HttpClient, 
-              private router: Router, 
+              private httpClient: HttpClient,
+              private router: Router,
               private notify: PoNotificationService) {
 
     this.storage.get('pergunta').then(turma=> this.turma = turma['turma'], turma=> this.periodo = turma['periodo']);
@@ -40,7 +40,7 @@ export class PesquisaComponent implements OnInit {
           if(element['PD5_ASSUNTO'] == '2'){
             this.filedstemp.push({
               property: `${this.count}`,
-              label: `${element['PD5_PERGUN']}`,
+              label: `${this.count}: `+`${element['PD5_PERGUN']}`,
               divider: `${element['PD5_FINALI_D']}`,
               gridColumns: 10,
               gridSmColumns: 15,
@@ -51,15 +51,15 @@ export class PesquisaComponent implements OnInit {
           }else{
             this.filedstemp.push({
             property: `${this.count}`,
-            label: `${this.count}`+`${element['PD5_PERGUN']}`,
+            label: `${this.count}: `+`${element['PD5_PERGUN']}`,
             divider: `${element['PD5_FINALI_D']}`,
             gridColumns: 10,
             gridSmColumns: 15,
             required: true,
             minLength: 1,
-            fieldValue: ' ',            
+            fieldValue: ' ',
             key: element['PD5_ITEM'],
-            options: [  { label: '', value: '' }, { label: 'Nota 1', value: '1' }, { label: 'Nota 2', value: '2' }, 
+            options: [  { label: '', value: '' }, { label: 'Nota 1', value: '1' }, { label: 'Nota 2', value: '2' },
                         { label: 'Nota 3', value: '3' }, { label: 'Nota 4', value: '4' }, { label: 'Nota 5', value: '5' }]
           })
           }
@@ -80,32 +80,35 @@ export class PesquisaComponent implements OnInit {
   };
 
   onClick() {
-    this.respostas = [];
     var icount: number = 0;
     this.fields.forEach((element) => {
-      console.log(element.key + ' ' + this.dynamicForm.controls[icount].value);
-      icount = icount + 1;
+      this.respostas.push(this.dynamicForm.controls[icount].value)
+      icount += 1;
     }
-    );    
+    );
+    var result = this.respostas.every(e => e !== undefined)
+    if(result){
+      this.storage.get('user').then((value1)=>{
+        value1.aCursos.forEach((element) => {
+          this.httpClient.post(this.url_post, {
+            "PD4_ALUNO": value1['aluno'],
+            "PD4_TURMA": value1['turma'],
+            "PD4_PERIO": value1['periodo'],
+            "PD4_PROF": value1['professor'],
+            "PD4_PESQ": value1['pesquisa'],
+            "PD4_DTCURS": value1['inicio'],
+            "respostas": this.respostas // respostas deve ser um array com os campos identicos ao requeridos a api e o valor vindo do form controll
+          }).subscribe((success)=> {
+            this.router.navigate([`/sucess`]);
+          }, (error)=>{
+            window.alert('Erro na gravação das perguntas ' + error["msg"]);
+          })
+        });
+      })
+    }else{
+      this.notify.error("Todos os campos devem ser preenchidos!")
+    }
+  }
 
-    this.storage.get('user').then((value1)=>{
-      value1.aCursos.forEach((element) => {
-        this.httpClient.post(this.url_post, {
-          "PD4_ALUNO": value1['aluno'],
-          "PD4_TURMA": value1['turma'],
-          "PD4_PERIO": value1['periodo'],
-          "PD4_PROF": value1['professor'],
-          "PD4_PESQ": value1['pesquisa'],
-          "PD4_DTCURS": value1['inicio'],
-          "respostas": this.respostas // respostas deve ser um array com os campos identicos ao requeridos a api e o valor vindo do form controll
-        }).subscribe((success)=> {
-          console.log('success')
-          this.router.navigate([`/sucess`]);
-        }, (error)=>{
-          window.alert('Erro na gravação das perguntas ' + error["msg"]);
-        })
-      });
-    }) 
-  }  
 
 }
