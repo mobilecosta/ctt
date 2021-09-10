@@ -57,6 +57,7 @@ export class LoginComponent {
     var url_token = environment.urltoken;
     var url_login = environment.api + "api/login/" + cpf;
 
+    localStorage.setItem('access_token', ' ')
     if (environment.wso2) {
       this.headers = new HttpHeaders({
         'X-PO-No-Message': 'true',
@@ -69,7 +70,7 @@ export class LoginComponent {
     // Autenticação Metodo retorno TOKEN
     this.httpClient.post(url_token, body, { headers: this.headers }).subscribe((res) => {
       if( res.hasOwnProperty('access_token') ){
-         this.storage.set('user', res).then(()=>{
+        this.storage.set('user', res).then(()=>{
           localStorage.setItem('access_token', res["access_token"])
 
           // Autenticação Metodo LOGIN baseado no CPF
