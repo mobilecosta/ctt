@@ -52,22 +52,25 @@ export class LoginComponent {
 
   loginSubmit() {
 
-    var body: any;
-    var resultado: any;
+    var body: string;
     const cpf = this.loginForm.controls['cpf'].value;
     var url_token = environment.urltoken;
     var url_login = environment.api + "api/login/" + cpf;
 
+    localStorage.setItem('access_token', ' ')
     if (environment.wso2) {
-      this.headers = new HttpHeaders().set('Authorization', 'Basic UjJhbHJFZDRoQWh1MmZSMFRPQnVCTlpxdFM0YTpsUDBUYktKUDdmQ245WGJDUktkM2pYZDFYRW9hIA');
-      this.headers.append('Content-Type', 'application/x-www-form-urlencoded');
+      this.headers = new HttpHeaders({
+        'X-PO-No-Message': 'true',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: 'Basic UjJhbHJFZDRoQWh1MmZSMFRPQnVCTlpxdFM0YTpsUDBUYktKUDdmQ245WGJDUktkM2pYZDFYRW9hIA' });
+
       body = 'grant_type=client_credentials';
     };
 
     // Autenticação Metodo retorno TOKEN
     this.httpClient.post(url_token, body, { headers: this.headers }).subscribe((res) => {
       if( res.hasOwnProperty('access_token') ){
-         this.storage.set('user', res).then(()=>{
+        this.storage.set('user', res).then(()=>{
           localStorage.setItem('access_token', res["access_token"])
 
           // Autenticação Metodo LOGIN baseado no CPF
@@ -81,8 +84,8 @@ export class LoginComponent {
             }
       
           }, (error) =>{
-            if(! error.hasOwnProperty('user')){
-              console.log(error)
+            if(error.hasOwnProperty('message')){
+              window.alert(error.message);
       
             }
       
@@ -94,8 +97,8 @@ export class LoginComponent {
        }
  
      }, (error) =>{
-       if(! error.hasOwnProperty('user')){
-         console.log(error)
+       if(error.hasOwnProperty('message')){
+        window.alert(error.message)
  
        }
  

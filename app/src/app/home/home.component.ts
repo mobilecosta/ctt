@@ -4,7 +4,6 @@ import { PoStorageService } from '@po-ui/ng-storage';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PoDynamicViewField, PoCheckboxGroupOption, PoTableColumn } from '@po-ui/ng-components';
 import { environment } from 'src/environments/environment';
-import { TouchSequence } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-home',

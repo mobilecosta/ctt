@@ -9,11 +9,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
         const authToken = this.authService.getToken();
-        req = req.clone({
+        if (this.authService.isLoggedIn) {
+            req = req.clone({
             setHeaders: {
                 Authorization: "Bearer " + authToken
-            }
-        });
+            } });
+        };
         return next.handle(req);
     }
 }
