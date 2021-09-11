@@ -101,12 +101,7 @@ export class HomeComponent {
             "professor": value.cod_professor,
             "pesquisa": value.pesquisa,
             "inicio": value.inicio }).then((res) => {
-        this.storage.get('pergunta').then((res)=>{
-          console.log(res)
-        })
-        })
-        console.log(value.curso, index)
-
+      })
         this.router.navigate([`/pesquisa`]);
       }
     })

@@ -28,7 +28,9 @@ export class PesquisaComponent implements OnInit {
   turma: string;
   periodo: string;
   PD5_FINALI: string;
+  PD5_FINALI_D = []
   pd5Table = []
+  opt = []
 
   headerFields: Array<PoDynamicViewField> = [
     {property: 'name', label: 'CPF/Nome'},
@@ -38,7 +40,6 @@ export class PesquisaComponent implements OnInit {
   ]
 
   employee = {}
-
 
   constructor(private storage: PoStorageService,
               private httpClient: HttpClient,
@@ -60,7 +61,10 @@ export class PesquisaComponent implements OnInit {
 	this.httpClient.get(url).subscribe((res)=>{
       var [pesquisa] = [res['aPesq']]
 
+
       pesquisa.forEach(element => {
+        this.opt.push(element['PD5_ASSUNTO'])
+
         this.pd5Table.push({
           "PD5_ITEM": element['PD5_ITEM'],
           "PD5_FINALI": element['PD5_FINALI'],
@@ -68,24 +72,29 @@ export class PesquisaComponent implements OnInit {
           "PD5_ASSUNT": element['PD5_ASSUNTO'],
           "PD5_PONTUA": element['PD5_PONTUA'],
         })
+
 		      if (! (this.PD5_FINALI == element['PD5_FINALI'])) { this.count = 1 };
-		      this.PD5_FINALI = element['PD5_FINALI'];
+
+          this.PD5_FINALI = element['PD5_FINALI'];
+          var divider = this.count == 1 ? element['PD5_FINALI_D']: ' ';
+
           if(element['PD5_ASSUNTO'] == '2'){
             this.filedstemp.push({
               property: element['PD5_ITEM'],
               label: `${this.count}: `+`${element['PD5_PERGUN']}`,
-              divider: `${element['PD5_FINALI']}: `+`${element['PD5_FINALI_D']}`,
+              divider: divider,
               gridColumns: 10,
               gridSmColumns: 15,
               rows: 5,
               key: element['PD5_ITEM'],
               placeholder: 'coloque seu texto'
             })
+
           }else{
             this.filedstemp.push({
             property: element['PD5_ITEM'],
             label: `${this.count}: `+`${element['PD5_PERGUN']}`,
-            divider: `${element['PD5_FINALI']}: `+`${element['PD5_FINALI_D']}`,
+            divider: divider,
             gridColumns: 10,
             gridSmColumns: 15,
             required: true,
@@ -102,7 +111,6 @@ export class PesquisaComponent implements OnInit {
       }, (err)=>{
       console.log(err)
     })
-
   }
   getForm(form: NgForm) {
     this.dynamicForm = form;
@@ -111,11 +119,14 @@ export class PesquisaComponent implements OnInit {
   ngOnInit() {};
 
   onClick() {
+
     var icount: number = 0;
     var validates = []
     var pesquisa = this.pd5Table[icount]
+    var opts = this.opt[icount]
 
     this.fields.forEach((element) => {
+
 
       this.respostas.push({
         "PD4_ITEM":   pesquisa['PD5_ITEM'],
@@ -126,8 +137,11 @@ export class PesquisaComponent implements OnInit {
         "PD4_RESPOS": this.dynamicForm.controls[element.property].value,
         "PD4_EQUIV": this.dynamicForm.controls[element.property].value,
     })
+    if(!element.rows){
       validates.push(this.dynamicForm.controls[element.property].value)
+    }
       icount += 1;
+
     });
 
     var result = validates.every(e => e !== undefined)
