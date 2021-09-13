@@ -18,6 +18,12 @@ export class AuthService {
   getToken() {
     return localStorage.getItem('access_token');
   }
+  
+  get clearToken(): boolean {
+    localStorage.setItem('access_token', ' ');
+    console.log('ClearToken');
+    return true;
+  }
 
   get isLoggedIn(): boolean {
     let authToken = localStorage.getItem('access_token');
