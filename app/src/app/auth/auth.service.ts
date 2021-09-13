@@ -21,7 +21,6 @@ export class AuthService {
   
   get clearToken(): boolean {
     localStorage.setItem('access_token', ' ');
-    console.log('ClearToken');
     return true;
   }
 

@@ -25,8 +25,12 @@ export class PesquisaComponent implements OnInit {
   fields: Array<PoDynamicFormField>;
   filedstemp = []
   count: number = 0;
+  aluno: string;
   turma: string;
   periodo: string;
+  professor: string;
+  pesquisa: string;
+  inicio: string;
   PD5_FINALI: string;
   PD5_FINALI_D = []
   pd5Table = []
@@ -46,18 +50,19 @@ export class PesquisaComponent implements OnInit {
               private router: Router,
               private notify: PoNotificationService) {
 
-                this.storage.get('user').then((res)=>{
-                  this.employee = {
-                    name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
-                    email: res.PDL_EMAIL,
-                    business: `${res.A1_CGC} - ${res.A1_NOME}`,
-                    class: `${res.PDL_NOME}`
-                  }
-                })
+    this.storage.get('user').then((res)=>{
+      this.employee = {
+        name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
+        email: res.PDL_EMAIL,
+        business: `${res.A1_CGC} - ${res.A1_NOME}`,
+        class: `${res.PDL_NOME}`
+      }
+    })
 
-    this.storage.get('pergunta').then(turma=> this.turma = turma['turma'], turma=> this.periodo = turma['periodo']);
-    let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + '}';
-    this.PD5_FINALI = ' ';
+  let pergunta = this.storage.get('pergunta');
+
+  let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + '}';
+  this.PD5_FINALI = ' ';
 	this.httpClient.get(url).subscribe((res)=>{
       var [pesquisa] = [res['aPesq']]
 
@@ -146,11 +151,9 @@ export class PesquisaComponent implements OnInit {
 
     var result = validates.every(e => e !== undefined)
      if(result){
-      this.storage.get('user').then((value1)=>{
-        value1.aCursos.forEach((element) => {
           this.httpClient.post(this.url_post, {
-            "PD4_ALUNO": value1['aluno'],
-            "PD4_TURMA": value1['turma'],
+            "PD4_ALUNO": this.aluno,
+            "PD4_TURMA": this.turma,
             "PD4_PERIO": value1['periodo'],
             "PD4_PROF": value1['professor'],
             "PD4_PESQ": value1['pesquisa'],
@@ -161,11 +164,9 @@ export class PesquisaComponent implements OnInit {
           }, (error)=>{
             window.alert('Erro na gravação das perguntas ' + error["msg"]);
           })
-        });
-      })
-    }else{
+      }else{
       this.notify.error("Todos os campos devem ser preenchidos!")
-    }
+      }
   }
 
 
