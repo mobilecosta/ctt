@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 import { LoginService } from '../login/login.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { AuthService } from "./../auth/auth.service";
-import { truncate } from 'fs';
 
 @Injectable()
 export class AuthGuardService implements CanActivate, CanActivateChild {
