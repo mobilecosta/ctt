@@ -15,13 +15,13 @@ const loginRoutes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(loginRoutes)],
   exports: [RouterModule]
-  //,providers: [
-  //  LoginService,
-  //  {
-  //    provide: HTTP_INTERCEPTORS,
-  //    useClass: AuthInterceptor,
-  //    multi: true
-  //  }
-  //]
+  ,providers: [
+    LoginService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ]
 })
 export class LoginRoutingModule { }

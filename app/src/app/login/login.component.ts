@@ -34,6 +34,7 @@ export class LoginComponent {
     ) {}
 
     ngOnInit(): void {
+      localStorage.setItem('access_token', ' '); 
       this.loginForm = this.formBuilder.group({
         cpf: [
           '',
@@ -57,7 +58,6 @@ export class LoginComponent {
     var url_token = environment.urltoken;
     var url_login = environment.api + "api/login/" + cpf;
 
-    localStorage.setItem('access_token', ' ')
     if (environment.wso2) {
       this.headers = new HttpHeaders({
         'X-PO-No-Message': 'true',

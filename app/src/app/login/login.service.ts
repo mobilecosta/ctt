@@ -11,13 +11,10 @@ import { User } from '../model/user';
 export class LoginService extends GenericService<User> {
 
   path = 'api/oauth2/v1/token';
+  inlogin = false;
   
   constructor(http: HttpClient, private storage: PoStorageService) {
     super(http);
-  }
-
-  isLoggedIn(): Promise<any> {
-    return this.storage.get('isLoggedIn');
   }
 
 }
