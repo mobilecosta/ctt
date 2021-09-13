@@ -50,73 +50,89 @@ export class PesquisaComponent implements OnInit {
               private router: Router,
               private notify: PoNotificationService) {
 
-    this.storage.get('user').then((res)=>{
-      this.employee = {
-        name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
-        email: res.PDL_EMAIL,
-        business: `${res.A1_CGC} - ${res.A1_NOME}`,
-        class: `${res.PDL_NOME}`
+      this.storage.get('user').then((res)=>{
+        this.employee = {
+          name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
+          email: res.PDL_EMAIL,
+          business: `${res.A1_CGC} - ${res.A1_NOME}`,
+          class: `${res.PDL_NOME}`
+        }
+      })
+
+      this.storage.get('pergunta').then((data) =>
+      {
+        this.aluno = data.aluno;
+        this.turma = data.turma;
+        this.periodo=data.periodo;
+        this.professor=data.professor;
+        this.pesquisa=data.pesquisa;
+        this.inicio=data.inicio;
+        this.updPesquisa();
       }
-    })
+        );
 
-  let pergunta = this.storage.get('pergunta');
+  }
 
-  let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + '}';
-  this.PD5_FINALI = ' ';
-	this.httpClient.get(url).subscribe((res)=>{
-      var [pesquisa] = [res['aPesq']]
+  updPesquisa() {
+    let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + this.professor +','+ this.pesquisa+','+ this.inicio+','
+    '}';
+    this.PD5_FINALI = ' ';
+    this.httpClient.get(url).subscribe((res)=>{
+        var [pesquisa] = [res['aPesq']]
 
 
-      pesquisa.forEach(element => {
-        this.opt.push(element['PD5_ASSUNTO'])
+        pesquisa.forEach(element => {
+          this.opt.push(element['PD5_ASSUNTO'])
 
-        this.pd5Table.push({
-          "PD5_ITEM": element['PD5_ITEM'],
-          "PD5_FINALI": element['PD5_FINALI'],
-          "PD5_DEPTO":  element['PD5_DEPTO'],
-          "PD5_ASSUNT": element['PD5_ASSUNTO'],
-          "PD5_PONTUA": element['PD5_PONTUA'],
-        })
+          this.pd5Table.push({
+            "PD5_ITEM": element['PD5_ITEM'],
+            "PD5_FINALI": element['PD5_FINALI'],
+            "PD5_DEPTO":  element['PD5_DEPTO'],
+            "PD5_ASSUNT": element['PD5_ASSUNTO'],
+            "PD5_PONTUA": element['PD5_PONTUA'],
+          })
 
-		      if (! (this.PD5_FINALI == element['PD5_FINALI'])) { this.count = 1 };
+            if (! (this.PD5_FINALI == element['PD5_FINALI'])) { this.count = 1 };
 
-          this.PD5_FINALI = element['PD5_FINALI'];
-          var divider = this.count == 1 ? element['PD5_FINALI_D']: ' ';
+            this.PD5_FINALI = element['PD5_FINALI'];
+            var divider = this.count == 1 ? element['PD5_FINALI_D']: ' ';
 
-          if(element['PD5_ASSUNTO'] == '2'){
-            this.filedstemp.push({
+            if(element['PD5_ASSUNTO'] == '2'){
+              this.filedstemp.push({
+                property: element['PD5_ITEM'],
+                label: `${this.count}: `+`${element['PD5_PERGUN']}`,
+                divider: divider,
+                gridColumns: 10,
+                gridSmColumns: 15,
+                rows: 5,
+                key: element['PD5_ITEM'],
+                placeholder: 'coloque seu texto'
+              })
+
+            }else{
+              this.filedstemp.push({
               property: element['PD5_ITEM'],
               label: `${this.count}: `+`${element['PD5_PERGUN']}`,
               divider: divider,
               gridColumns: 10,
               gridSmColumns: 15,
-              rows: 5,
+              required: true,
+              minLength: 1,
+              fieldValue: ' ',
               key: element['PD5_ITEM'],
-              placeholder: 'coloque seu texto'
+              options: element['aRespostas']
             })
+            }
+        this.count+=1;
+          });
+          this.fields = this.filedstemp;
+          this.isHideLoading = true;
+        }, (err)=>{
+        console.log(err)
+      })
 
-          }else{
-            this.filedstemp.push({
-            property: element['PD5_ITEM'],
-            label: `${this.count}: `+`${element['PD5_PERGUN']}`,
-            divider: divider,
-            gridColumns: 10,
-            gridSmColumns: 15,
-            required: true,
-            minLength: 1,
-            fieldValue: ' ',
-            key: element['PD5_ITEM'],
-            options: element['aRespostas']
-          })
-          }
-		  this.count+=1;
-        });
-        this.fields = this.filedstemp;
-        this.isHideLoading = true;
-      }, (err)=>{
-      console.log(err)
-    })
-  }
+    }
+
   getForm(form: NgForm) {
     this.dynamicForm = form;
   }
@@ -154,10 +170,10 @@ export class PesquisaComponent implements OnInit {
           this.httpClient.post(this.url_post, {
             "PD4_ALUNO": this.aluno,
             "PD4_TURMA": this.turma,
-            "PD4_PERIO": value1['periodo'],
-            "PD4_PROF": value1['professor'],
-            "PD4_PESQ": value1['pesquisa'],
-            "PD4_DTCURS": value1['inicio'],
+            "PD4_PERIO": this.periodo,
+            "PD4_PROF": this.professor,
+            "PD4_PESQ": this.pesquisa,
+            "PD4_DTCURS": this.inicio,
             "respostas": this.respostas
           }).subscribe((success)=> {
             this.router.navigate([`/sucess`]);
