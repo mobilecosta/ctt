@@ -80,6 +80,7 @@ export class LoginComponent {
                 this.router.navigate(['/']);
               })
             } else{
+              localStorage.setItem('access_token', " ");
               window.alert(res["DESCRICAO"])
             }
       
