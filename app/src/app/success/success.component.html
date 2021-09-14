@@ -6,8 +6,7 @@
     <po-divider></po-divider>
 
     <div class="po-row" id='btn'>
-        <po-button [routerLink]="['']" class="po-md-3" p-type="primary" p-label='Voltar'></po-button>
-
+        <po-button class="po-md-3" p-type="primary"  (p-click)="onClick()" p-label='Voltar'></po-button>
     </div>
 
     <router-outlet></router-outlet>
