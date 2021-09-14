@@ -322,9 +322,9 @@ WSMETHOD POST grava WSSERVICE CTT
 			Next
 
 			For nNames := 1 To Len(aNames)
-				If ! Empty(oJsonDet[aNames[nPos]])
+				If ! Empty(oJsonDet[aNames[nNames]])
 					xValue := oJsonDet[aNames[nNames]]
-					If FWSX3Util():GetFieldType( aNames[nPos] ) == "D"
+					If FWSX3Util():GetFieldType( aNames[nNames] ) == "D"
 						xValue := Stod(StrTran(xValue, "-", ""))
 					EndIF
 					&("PD4->" + aNames[nNames]) := xValue
