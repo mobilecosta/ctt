@@ -63,10 +63,10 @@ export class PesquisaComponent implements OnInit {
       {
         this.aluno = data.aluno;
         this.turma = data.turma;
-        this.periodo=data.periodo;
-        this.professor=data.professor;
-        this.pesquisa=data.pesquisa;
-        this.inicio=data.inicio;
+        this.periodo = data.periodo;
+        this.professor = data.professor;
+        this.pesquisa = data.pesquisa;
+        this.inicio = data.inicio;
         this.updPesquisa();
       }
         );
@@ -74,7 +74,7 @@ export class PesquisaComponent implements OnInit {
   }
 
   updPesquisa() {
-    let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + '}';
+    let url = environment.api + 'api/montagem?' + this.turma + ',' + this.periodo;
     this.PD5_FINALI = ' ';
     this.httpClient.get(url).subscribe((res)=>{
         var [pesquisa] = [res['aPesq']]
@@ -93,12 +93,12 @@ export class PesquisaComponent implements OnInit {
             if (! (this.PD5_FINALI == element['PD5_FINALI'])) { this.count = 1 };
 
             this.PD5_FINALI = element['PD5_FINALI'];
-            var divider = this.count == 1 ? element['PD5_FINALI_D']: ' ';
+            var divider = this.count == 1 ? '0' + element['PD5_FINALI'] + ' ' + element['PD5_FINALI_D']: ' ';
 
             if(element['PD5_ASSUNTO'] == '2'){
               this.filedstemp.push({
                 property: element['PD5_ITEM'],
-                label: `${this.count}: `+`${element['PD5_PERGUN']}`,
+                label: element['PD5_FINALI'] + '.0' + `${this.count}: `+`${element['PD5_PERGUN']}`,
                 divider: divider,
                 gridColumns: 10,
                 gridSmColumns: 15,
@@ -110,7 +110,7 @@ export class PesquisaComponent implements OnInit {
             }else{
               this.filedstemp.push({
               property: element['PD5_ITEM'],
-              label: `${this.count}: `+`${element['PD5_PERGUN']}`,
+              label: element['PD5_FINALI'] + '.0' + `${this.count}: `+`${element['PD5_PERGUN']}`,
               divider: divider,
               gridColumns: 10,
               gridSmColumns: 15,
@@ -121,7 +121,7 @@ export class PesquisaComponent implements OnInit {
               options: element['aRespostas']
             })
             }
-        this.count+=1;
+            this.count+=1;
           });
           this.fields = this.filedstemp;
           this.isHideLoading = true;
@@ -139,30 +139,24 @@ export class PesquisaComponent implements OnInit {
 
   onClick() {
 
-    var icount: number = 0;
-    var validates = []
-    var pesquisa = this.pd5Table[icount]
-    var opts = this.opt[icount]
+    var result = true;
 
-    this.fields.forEach((element) => {
+    this.pd5Table.forEach((element) => {
 
       this.respostas.push({
-        "PD4_ITEM":   pesquisa['PD5_ITEM'],
-        "PD4_FINALI": pesquisa['PD5_FINALI'],
-        "PD4_DEPTO":  pesquisa['PD5_DEPTO'],
-        "PD4_ASSUNT": pesquisa['PD5_ASSUNT'],
-        "PD4_PONTUA": pesquisa['PD5_PONTUA'],
-        "PD4_RESPOS":  pesquisa['PD5_ASSUNT'] == '2' ?  this.dynamicForm.controls[element.property].value: ' ',
-        "PD4_EQUIV": pesquisa['PD5_ASSUNT'] == '1' ?  this.dynamicForm.controls[element.property].value: ' '
-    })
-    if(!element.rows){
-      validates.push(this.dynamicForm.controls[element.property].value)
-    }
-      icount += 1;
+        "PD4_ITEM":   element['PD5_ITEM'],
+        "PD4_FINALI": element['PD5_FINALI'],
+        "PD4_DEPTO":  element['PD5_DEPTO'],
+        "PD4_ASSUNT": element['PD5_ASSUNT'],
+        "PD4_PONTUA": element['PD5_PONTUA'],
+        "PD4_RESPOS":  element['PD5_ASSUNT'] == '2' ?  this.dynamicForm.controls[element['PD5_ITEM']].value: ' ',
+        "PD4_EQUIV": element['PD5_ASSUNT'] == '1' ?  this.dynamicForm.controls[element['PD5_ITEM']].value: ' '
+      })
+      if ((element['PD5_ASSUNT'] == '1') && (this.dynamicForm.controls[element['PD5_ITEM']].value == null))
+        result = false;
 
     });
 
-    var result = validates.every(e => e !== undefined)
      if(result){
           this.httpClient.post(this.url_post, {
             "PD4_ALUNO": this.aluno,
