@@ -152,8 +152,8 @@ export class PesquisaComponent implements OnInit {
         "PD4_DEPTO":  pesquisa['PD5_DEPTO'],
         "PD4_ASSUNT": pesquisa['PD5_ASSUNT'],
         "PD4_PONTUA": pesquisa['PD5_PONTUA'],
-        "PD4_RESPOS": this.dynamicForm.controls[element.property].value,
-        "PD4_EQUIV": this.dynamicForm.controls[element.property].value,
+        "PD4_RESPOS":  pesquisa['PD5_ASSUNT'] == '2' ?  this.dynamicForm.controls[element.property].value: ' ',
+        "PD4_EQUIV": pesquisa['PD5_ASSUNT'] == '1' ?  this.dynamicForm.controls[element.property].value: ' '
     })
     if(!element.rows){
       validates.push(this.dynamicForm.controls[element.property].value)
