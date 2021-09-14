@@ -74,12 +74,10 @@ export class PesquisaComponent implements OnInit {
   }
 
   updPesquisa() {
-    let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + this.professor +','+ this.pesquisa+','+ this.inicio+','
-    '}';
+    let url = environment.api + 'api/montagem/?{' + this.turma + ',' + this.periodo + '}';
     this.PD5_FINALI = ' ';
     this.httpClient.get(url).subscribe((res)=>{
         var [pesquisa] = [res['aPesq']]
-
 
         pesquisa.forEach(element => {
           this.opt.push(element['PD5_ASSUNTO'])
@@ -148,7 +146,6 @@ export class PesquisaComponent implements OnInit {
 
     this.fields.forEach((element) => {
 
-
       this.respostas.push({
         "PD4_ITEM":   pesquisa['PD5_ITEM'],
         "PD4_FINALI": pesquisa['PD5_FINALI'],
@@ -181,9 +178,8 @@ export class PesquisaComponent implements OnInit {
             window.alert('Erro na gravação das perguntas ' + error["msg"]);
           })
       }else{
-      this.notify.error("Todos os campos devem ser preenchidos!")
+        this.notify.error("Todos os campos devem ser preenchidos!")
       }
   }
-
 
 }

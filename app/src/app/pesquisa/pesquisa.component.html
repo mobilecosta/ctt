@@ -1,18 +1,14 @@
-<div class="po-wrapper">
-    <div>
-        <po-loading-overlay [hidden]="isHideLoading"></po-loading-overlay>
+<po-page-default>
+    <po-loading-overlay [hidden]="isHideLoading"></po-loading-overlay>
+    <po-dynamic-view [p-fields]="headerFields" [p-value]="employee"> </po-dynamic-view>
+
+    <po-divider></po-divider>
+    <po-dynamic-form (p-form)="getForm($event)" #dynamicForm [p-fields]="fields">
+
+    </po-dynamic-form>
+    <div class="po-row" id='btn'>
+        <po-button p-label="Ok" class="po-md-3" p-type="primary" [p-disabled]="!isHideLoading" (p-click)="onClick()"></po-button>
+        <po-button class="po-md-3" p-label="Voltar" [routerLink]="['/']"> </po-button>
     </div>
-    <po-page-default>
-        <po-dynamic-view [p-fields]="headerFields" [p-value]="employee"> </po-dynamic-view>
-
-        <po-divider></po-divider>
-        <po-dynamic-form (p-form)="getForm($event)" #dynamicForm [p-fields]="fields">
-
-        </po-dynamic-form>
-        <div class="po-row" id='btn'>
-            <po-button p-label="Ok" class="po-md-3" p-type="primary" [p-disabled]="!isHideLoading" (p-click)="onClick()"></po-button>
-
-        </div>
-    </po-page-default>
-    <router-outlet></router-outlet>
-</div>
+</po-page-default>
+<router-outlet></router-outlet>

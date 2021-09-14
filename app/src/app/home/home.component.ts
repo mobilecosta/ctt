@@ -32,7 +32,7 @@ export class HomeComponent {
   getItems = [];
   getColumns: Array<PoTableColumn> = [
     {
-      property: 'hireStatus',
+      property: 'status',
       label: 'Seleção',
       type: 'subtitle',
       subtitles: [
@@ -59,7 +59,6 @@ export class HomeComponent {
 
   constructor(private router: Router, private storage: PoStorageService, private httpClient: HttpClient) {
 
-    this.httpClient.get(environment.api)
     this.storage.get('user').then((res) => {
       this.aluno = res.PDL_ALUNO;
       this.employee = {
@@ -70,10 +69,10 @@ export class HomeComponent {
       }
 
       res.aCursos.forEach((value, index) => {            //Foreach para percorrer o caminho do Json a cursos.
-        var status = 'progress';
-        if (value['PD7_PESQOK'] == 1) { status = 'hired' };
+        var fstatus = 'progress';
+        if (value['PD7_PESQOK'] == 1) { fstatus = 'hired' };
         this.getItems.push({
-          hireStatus: status,
+          status: fstatus,
           datas: `${value['PDF_DTINI']} até ${value['PDF_DTFIM']}`,
           curso: value['PD3_NOME'],
           turma: value['PD7_TURMA'],
@@ -92,7 +91,10 @@ export class HomeComponent {
   pesquisa() {
 
     this.getItems.forEach((value, index) => {
-      if (value.$selected == true) {
+      if ((value.$selected == true) && (value.status == 'hired')) {
+        window.alert('Pesquisa já respondida');
+      }
+      else if (value.$selected == true) {
         this.storage.set('pergunta',
           { "aluno": this.aluno,
             "turma": value.turma,
