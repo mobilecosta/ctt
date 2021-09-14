@@ -148,7 +148,6 @@ Local aPesq		  := {}
 Local aResp		  := {}
 Local cResp       := ""
 Local nPos        := 1
-Local nRet		  := 1
 Local aPD5_FINALI := RetSx3Box( Posicione("SX3", 2, "PD5_FINALI", "X3CBox()" ),,, 1 )
 
 Default self:turma         := ''
@@ -184,7 +183,9 @@ Default self:periodo       := ''
 									cResp += ','
 								EndIF
 								cResp += '{"label":'+ '"' + AllTrim(Str(aResp[nPos][3])) + '"'
-								cResp += ',"value":'+ '"' + AllTrim(Str(aResp[nPos][3])) + '"}'
+								cResp += ',"value":'+ '"' + AllTrim(aResp[nPos][1]) + '"'
+								cResp += ',"equivalencia":'+ '"' + AllTrim(aResp[nPos][1]) + '"'
+								cResp += ',"conceito":'+ '"' + AllTrim(aResp[nPos][2]) + '"}'
 							Next
 						ENDIF
 					ENDIF
@@ -298,7 +299,9 @@ WSMETHOD POST grava WSSERVICE CTT
 		Next
 
 		// ConOut("Chave: [" + xFilial("PD4") + M->PD4_PESQ+M->PD4_TURMA+M->PD4_ALUNO+M->PD4_PERIO + "]")
-		If PD4->(DbSeek(xFilial("PD4") + M->PD4_PESQ+M->PD4_TURMA+M->PD4_ALUNO+M->PD4_PERIO, .T.))
+		If Empty(M->PD4_PESQ) .Or. Empty(M->PD4_TURMA) .Or. Empty(M->PD4_ALUNO) .Or. Empty(M->PD4_PERIO)
+			cResponse := '{ "msg": "É obrigatorio o preenchimento dos campos PD4_PESQ, PD4_TURMA, PD4_ALUNO e PD4_PERIO" }'
+		ElseIf PD4->(DbSeek(xFilial("PD4") + M->PD4_PESQ+M->PD4_TURMA+M->PD4_ALUNO+M->PD4_PERIO, .T.))
 			cResponse := '{ "msg": "Pesquisa já respondida para essa turma/aluno e periodo" }'
 		Else
 			lOk := .T.
@@ -319,9 +322,9 @@ WSMETHOD POST grava WSSERVICE CTT
 			Next
 
 			For nNames := 1 To Len(aNames)
-				If ! Empty(oJsonDet[aNames[nPos]])
+				If ! Empty(oJsonDet[aNames[nNames]])
 					xValue := oJsonDet[aNames[nNames]]
-					If FWSX3Util():GetFieldType( aNames[nPos] ) == "D"
+					If FWSX3Util():GetFieldType( aNames[nNames] ) == "D"
 						xValue := Stod(StrTran(xValue, "-", ""))
 					EndIF
 					&("PD4->" + aNames[nNames]) := xValue
