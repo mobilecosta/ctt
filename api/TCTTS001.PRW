@@ -341,7 +341,7 @@ WSMETHOD POST grava WSSERVICE CTT
 		Else
 			cResponse := '{ "msg": "Sucesso" } '
 			PD2->(DbSeek(xFilial() + M->PD4_PROF))
-			PDL->(DbSeek(xFilial() + M->PDL_ALUNO))
+			PDL->(DbSeek(xFilial() + M->PD4_ALUNO))
 
 // Versão Advpl ASP
 //			aadd(aDadosC,{	HTTPPOST->aDadosC1,HTTPPOST->aDadosC2,HTTPPOST->aDadosC3,HTTPPOST->aDadosC4 ,HTTPPOST->aDadosC5 ,HTTPPOST->aDadosC6,;
