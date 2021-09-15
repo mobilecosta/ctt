@@ -112,11 +112,11 @@ Local lCursos 	:= .F.
 			If lCursos
 				cJSon += ","
 			EndIf
-			cJSon += '{"PD3_NOME":' 	  + '"'   + Alltrim(PDLQRY->PD3_NOME) 	+ '"'
+			cJSon += '{"PD3_NOME":' 	  + '"'   + Alltrim(EncodeUTF8(PDLQRY->PD3_NOME)) 	+ '"'
 			cJSon += ',"PD3_PROF":' 	  + '"'   + Alltrim(PDLQRY->PD3_PROF) 	+ '"'
-			cJSon += ',"PD2_NOME":' 	  + '"'   + Alltrim(PDLQRY->PD2_NOME) 	+ '"'
+			cJSon += ',"PD2_NOME":' 	  + '"'   + Alltrim(EncodeUTF8(PDLQRY->PD2_NOME)) 	+ '"'
 			cJSon += ',"PD3_SALA":' 	  + '"'   + Alltrim(PDLQRY->PD3_SALA) 	+ '"'
-			cJSon += ',"PDO_NOME":' 	  + '"'   + Alltrim(PDLQRY->PDO_NOME) 	+ '"'
+			cJSon += ',"PDO_NOME":' 	  + '"'   + Alltrim(EncodeUTF8(PDLQRY->PDO_NOME)) 	+ '"'
 			cJSon += ',"PDF_DTINI":' 	  + '"'   + DTOC(PDLQRY->PDF_DTINI) 	+ '"'
 			cJSon += ',"PDF_DTFIM":' 	  + '"'   + DTOC(PDLQRY->PDF_DTFIM) 	+ '"'
 			cJSon += ',"PDF_PERIO":' 	  + '"'   + Alltrim(PDLQRY->PDF_PERIO) 	+ '"'
