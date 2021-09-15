@@ -99,6 +99,7 @@ Local lCursos 	:= .F.
 		cJSon += '"RESULTADO": "0", "DESCRICAO":' + '"' + "Aluno do CPF [" + cCPF + "] sem alocacao" + '"'
 	//-- Aluno com alocação
 	ELSEIF ! Empty(PDLQRY->PD7_TURMA)
+		MemoWrite("TCTTS001.SQL", GetLastQuery()[2])
 		cJSon += '"resultado":"1"'
 		cJSon += ',"PDL_CPF":' + '"' + Alltrim(PDLQRY->PDL_CPF) + '"'
 		cJSon += ',"PDL_NOME":' + '"' + Alltrim(PDLQRY->PDL_NOME) + '"'
@@ -171,6 +172,7 @@ Default self:periodo       := ''
 				IF PD5->PD5_MSBLQL == '2'	//-- Não bloqueado
 					cResp := ""
 					IF ! Empty(PD5->PD5_PONTUA)
+						aResp := {}
 						IF PDG->(DBSEEK(xFilial()+PD5->PD5_PONTUA))
 							AADD(aResp,{ "--", "--", 0 })
 							while PDG->(!EOF()) .AND. PDG->(PDG_FILIAL + PDG_PONTUA) == PD5->(PD5_FILIAL + PD5_PONTUA) 
