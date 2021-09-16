@@ -14,9 +14,16 @@
 			"name": "Debug Client 25 Totvs",
 			"program": "${command:AskForProgramName}",
 			"cwb": "${workspaceFolder}",
-			"smartclientBin": "C:/TOTVS25\/martclient25/smartclient.exe",
+			"smartclientBin": "C:/totvs/SmartClient19.3.1.0/smartclient.exe",
 			"isMultiSession": true,
 			"enableTableSync": true
 		}
-	]
+	],
+	"lastPrograms": [
+		{
+			"label": "U_TIDEV",
+			"description": "<nil>"
+		}
+	],
+	"lastProgramExecuted": "U_TIDEV"
 }
