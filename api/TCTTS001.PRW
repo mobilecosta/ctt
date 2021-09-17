@@ -175,7 +175,6 @@ Default self:periodo       := ''
 					IF ! Empty(PD5->PD5_PONTUA)
 						aResp := {}
 						IF PDG->(DBSEEK(xFilial()+PD5->PD5_PONTUA))
-							AADD(aResp,{ "--", "--", 0 })
 							while PDG->(!EOF()) .AND. PDG->(PDG_FILIAL + PDG_PONTUA) == PD5->(PD5_FILIAL + PD5_PONTUA) 
 								AADD(aResp,{ PDG->PDG_EQUIV, PDG->PDG_CONCEI, PDG->PDG_NOTAPO})
 								PDG->(DBSKIP())
@@ -185,7 +184,7 @@ Default self:periodo       := ''
 								If nPos > 1
 									cResp += ','
 								EndIF
-								cResp += '{"label":'+ '"' + AllTrim(Str(aResp[nPos][3])) + '"'
+								cResp += '{"label":'+ '"' + AllTrim(aResp[nPos][2]) + '"'
 								cResp += ',"value":'+ '"' + AllTrim(aResp[nPos][1]) + '"'
 								cResp += ',"equivalencia":'+ '"' + AllTrim(aResp[nPos][1]) + '"'
 								cResp += ',"conceito":'+ '"' + AllTrim(aResp[nPos][2]) + '"}'
