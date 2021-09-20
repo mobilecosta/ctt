@@ -11,4 +11,13 @@
     flex-direction: row;
     justify-content: space-evenly;
     vertical-align: middle;
+    margin-bottom: 10%;
 }
+
+#po-table{
+
+overflow-y:auto;
+
+}
+
+

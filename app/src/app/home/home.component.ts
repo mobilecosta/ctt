@@ -83,10 +83,16 @@ export class HomeComponent {
           pesquisa: value['PD3_PESQ'],
           inicio: value['PDF_DTINI']
         })
+
+
       })
     })
 
-  } // fim do construtor
+
+
+
+}
+   // fim do construtor
 
   pesquisa() {
 
@@ -121,3 +127,4 @@ export class HomeComponent {
   };
 
 }
+
