@@ -74,7 +74,7 @@ export class PesquisaComponent implements OnInit {
   }
 
   updPesquisa() {
-    let url = environment.api + 'api/montagem?' + this.turma + ',' + this.periodo;
+    let url = environment.api + 'api/montagem/' + this.turma + ',' + this.periodo;
     this.PD5_FINALI = ' ';
     this.httpClient.get(url).subscribe((res)=>{
         var [pesquisa] = [res['aPesq']]
