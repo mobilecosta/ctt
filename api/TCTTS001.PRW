@@ -26,7 +26,7 @@ WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Portal Pesq
 	WSMETHOD GET montagem ;
     DESCRIPTION 'Montagem lista de cursos a partir de um CPF' ;
     WSSYNTAX '/api/montagem/{turma},{periodo}';
-    PATH '/api/montagem'	
+    PATH '/api/montagem/{turma},{periodo}'	
 
 	WSMETHOD POST grava ;
     DESCRIPTION 'Grava Dados pesquisa de satisfação preenchida pelo Aluno' ;
@@ -157,8 +157,10 @@ Default self:periodo       := ''
 	// define o tipo de retorno do método
 	::SetContentType("application/json")
 
-	cPDF_TURMA := Alltrim(self:turma)
-	cPDF_PERIO := Alltrim(self:periodo)
+	If Len(::aURLParms) = 3
+		cPDF_TURMA := Left(::aURLParms[3], 6)
+		cPDF_PERIO := Right(::aURLParms[3], 2)
+	EndIF
 	
 	PD2->(DbSetOrder(1))
 	PDF->(DbSetOrder(1))

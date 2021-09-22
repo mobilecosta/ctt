@@ -17,13 +17,28 @@
 			"smartclientBin": "C:/totvs/SmartClient19.3.1.0/smartclient.exe",
 			"isMultiSession": true,
 			"enableTableSync": true
+		},
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "Protheus 27",
+			"program": "${command:AskForProgramName}",
+			"cwb": "${workspaceFolder}",
+			"smartclientBin": "C:/TOTVS/Protheus/Protheus/bin/smartclient/smartclient.exe",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"enableMultiThread": true
 		}
 	],
 	"lastPrograms": [
 		{
 			"label": "U_TIDEV",
 			"description": "<nil>"
+		},
+		{
+			"label": "X",
+			"description": "<nil>"
 		}
 	],
-	"lastProgramExecuted": "U_TIDEV"
+	"lastProgramExecuted": "X"
 }
