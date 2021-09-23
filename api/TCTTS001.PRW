@@ -24,9 +24,9 @@ WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Portal Pesq
     PATH '/api/login/{cpf}' 
 
 	WSMETHOD GET montagem ;
-    DESCRIPTION 'Montagem lista de cursos a partir de um CPF' ;
-    WSSYNTAX '/api/montagem/{turma},{periodo}';
-    PATH '/api/montagem/{turma},{periodo}'	
+    DESCRIPTION 'Montagem lista de perguntas baseada numa turma' ;
+    WSSYNTAX '/api/montagem?{turma}&{periodo}';
+    PATH '/api/montagem'	
 
 	WSMETHOD POST grava ;
     DESCRIPTION 'Grava Dados pesquisa de satisfação preenchida pelo Aluno' ;
@@ -157,10 +157,8 @@ Default self:periodo       := ''
 	// define o tipo de retorno do método
 	::SetContentType("application/json")
 
-	If Len(::aURLParms) = 3
-		cPDF_TURMA := Left(::aURLParms[3], 6)
-		cPDF_PERIO := Right(::aURLParms[3], 2)
-	EndIF
+	cPDF_TURMA := Self:Turma
+	cPDF_PERIO := Self:Periodo
 	
 	PD2->(DbSetOrder(1))
 	PDF->(DbSetOrder(1))
@@ -193,7 +191,7 @@ Default self:periodo       := ''
 						ENDIF
 					ENDIF
 					AADD(aPesq,{PD5->PD5_PESQ, PD5->PD5_ITEM, PD5->PD5_FINALI, PD5->PD5_DEPTO,;
-								PD5->PD5_ASSUNT, EncodeUTF8(PD5->PD5_PERGUN), EncodeUTF8(PD5->PD5_MEMO), ;
+								PD5->PD5_ASSUNT, EncodeUTF8(PD5->PD5_PERGUN), EncodeUTF8(StrTran(PD5->PD5_MEMO, Chr(13) + Chr(10), " ")), ;
 								cResp, alltrim(PD5->PD5_PONTUA), aPD5_FINALI[val(PD5->PD5_FINALI)][3] })
 
 				ENDIF
