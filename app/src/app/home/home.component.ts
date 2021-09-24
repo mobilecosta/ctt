@@ -16,8 +16,7 @@ export class HomeComponent {
   fields: Array<PoDynamicViewField> = [
     { property: 'name', label: 'CPF/Nome' },
     { property: 'email', label: 'Email' },
-    { property: 'business', label: 'Empresa' },
-    { property: 'class', label: 'Turma/Periodo - Curso/Professor' }
+    { property: 'business', label: 'Empresa' }
   ]
   employee = { }
 
@@ -35,9 +34,10 @@ export class HomeComponent {
       property: 'status',
       label: 'Seleção',
       type: 'subtitle',
+      color: 'subtitle',
       subtitles: [
-        { value: 'hired', color: 'success', label: 'Respondido', content: '1' },
-        { value: 'progress', color: 'warning', label: 'Respondendo', content: '2' }
+        { value: 'hired', color: 'color-07', label: 'Respondido', content: '1' },
+        { value: 'progress', color: 'color-10', label: 'Respondendo', content: '2' }
       ]
     },
     { property: 'datas', label: 'Datas', type: 'string' },
@@ -52,8 +52,8 @@ export class HomeComponent {
   ];
 
   getHireStatus = [
-    { value: 'hired', label: 'Hired' },
-    { value: 'progress', label: 'Progress' }
+    { value: 'hired', label: 'Respondido' },
+    { value: 'progress', label: 'Respondendo' }
   ];
 
 
@@ -64,8 +64,7 @@ export class HomeComponent {
       this.employee = {
         name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
         email: res.PDL_EMAIL,
-        business: `${res.A1_CGC} - ${res.A1_NOME}`,
-        class: `${res.PDL_NOME}`
+        business: `${res.A1_CGC} - ${res.A1_NOME}`
       }
 
       res.aCursos.forEach((value, index) => {            //Foreach para percorrer o caminho do Json a cursos.
@@ -105,9 +104,12 @@ export class HomeComponent {
           { "aluno": this.aluno,
             "turma": value.turma,
             "periodo": value.periodo,
+            "curso": value.curso,
             "professor": value.cod_professor,
+            "nome_professor": value.professor,
             "pesquisa": value.pesquisa,
-            "inicio": value.inicio }).then((res) => {
+            "inicio": value.inicio,
+            "datas": value.datas }).then((res) => {
       })
         this.router.navigate([`/pesquisa`]);
       }

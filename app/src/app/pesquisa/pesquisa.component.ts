@@ -28,9 +28,11 @@ export class PesquisaComponent implements OnInit {
   aluno: string;
   turma: string;
   periodo: string;
+  curso: string;
   professor: string;
   pesquisa: string;
   inicio: string;
+  datas: string;
   PD5_FINALI: string;
   PD5_FINALI_D = []
   pd5Table = []
@@ -50,23 +52,26 @@ export class PesquisaComponent implements OnInit {
               private router: Router,
               private notify: PoNotificationService) {
 
-      this.storage.get('user').then((res)=>{
-        this.employee = {
-          name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
-          email: res.PDL_EMAIL,
-          business: `${res.A1_CGC} - ${res.A1_NOME}`,
-          class: `${res.PDL_NOME}`
-        }
-      })
-
       this.storage.get('pergunta').then((data) =>
       {
         this.aluno = data.aluno;
         this.turma = data.turma;
         this.periodo = data.periodo;
-        this.professor = data.professor;
+        this.curso = data.curso;
+        this.professor = data.nome_professor;
         this.pesquisa = data.pesquisa;
         this.inicio = data.inicio;
+        this.datas = data.datas;
+
+        this.storage.get('user').then((res)=>{
+          this.employee = {
+            name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
+            email: res.PDL_EMAIL,
+            business: `${res.A1_CGC} - ${res.A1_NOME}`,
+            class: `${this.turma} / ${this.periodo} - ${this.curso} / ${this.professor} - ${this.datas}`
+          }
+        })
+  
         this.updPesquisa();
       }
         );
