@@ -37,7 +37,7 @@ export class HomeComponent {
       color: 'subtitle',
       subtitles: [
         { value: 'hired', color: 'color-07', label: 'Respondido', content: '1' },
-        { value: 'progress', color: 'color-10', label: 'Respondendo', content: '2' }
+        { value: 'progress', color: 'color-10', label: 'A Responder', content: '2' }
       ]
     },
     { property: 'datas', label: 'Datas', type: 'string' },
