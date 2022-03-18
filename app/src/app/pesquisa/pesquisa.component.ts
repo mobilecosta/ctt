@@ -26,6 +26,7 @@ export class PesquisaComponent implements OnInit {
   filedstemp = []
   count: number = 0;
   aluno: string;
+  filial: string;
   turma: string;
   periodo: string;
   curso: string;
@@ -55,6 +56,7 @@ export class PesquisaComponent implements OnInit {
       this.storage.get('pergunta').then((data) =>
       {
         this.aluno = data.aluno;
+        this.filial = data.filial;
         this.turma = data.turma;
         this.periodo = data.periodo;
         this.curso = data.curso;
@@ -79,7 +81,7 @@ export class PesquisaComponent implements OnInit {
   }
 
   updPesquisa() {
-    let url = environment.api + 'api/montagem?turma=' + this.turma + '&periodo=' + this.periodo;
+    let url = environment.api + 'api/montagem?filial=' + this.filial + '&turma=' + this.turma + '&periodo=' + this.periodo;
     this.PD5_FINALI = ' ';
     this.httpClient.get(url).subscribe((res)=>{
         var [pesquisa] = [res['aPesq']]
@@ -165,6 +167,7 @@ export class PesquisaComponent implements OnInit {
      if(result){
           this.httpClient.post(this.url_post, {
             "PD4_ALUNO": this.aluno,
+            "PD4_FILIAL": this.filial,
             "PD4_TURMA": this.turma,
             "PD4_PERIO": this.periodo,
             "PD4_PROF": this.professor,

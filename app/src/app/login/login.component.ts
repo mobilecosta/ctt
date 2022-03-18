@@ -62,7 +62,7 @@ export class LoginComponent {
       this.headers = new HttpHeaders({
         'X-PO-No-Message': 'true',
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: 'Basic UjJhbHJFZDRoQWh1MmZSMFRPQnVCTlpxdFM0YTpsUDBUYktKUDdmQ245WGJDUktkM2pYZDFYRW9hIA' });
+        'Authorization': 'Basic ' + environment.token });
 
       body = 'grant_type=client_credentials';
     };

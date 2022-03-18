@@ -15,8 +15,9 @@ Return
 //------------------------------------
 WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Portal Pesquisa Satisfação CTT"
     WSDATA cpf         AS STRING
-	WSDATA turma       AS STRING // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL
-	WSDATA periodo     AS STRING // chave pesquisa PD7_TURMA + PDF_PERIO + PD7_FILIAL	
+	WSDATA filial      AS STRING // chave pesquisa PD7_FILIAL + PD7_TURMA + PDF_PERIO
+	WSDATA turma       AS STRING
+	WSDATA periodo     AS STRING
 
     WSMETHOD GET Login ;
     DESCRIPTION 'Validação do login pelo cpf' ;
@@ -25,7 +26,7 @@ WSRESTFUL CTT DESCRIPTION "Serviço REST para retornar informacoes do Portal Pesq
 
 	WSMETHOD GET montagem ;
     DESCRIPTION 'Montagem lista de perguntas baseada numa turma' ;
-    WSSYNTAX '/api/montagem?{turma}&{periodo}';
+    WSSYNTAX '/api/montagem?{filial}&{turma}&{periodo}';
     PATH '/api/montagem'	
 
 	WSMETHOD POST grava ;
@@ -53,8 +54,8 @@ Local lCursos 	:= .F.
 		Column PDF_DTFIM AS DATE 
 		
 		SELECT PDL.PDL_ALUNO, PDL.PDL_NOME, PDL.PDL_CPF, PDL.PDL_EMAIL, PD7.PD7_FILIAL, PD7.PD7_TURMA, PDF.PDF_PERIO, 
-			   PD3.PD3_NOME, PD3_PROF, PD2.PD2_NOME, PD3.PD3_SALA, PDO.PDO_NOME, PDF.PDF_DTINI, PDF.PDF_DTFIM, 
-			   PD3_PESQ, PD3_QTDHOR,
+			   PD3_FILIAL, PD3_TURMA, PD3.PD3_NOME, PD3_PROF, PD2.PD2_NOME, PD3.PD3_SALA, PDO.PDO_NOME, PDF.PDF_DTINI, 
+			   PDF.PDF_DTFIM, PD3_PESQ, PD3_QTDHOR,
 			   CASE WHEN PD4.PD4_FILIAL IS NULL THEN 0 ELSE 1 END PD7_PESQOK, 
 			   CASE WHEN SUS.US_FILIAL IS NULL THEN SA1.A1_CGC ELSE SUS.US_CGC END AS A1_CGC, 
 			   CASE WHEN SUS.US_FILIAL IS NULL THEN SA1.A1_NOME ELSE SUS.US_NOME END AS A1_NOME
@@ -121,7 +122,8 @@ Local lCursos 	:= .F.
 			cJSon += ',"PDF_DTINI":' 	  + '"'   + DTOC(PDLQRY->PDF_DTINI) 	+ '"'
 			cJSon += ',"PDF_DTFIM":' 	  + '"'   + DTOC(PDLQRY->PDF_DTFIM) 	+ '"'
 			cJSon += ',"PDF_PERIO":' 	  + '"'   + Alltrim(PDLQRY->PDF_PERIO) 	+ '"'
-			cJSon += ',"PD7_TURMA":' 	  + '"'   + Alltrim(PDLQRY->PD7_TURMA) 	+ '"'
+			cJSon += ',"PD3_FILIAL":' 	  + '"'   + Alltrim(PDLQRY->PD3_FILIAL) + '"'
+			cJSon += ',"PD3_TURMA":' 	  + '"'   + Alltrim(PDLQRY->PD3_TURMA) 	+ '"'
 			cJSon += ',"PD3_PESQ":' 	  + '"'   + Alltrim(PDLQRY->PD3_PESQ) 	+ '"'
 			cJSon += ',"PD3_QTDHOR":' 	  +AllTrim(Str(PDLQRY->PD3_QTDHOR)) 
 			cJSon += ',"PD7_PESQOK":' 	  +AllTrim(Str(PDLQRY->PD7_PESQOK)) 
@@ -141,8 +143,9 @@ Return .T.
 //------------------------------------
 // GET - Montagem das questões para pagina da pesquisa de satisfaçaõ
 //------------------------------------
-WSMETHOD GET montagem  WSRECEIVE turma, periodo WSSERVICE CTT
+WSMETHOD GET montagem  WSRECEIVE filial, turma, periodo WSSERVICE CTT
 
+Local cPD3_FILIAL :=  ""
 Local cPDF_TURMA  :=  ""
 Local cPDF_PERIO  :=  ""
 Local cJSon	 	  := "{"
@@ -158,12 +161,13 @@ Default self:periodo       := ''
 	// define o tipo de retorno do método
 	::SetContentType("application/json")
 
-	cPDF_TURMA := Self:Turma
-	cPDF_PERIO := Self:Periodo
+	cPD3_FILIAL := Self:filial
+	cPDF_TURMA  := Self:Turma
+	cPDF_PERIO  := Self:Periodo
 	
 	PD2->(DbSetOrder(1))
 	PDF->(DbSetOrder(1))
-	IF PDF->(DBSEEK(xFilial() + cPDF_TURMA + cPDF_PERIO)) .And. PD3->(DBSEEK(xFilial() +cPDF_TURMA))
+	IF PDF->(DBSEEK(xFilial() + cPDF_TURMA + cPDF_PERIO)) .And. PD3->(DBSEEK(cPD3_FILIAL + cPDF_TURMA))
 		PD2->(DbSeek(xFilial() + PDF->PDF_PROF))
 		
 		PD5->(dbsetorder(1))	// Perguntas Pesquisa de Satisfação
@@ -288,6 +292,8 @@ WSMETHOD POST grava WSSERVICE CTT
 			For nNames := 1 To Len(aPD4)
 				If aPD4[nNames][1] == "PD4_PROF"
 					M->PD4_PROF := Left(aPD4[nNames][2] + Space(Len(PD4->PD4_PROF)), Len(PD4->PD4_PROF))
+				ElseIf aPD4[nNames][1] == "PD4_FILIAL"
+					M->PD4_FILIAL := Left(aPD4[nNames][2] + Space(Len(PD4->PD4_TURMA)), Len(PD4->PD4_TURMA))
 				ElseIf aPD4[nNames][1] == "PD4_TURMA"
 					M->PD4_TURMA := Left(aPD4[nNames][2] + Space(Len(PD4->PD4_TURMA)), Len(PD4->PD4_TURMA))
 				ElseIf aPD4[nNames][1] == "PD4_ALUNO"
@@ -318,7 +324,6 @@ WSMETHOD POST grava WSSERVICE CTT
 			aNames := oJson['respostas'][nPos]:GETNAMES()
 
 			RecLock("PD4", .T.)
-			PD4->PD4_FILIAL := xFilial("PD4")
 			PD4->PD4_DTRESP := msDate()
 			For nNames := 1 To Len(aPD4)
 				&("PD4->" + aPD4[nNames][1]) := aPD4[nNames][2]
@@ -329,6 +334,8 @@ WSMETHOD POST grava WSSERVICE CTT
 					xValue := oJsonDet[aNames[nNames]]
 					If FWSX3Util():GetFieldType( aNames[nNames] ) == "D"
 						xValue := Stod(StrTran(xValue, "-", ""))
+					ElseIf FWSX3Util():GetFieldType( aNames[nNames] ) == "M"
+						xValue := DecodeUTF8(xValue)
 					EndIF
 					&("PD4->" + aNames[nNames]) := xValue
 				EndIf

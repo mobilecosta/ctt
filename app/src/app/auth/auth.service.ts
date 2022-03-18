@@ -16,7 +16,9 @@ export class AuthService {
   }
 
   getToken() {
-    return localStorage.getItem('access_token');
+    let authToken = localStorage.getItem('access_token');
+    if (authToken == ' ') { localStorage.getItem('TLToken'); };
+    return authToken;
   }
   
   get clearToken(): boolean {
@@ -26,6 +28,7 @@ export class AuthService {
 
   get isLoggedIn(): boolean {
     let authToken = localStorage.getItem('access_token');
+    if (authToken == ' ') { authToken = localStorage.getItem('TLToken'); };
     if (authToken == ' ') { authToken = null};
     return (authToken !== null) ? true : false;
   }
