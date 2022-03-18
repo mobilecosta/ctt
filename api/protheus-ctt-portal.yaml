@@ -58,7 +58,7 @@ paths:
           description: "Bad Request"
         "404":
           description: "Not found"
-  /api/montagem/?{turma},{periodo}:
+  /api/montagem/?{filial},{turma},{periodo}:
     get:
       summary: ""
       description: "Montagem lista de cursos a partir de um cpf"
@@ -92,6 +92,8 @@ definitions:
       type: object
       properties:
         PD4_ALUNO:
+          type: string
+        PD4_FILIAL:
           type: string
         PD4_TURMA:
           type: string
