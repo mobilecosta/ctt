@@ -155,6 +155,7 @@ Local cResp       := ""
 Local nPos        := 1
 Local aPD5_FINALI := RetSx3Box( Posicione("SX3", 2, "PD5_FINALI", "X3CBox()" ),,, 1 )
 
+Default self:filial        := ''
 Default self:turma         := ''
 Default self:periodo       := ''
 
@@ -167,7 +168,7 @@ Default self:periodo       := ''
 	
 	PD2->(DbSetOrder(1))
 	PDF->(DbSetOrder(1))
-	IF PDF->(DBSEEK(xFilial() + cPDF_TURMA + cPDF_PERIO)) .And. PD3->(DBSEEK(cPD3_FILIAL + cPDF_TURMA))
+	IF PDF->(DBSEEK(cPD3_FILIAL + cPDF_TURMA + cPDF_PERIO)) .And. PD3->(DBSEEK(cPD3_FILIAL + cPDF_TURMA))
 		PD2->(DbSeek(xFilial() + PDF->PDF_PROF))
 		
 		PD5->(dbsetorder(1))	// Perguntas Pesquisa de Satisfação
@@ -225,14 +226,14 @@ Default self:periodo       := ''
 				cJSon += ']'
 			Else
 				cJSon += '"RESULTADO": "0", '
-				cJSon += '"DESCRICAO":' + '"' + "Não existe perguntas ativas para pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cPDF_TURMA + "]" + '"'
+				cJSon += '"DESCRICAO":' + '"' + "Não existe perguntas ativas para pesquisa [" + PD3->PD3_PESQ + "] na Filial/Turma [" + cPD3_FILIAL + "/" + cPDF_TURMA + "]" + '"'
 			EndIF
 		ELSE
 			cJSon += '"RESULTADO": "0", '
-			cJSon += '"DESCRICAO":' + '"' + "Não existe o cadastro de pesquisa [" + PD3->PD3_PESQ + "] na Turma [" + cPDF_TURMA + "]" + '"'
+			cJSon += '"DESCRICAO":' + '"' + "Não existe o cadastro de pesquisa [" + PD3->PD3_PESQ + "] na Filial/Turma [" + cPD3_FILIAL + "/" + cPDF_TURMA + "]" + '"'
 		ENDIF
 	else
-		cJSon += '"RESULTADO": "0", "DESCRICAO":' + '"' + "A Turma/periodo [" + cPDF_TURMA + "/" + cPDF_PERIO + "] não foram encontradas" + '"'
+		cJSon += '"RESULTADO": "0", "DESCRICAO":' + '"' + "A Filial/Turma/periodo [" + cPD3_FILIAL + "/" + cPDF_TURMA + "/" + cPDF_PERIO + "] não foram encontradas" + '"'
 	ENDIF
 
 	cJson += '}'
@@ -363,10 +364,11 @@ WSMETHOD POST grava WSSERVICE CTT
 //					transform(PDLQRY->A1_CGC, If(Len(PDLQRY->A1_CGC) = 11, "@R 999.999.999-99", "@R 99.999.999/9999-99")) 04, PDLQRY->A1_NOME 05,;
 //                  DATE() 06, TIME() 07, PDLQRY->PDL_ALUNO 08, _cEmp_ 09, _cFil_ 10, PDF->PDF_DTINI 11, PDF->PDF_DTFIM 12, PD3->PD3_PERIOD 13 })
 
-			aDadosC := { { 	"", PDL->PDL_NOME, PDL->PDL_EMAIL, "", "", Date(), Time(), M->PD4_ALUNO, cEmpAnt, cFilAnt,;
+			aDadosC := { { 	"", PDL->PDL_NOME, PDL->PDL_EMAIL, M->PD4_TURMA, "", Date(), Time(), M->PD4_ALUNO, cEmpAnt, cFilAnt,;
 							Dtoc(PDF->PDF_DTINI), Dtoc(PDF->PDF_DTFIM), PD3->PD3_PERIOD } }
 			StartJob( "U_TCTTM010", GetEnvServer(), .F., {{	SM0->M0_CODIGO,SM0->M0_CODFIL}, AllTrim(PD2->PD2_EMAIL),;
-															"", "", "", aDadosC, M->PD3_CURSO } )
+															PD3->PD3_PESQ, M->PD4_ALUNO, M->PD4_TURMA, aDadosC, PD3->PD3_CURSO,;
+															PD3->PD3_FILIAL } )
 
    		EndIf
 
