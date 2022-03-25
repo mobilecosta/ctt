@@ -31,6 +31,7 @@ export class PesquisaComponent implements OnInit {
   periodo: string;
   curso: string;
   professor: string;
+  nome_professor: string;
   pesquisa: string;
   inicio: string;
   datas: string;
@@ -60,7 +61,8 @@ export class PesquisaComponent implements OnInit {
         this.turma = data.turma;
         this.periodo = data.periodo;
         this.curso = data.curso;
-        this.professor = data.nome_professor;
+        this.professor = data.professor;
+        this.nome_professor = data.nome_professor;
         this.pesquisa = data.pesquisa;
         this.inicio = data.inicio;
         this.datas = data.datas;
@@ -70,7 +72,7 @@ export class PesquisaComponent implements OnInit {
             name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
             email: res.PDL_EMAIL,
             business: `${res.A1_CGC} - ${res.A1_NOME}`,
-            class: `${this.turma} / ${this.periodo} - ${this.curso} / ${this.professor} - ${this.datas}`
+            class: `${this.turma} / ${this.periodo} - ${this.curso} / ${this.nome_professor} - ${this.datas}`
           }
         })
   
@@ -83,6 +85,7 @@ export class PesquisaComponent implements OnInit {
   updPesquisa() {
     let url = environment.api + 'api/montagem?filial=' + this.filial + '&turma=' + this.turma + '&periodo=' + this.periodo;
     this.PD5_FINALI = ' ';
+
     this.httpClient.get(url).subscribe((res)=>{
         var [pesquisa] = [res['aPesq']]
 
