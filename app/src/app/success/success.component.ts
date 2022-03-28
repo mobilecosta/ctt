@@ -31,25 +31,27 @@ export class SuccessComponent implements OnInit {
               private httpClient: HttpClient,
               private storage: PoStorageService) {
 
-    this.storage.get('pergunta').then((res)=>{
-      this.cpf = res.PDL_CPF;
-
-      this.storage.get('pergunta').then((res)=>{
-        this.turma = res.turma;
-        this.periodo = res.periodo;
-        this.curso = res.curso;
-        this.nome_professor = res.nome_professor;
-        this.datas = res.datas;
-
-        this.employee = {
-          name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
-          email: res.PDL_EMAIL,
-          business: `${res.A1_CGC} - ${res.A1_NOME}`,
-          class: `${this.turma} / ${this.periodo} - ${this.curso} / ${this.nome_professor} - ${this.datas}`
+        this.storage.get('pergunta').then((data) =>
+        {
+          this.turma = data.turma;
+          this.periodo = data.periodo;
+          this.curso = data.curso;
+          this.nome_professor = data.nome_professor;
+          this.datas = data.datas;
+  
+          this.storage.get('user').then((res)=>{
+            this.cpf = res.PDL_CPF;
+            this.employee = {
+              name: `${res.PDL_CPF} / ${res.PDL_NOME}`,
+              email: res.PDL_EMAIL,
+              business: `${res.A1_CGC} - ${res.A1_NOME}`,
+              class: `${this.turma} / ${this.periodo} - ${this.curso} / ${this.nome_professor} - ${this.datas}`
+            }
+          })
+    
         }
-      });
-
-    })
+          
+    )
 
   }
 
