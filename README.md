@@ -11,13 +11,21 @@ TCTTS001.PRW
 
 Orientações para consumir o json modelo da pasta Resource
 
-1) Instalar o json server
-npm install -g json-server
+- Requisitos
+- - Node.js v14.21.3
+- - Angular 10.1.7
 
-2) Subir
-json-server --watch ctt.json
+1. Instalar o json server
 
-Para consumir use localhost:3000/aAluno ou localhost:3000/aCursos
+   `npm install -g json-server`
+
+2. Subir o servidor mock. Via terminal navegue ate a pasta
+
+   `cd ctt-main/Resources`
+
+   `json-server --watch ctt.json`
+
+- Para consumir use localhost:3000/aAluno ou localhost:3000/aCursos
 
 a) Metodos do Projeto:
 ![image](https://user-images.githubusercontent.com/20256620/130312057-d03f1827-6ecd-4765-ae22-05f6df194c48.png)
